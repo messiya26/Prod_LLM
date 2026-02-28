@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none">
+  <defs>
+    <linearGradient id="gold-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F0C75E"/>
+      <stop offset="50%" stop-color="#D4A438"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+    <linearGradient id="gold-wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D4A438"/>
+      <stop offset="50%" stop-color="#F0C75E"/>
+      <stop offset="100%" stop-color="#D4A438"/>
+    </linearGradient>
+    <pattern id="wave-pattern" patternUnits="userSpaceOnUse" width="20" height="8" patternTransform="rotate(-5)">
+      <path d="M0 4 Q5 0, 10 4 T20 4" stroke="#B8860B" stroke-width="0.5" fill="none" opacity="0.4"/>
+    </pattern>
+  </defs>
+  <!-- L vertical gauche (gold) -->
+  <rect x="40" y="10" width="38" height="130" rx="3" fill="url(#gold-grad)"/>
+  <rect x="40" y="10" width="38" height="130" rx="3" fill="url(#wave-pattern)"/>
+  <!-- L vertical droit (noir) -->
+  <rect x="90" y="45" width="32" height="95" rx="3" fill="#0D2240"/>
+  <!-- Barre horizontale / vague doree -->
+  <path d="M38 140 Q70 125, 100 140 T160 135 L160 150 Q130 160, 100 150 T38 155 Z" fill="url(#gold-wave)"/>
+  <path d="M38 140 Q70 125, 100 140 T160 135 L160 150 Q130 160, 100 150 T38 155 Z" fill="url(#wave-pattern)"/>
+  <!-- Texte LORD LOMBO -->
+  <text x="100" y="185" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="bold" letter-spacing="4" fill="#FEF9ED">LORD LOMBO</text>
+  <!-- Texte Academie en cursive -->
+  <text x="108" y="208" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-style="italic" fill="#D4A438">Academie</text>
+</svg>

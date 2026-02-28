@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="600" height="500">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4A438;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F0C75E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="royalBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1B3A6B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D2240;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#00000033"/>
+    </filter>
+    <linearGradient id="goldWave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#F0C75E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D4A438;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- L vertical bar left (gold) -->
+  <rect x="210" y="60" width="48" height="200" rx="4" fill="url(#gold)" filter="url(#shadow)"/>
+  <!-- L horizontal bar bottom (gold) -->
+  <rect x="210" y="230" width="120" height="35" rx="4" fill="url(#gold)" filter="url(#shadow)"/>
+
+  <!-- Vertical accent bar (royal blue) -->
+  <rect x="280" y="120" width="32" height="145" rx="3" fill="url(#royalBlue)" filter="url(#shadow)"/>
+
+  <!-- Book / open pages icon -->
+  <g transform="translate(350, 135)" filter="url(#shadow)">
+    <path d="M0,60 Q25,-10 55,5 L55,70 Q25,55 0,60 Z" fill="url(#gold)" opacity="0.9"/>
+    <path d="M55,5 Q85,-10 110,60 L110,60 Q85,55 55,70 Z" fill="url(#royalBlue)" opacity="0.9"/>
+    <line x1="55" y1="5" x2="55" y2="70" stroke="#F0C75E" stroke-width="2"/>
+  </g>
+
+  <!-- Decorative gold wave under the L -->
+  <path d="M180,275 Q240,255 300,275 Q360,295 420,275" stroke="url(#goldWave)" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+  <!-- LORD LOMBO text -->
+  <text x="300" y="340" text-anchor="middle" font-family="'Georgia', 'Times New Roman', serif" font-size="38" font-weight="bold" letter-spacing="8" fill="#1B3A6B">LORD LOMBO</text>
+
+  <!-- ACADEMIE text -->
+  <text x="300" y="385" text-anchor="middle" font-family="'Georgia', 'Times New Roman', serif" font-size="28" font-weight="normal" font-style="italic" letter-spacing="12" fill="url(#gold)">ACAD&#xC9;MIE</text>
+
+  <!-- Tagline -->
+  <text x="300" y="425" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" letter-spacing="4" fill="#5A5A5A">TRANSFORMATION &#x2022; LEADERSHIP &#x2022; IMPACT</text>
+
+  <!-- Subtle line separator -->
+  <line x1="220" y1="440" x2="380" y2="440" stroke="url(#gold)" stroke-width="1.5" opacity="0.6"/>
+</svg>
