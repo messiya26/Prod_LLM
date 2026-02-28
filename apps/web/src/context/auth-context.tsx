@@ -12,6 +12,7 @@ interface User {
   role: "STUDENT" | "ADMIN" | "INSTRUCTOR";
   avatar?: string;
   emailVerified?: boolean;
+  phone?: string;
 }
 
 interface AuthResponse {

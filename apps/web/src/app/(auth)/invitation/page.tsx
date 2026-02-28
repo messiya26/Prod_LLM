@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from "react-icons/fa";
 import api from "@/lib/api";
 
-export default function InvitationPage() {
+function InvitationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const ref = searchParams.get("ref");
@@ -17,7 +17,7 @@ export default function InvitationPage() {
   useEffect(() => {
     if (!ref) {
       setStatus("error");
-      setMessage("Lien d'invitation invalide");
+      setMessage("Lien d&apos;invitation invalide");
       return;
     }
     api.post<{ message: string; role: string }>("/users/accept-invitation", { token: ref })
@@ -26,9 +26,10 @@ export default function InvitationPage() {
         setMessage(data.message || "Invitation acceptee");
         setRole(data.role || "");
       })
-      .catch((err: any) => {
+      .catch((err: unknown) => {
+        const e = err as Record<string, unknown>;
         setStatus("error");
-        setMessage(err?.response?.data?.message || err?.message || "Erreur lors de l'acceptation");
+        setMessage(String((e?.response as Record<string, unknown>)?.data || e?.message || "Erreur"));
       });
   }, [ref]);
 
@@ -38,7 +39,7 @@ export default function InvitationPage() {
         {status === "loading" && (
           <>
             <FaSpinner className="text-gold text-4xl mx-auto mb-4 animate-spin" />
-            <h1 className="text-cream text-xl font-bold">Traitement de l'invitation...</h1>
+            <h1 className="text-cream text-xl font-bold">Traitement...</h1>
           </>
         )}
         {status === "success" && (
@@ -58,11 +59,19 @@ export default function InvitationPage() {
             <h1 className="text-cream text-xl font-bold mb-2">Erreur</h1>
             <p className="text-cream/50 text-sm mb-6">{message}</p>
             <button onClick={() => router.push("/")} className="px-8 py-3 rounded-xl border border-cream/[0.1] text-cream/60 text-sm hover:text-cream">
-              Retour a l'accueil
+              Retour
             </button>
           </>
         )}
       </motion.div>
     </div>
+  );
+}
+
+export default function InvitationPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center"><FaSpinner className="text-gold text-4xl animate-spin" /></div>}>
+      <InvitationContent />
+    </Suspense>
   );
 }
