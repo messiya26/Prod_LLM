@@ -1,7 +1,9 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
-COPY apps/api/package.json ./
-RUN npm install --legacy-peer-deps
+
+COPY apps/api/package.json apps/api/package-lock.json ./
+RUN npm ci --legacy-peer-deps
+
 COPY apps/api/ ./
 RUN npx prisma generate
 RUN npm run build
