@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Param, Body, UseGuards, Request } from "@nestjs/common";
+import { Controller, Post, Get, Put, Patch, Param, Body, UseGuards, Request } from "@nestjs/common";
 import { EnrollmentsService } from "./enrollments.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 
@@ -10,6 +10,11 @@ export class EnrollmentsController {
   @Post(":courseId")
   enroll(@Request() req: any, @Param("courseId") courseId: string) {
     return this.enrollmentsService.enroll(req.user.id, courseId);
+  }
+
+  @Patch(":slug/activate")
+  activate(@Request() req: any, @Param("slug") slug: string) {
+    return this.enrollmentsService.activateAfterPayment(req.user.id, slug);
   }
 
   @Get("check/:slug")

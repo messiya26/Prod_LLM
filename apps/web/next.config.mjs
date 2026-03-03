@@ -5,12 +5,12 @@ const cspDirectives = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com",
+  "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://i.ytimg.com https://m.media-amazon.com",
   "font-src 'self' https://fonts.gstatic.com",
   isDev
     ? "connect-src 'self' ws://localhost:* http://localhost:*"
-    : "connect-src 'self' https://accounts.google.com https://*.lordlomboacademie.com",
-  "frame-src 'self' https://accounts.google.com",
+    : "connect-src 'self' https://accounts.google.com https://*.lordlomboministries.com https://*.lordlomboacademie.com",
+  "frame-src 'self' https://accounts.google.com https://www.youtube.com https://meet.jit.si https://*.zoom.us",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -27,16 +27,26 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), interest-cohort=()" },
   { key: "Content-Security-Policy", value: cspDirectives.join("; ") },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
 ];
 
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "m.media-amazon.com" },
+      { protocol: "http", hostname: "localhost" },
     ],
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60,
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

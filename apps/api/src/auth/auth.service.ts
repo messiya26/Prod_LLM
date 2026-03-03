@@ -177,9 +177,9 @@ export class AuthService {
     });
   }
 
-  async changeRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "ADMIN", currentUserId: string) {
+  async changeRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN", currentUserId: string) {
     const currentUser = await this.prisma.user.findUnique({ where: { id: currentUserId } });
-    if (!currentUser || currentUser.role !== "ADMIN") throw new UnauthorizedException("Seul un admin peut modifier les roles");
+    if (!currentUser || (currentUser.role !== "ADMIN" && currentUser.role !== "SUPER_ADMIN")) throw new UnauthorizedException("Seul un admin peut modifier les roles");
 
     return this.prisma.user.update({
       where: { id: userId },

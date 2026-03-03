@@ -4,13 +4,16 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
   STUDENT
   INSTRUCTOR
+  MODERATOR
   ADMIN
+  SUPER_ADMIN
 }
 
 enum Level {
@@ -21,6 +24,7 @@ enum Level {
 }
 
 enum EnrollmentStatus {
+  PENDING
   ACTIVE
   COMPLETED
   CANCELLED
@@ -46,8 +50,25 @@ model User {
   payments      Payment[]
   notifications Notification[]
   bookings      Booking[]
+  invitations   Invitation[] @relation("invitedBy")
+  blogPosts     BlogPost[]   @relation("BlogAuthor")
+  events        Event[]      @relation("EventAuthor")
 
   @@map("users")
+}
+
+model Invitation {
+  id          String   @id @default(cuid())
+  email       String
+  role        Role     @default(STUDENT)
+  token       String   @unique
+  invitedById String
+  invitedBy   User     @relation("invitedBy", fields: [invitedById], references: [id])
+  accepted    Boolean  @default(false)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@map("invitations")
 }
 
 model Category {
@@ -75,6 +96,8 @@ model Course {
   modules      Module[]
   enrollments  Enrollment[]
   payments     Payment[]
+  resources    CourseResource[]
+  quiz         Quiz?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -145,8 +168,12 @@ enum PaymentStatus {
 }
 
 enum PaymentMethod {
+  PAYPAL
   STRIPE
   MOBILE_MONEY
+  ILLICOCASH
+  CASH_APP
+  MPESA
   BANK_TRANSFER
   FREE
 }
@@ -247,4 +274,188 @@ model Certificate {
   @@index([userId])
   @@index([certificateId])
   @@map("certificates")
+}
+
+// ─── Phase B : Litterature & Quiz ──────────────────────────────────────────
+
+enum ResourceType {
+  PDF
+  AUDIO
+  VIDEO
+  DOCUMENT
+}
+
+model CourseResource {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  type        ResourceType
+  url         String
+  fileSize    Int?
+  duration    Int?
+  order       Int          @default(0)
+  courseId    String
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  moduleId    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("course_resources")
+}
+
+model Quiz {
+  id           String         @id @default(cuid())
+  title        String
+  description  String?
+  passingScore Int            @default(70)
+  courseId     String         @unique
+  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions    QuizQuestion[]
+  attempts     QuizAttempt[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  id            String   @id @default(cuid())
+  question      String
+  options       String
+  correctAnswer String
+  explanation   String?
+  order         Int      @default(0)
+  quizId        String
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_questions")
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  quizId    String
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers   String
+  score     Int
+  passed    Boolean
+  createdAt DateTime @default(now())
+
+  @@map("quiz_attempts")
+}
+
+model LessonProgress {
+  id           String   @id @default(cuid())
+  userId       String
+  lessonId     String
+  enrollmentId String
+  completed    Boolean  @default(false)
+  watchedAt    DateTime @default(now())
+
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+// ─── Phase C : Sessions Live ────────────────────────────────────────────────
+
+enum LivePlatform {
+  JITSI
+  ZOOM
+  GOOGLE_MEET
+}
+
+enum LiveStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+  CANCELLED
+}
+
+model LiveSession {
+  id            String       @id @default(cuid())
+  title         String
+  description   String?
+  platform      LivePlatform @default(JITSI)
+  status        LiveStatus   @default(SCHEDULED)
+  meetingUrl    String?
+  meetingId     String?
+  roomName      String       @unique
+  hostId        String
+  courseId      String?
+  maxAttendees  Int          @default(100)
+  scheduledAt   DateTime
+  startedAt     DateTime?
+  endedAt       DateTime?
+  duration      Int?
+  replayUrl     String?
+  attendees     LiveAttendee[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("live_sessions")
+}
+
+model LiveAttendee {
+  id          String      @id @default(cuid())
+  userId      String
+  sessionId   String
+  session     LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  joinedAt    DateTime    @default(now())
+  leftAt      DateTime?
+
+  @@unique([userId, sessionId])
+  @@map("live_attendees")
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String
+  image       String?
+  category    String   @default("general")
+  tags        String?
+  published   Boolean  @default(false)
+  authorId    String
+  author      User     @relation("BlogAuthor", fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blog_posts")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  image       String?
+  location    String?
+  isOnline    Boolean  @default(false)
+  link        String?
+  date        DateTime
+  endDate     DateTime?
+  price       Float    @default(0)
+  capacity    Int?
+  registrations Int    @default(0)
+  published   Boolean  @default(false)
+  authorId    String
+  author      User     @relation("EventAuthor", fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("events")
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("text")
+  updatedAt DateTime @updatedAt
+
+  @@map("site_content")
 }

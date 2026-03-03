@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { AnimatedSection, Badge, Button } from "@/components/ui";
@@ -7,12 +8,12 @@ import { useI18n } from "@/context/i18n-context";
 import { FaNewspaper, FaPodcast, FaVideo, FaDownload, FaPlay, FaClock, FaCalendarAlt, FaArrowRight, FaHeadphones, FaBookOpen } from "react-icons/fa";
 
 const blogPosts = [
-  { title: "Les 7 piliers du leadership pastoral selon la Bible", category: "Leadership", date: "25 Fev 2026", readTime: "8 min", image: "/images/hero-bg.jpg" },
-  { title: "Comment structurer une equipe ministerielle efficace", category: "Gestion", date: "20 Fev 2026", readTime: "6 min", image: "/images/hero-bg.jpg" },
-  { title: "L'art de la predication : captiver votre auditoire", category: "Predication", date: "15 Fev 2026", readTime: "10 min", image: "/images/hero-bg.jpg" },
-  { title: "Gerer les conflits dans l'eglise avec sagesse", category: "Relations", date: "10 Fev 2026", readTime: "7 min", image: "/images/hero-bg.jpg" },
-  { title: "Developper une vision claire pour votre ministere", category: "Vision", date: "5 Fev 2026", readTime: "5 min", image: "/images/hero-bg.jpg" },
-  { title: "Le mentorat spirituel : guide pratique", category: "Formation", date: "1 Fev 2026", readTime: "12 min", image: "/images/hero-bg.jpg" },
+  { title: "Les 7 piliers du leadership pastoral selon la Bible", titleEn: "7 Pillars of Pastoral Leadership", category: "Leadership", date: "25 Fev 2026", readTime: "8 min", image: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=600&h=300&fit=crop" },
+  { title: "Comment structurer une equipe ministerielle efficace", titleEn: "How to Build an Effective Ministry Team", category: "Gestion", date: "20 Fev 2026", readTime: "6 min", image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=300&fit=crop" },
+  { title: "L'art de la predication : captiver votre auditoire", titleEn: "The Art of Preaching", category: "Predication", date: "15 Fev 2026", readTime: "10 min", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=300&fit=crop" },
+  { title: "Gerer les conflits dans l'eglise avec sagesse", titleEn: "Managing Church Conflicts with Wisdom", category: "Relations", date: "10 Fev 2026", readTime: "7 min", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=300&fit=crop" },
+  { title: "Developper une vision claire pour votre ministere", titleEn: "Developing a Clear Ministry Vision", category: "Vision", date: "5 Fev 2026", readTime: "5 min", image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=300&fit=crop" },
+  { title: "Le mentorat spirituel : guide pratique", titleEn: "Spiritual Mentorship: A Practical Guide", category: "Formation", date: "1 Fev 2026", readTime: "12 min", image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=300&fit=crop" },
 ];
 
 const podcasts = [
@@ -65,12 +66,13 @@ export default function Ressources() {
             {blogPosts.map((post, i) => (
               <AnimatedSection key={i} delay={i * 0.05}>
                 <div className="group rounded-2xl bg-cream/[0.02] border border-cream/[0.06] overflow-hidden hover:border-gold/20 transition-all">
-                  <div className="h-40 bg-gradient-to-br from-gold/10 to-cream/5 flex items-center justify-center">
-                    <FaBookOpen className="text-gold/30 text-4xl" />
+                  <div className="h-44 relative overflow-hidden">
+                    <Image src={post.image} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="400px" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b1829] via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full bg-gold text-navy">{post.category}</span>
                   </div>
                   <div className="p-5">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-gold text-[10px] font-medium px-2 py-0.5 rounded-full bg-gold/10">{post.category}</span>
                       <span className="text-cream/25 text-[10px] flex items-center gap-1"><FaClock className="text-[8px]" />{post.readTime}</span>
                     </div>
                     <h3 className="text-cream font-semibold text-sm leading-snug group-hover:text-gold transition-colors mb-2">{post.title}</h3>

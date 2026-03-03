@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FaBookOpen, FaPlay, FaClock, FaChartLine, FaSearch } from "react-icons/fa";
+import { FaBookOpen, FaPlay, FaClock, FaChartLine, FaSearch, FaAward } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { useI18n } from "@/context/i18n-context";
 import api from "@/lib/api";
@@ -94,12 +94,12 @@ export default function MesFormations() {
             const moduleCount = enrollment.course._count?.modules ?? 0;
             return (
             <motion.div key={enrollment.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <Link href={`/dashboard/formation/${enrollment.course.slug}`}
+              <Link href={`/dashboard/formations/${enrollment.course.slug}`}
                 className="flex items-center gap-5 p-4 rounded-xl bg-cream/[0.02] border border-cream/[0.05] hover:border-gold/20 hover:bg-cream/[0.04] transition-all group"
               >
                 <div className="relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-cream/[0.05]">
                   {enrollment.course.thumbnail ? (
-                    <Image src={enrollment.course.thumbnail} alt={enrollment.course.title} fill className="object-cover" />
+                    <Image src={enrollment.course.thumbnail.startsWith("http") ? enrollment.course.thumbnail : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:3002"}${enrollment.course.thumbnail}`} alt={enrollment.course.title} fill className="object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center"><FaPlay className="text-gold/30" /></div>
                   )}
@@ -122,6 +122,17 @@ export default function MesFormations() {
                 </div>
                 <FaChartLine className="text-cream/20 group-hover:text-gold transition-colors flex-shrink-0" />
               </Link>
+              {enrollment.progress >= 100 && (
+                <button onClick={async () => {
+                  try {
+                    await api.post(`/certificates/generate/${enrollment.id}`);
+                    window.location.href = "/dashboard/certificats";
+                  } catch { window.location.href = "/dashboard/certificats"; }
+                }}
+                  className="mt-1 ml-[116px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/10 text-gold text-xs font-medium hover:bg-gold/20 transition-all">
+                  <FaAward className="text-[10px]" /> {locale === "fr" ? "Obtenir le certificat" : "Get certificate"}
+                </button>
+              )}
             </motion.div>
             );
           })}

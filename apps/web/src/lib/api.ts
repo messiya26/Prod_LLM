@@ -47,6 +47,14 @@ export const api = {
   patch: <T>(endpoint: string, data?: unknown) =>
     request<T>(endpoint, { method: "PATCH", body: data ? JSON.stringify(data) : undefined }),
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: "DELETE" }),
+  upload: async <T>(endpoint: string, formData: FormData): Promise<T> => {
+    const token = getToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}${endpoint}`, { method: "POST", headers, body: formData, credentials: "include" });
+    if (!res.ok) { const body = await res.json().catch(() => ({ message: res.statusText })); throw new ApiError(res.status, body.message || res.statusText); }
+    return res.json();
+  },
 };
 
 export { ApiError };

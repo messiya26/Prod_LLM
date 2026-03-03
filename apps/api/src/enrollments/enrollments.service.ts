@@ -18,9 +18,27 @@ export class EnrollmentsService {
     });
     if (existing) throw new ConflictException("Deja inscrit a cette formation");
 
+    const isFree = parseFloat(String(course.price)) === 0;
     return this.prisma.enrollment.create({
-      data: { userId, courseId },
+      data: { userId, courseId, status: isFree ? "ACTIVE" : "PENDING" },
       include: { course: { select: { id: true, title: true, slug: true } } },
+    });
+  }
+
+  async activateAfterPayment(userId: string, courseIdOrSlug: string) {
+    const course = await this.prisma.course.findFirst({
+      where: { OR: [{ id: courseIdOrSlug }, { slug: courseIdOrSlug }] },
+    });
+    if (!course) throw new NotFoundException("Formation introuvable");
+
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { userId_courseId: { userId, courseId: course.id } },
+    });
+    if (!enrollment) throw new NotFoundException("Inscription introuvable");
+
+    return this.prisma.enrollment.update({
+      where: { id: enrollment.id },
+      data: { status: "ACTIVE" },
     });
   }
 
@@ -28,7 +46,9 @@ export class EnrollmentsService {
     return this.prisma.enrollment.findMany({
       where: { userId },
       include: {
-        course: true,
+        course: {
+          include: { _count: { select: { modules: true } } },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -42,7 +62,13 @@ export class EnrollmentsService {
     const enrollment = await this.prisma.enrollment.findUnique({
       where: { userId_courseId: { userId, courseId: course.id } },
     });
-    return { enrolled: !!enrollment };
+    if (!enrollment) return { enrolled: false };
+    return {
+      enrolled: true,
+      id: enrollment.id,
+      status: enrollment.status,
+      progress: enrollment.progress,
+    };
   }
 
   async updateProgress(userId: string, courseId: string, progress: number) {

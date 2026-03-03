@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd apps/web && npm install && npm run build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "cd apps/web && npm install",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://api.lordlomboministries.com/api/v1",
+    "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "176805915108-jodl67oj2oi8eq0e5vivujm1fu2mqsgh.apps.googleusercontent.com"
+  }
+}

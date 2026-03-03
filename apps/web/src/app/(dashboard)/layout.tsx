@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FaHome, FaBookOpen, FaCog, FaSignOutAlt, FaUsers,
   FaChartBar, FaBars, FaTimes, FaMoneyBillWave, FaComments,
-  FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward,
+  FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward, FaEdit, FaStar,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
@@ -27,6 +27,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebarStudent = [
     { icon: <FaHome />, labelKey: "dash.board", href: "/dashboard" },
     { icon: <FaBookOpen />, labelKey: "dash.myFormations", href: "/dashboard/formations" },
+    { icon: <FaVideo />, labelKey: "dash.live", href: "/dashboard/live" },
     { icon: <FaAward />, labelKey: "dash.certificates", href: "/dashboard/certificats" },
     { icon: <FaCog />, labelKey: "dash.settings", href: "/dashboard/parametres" },
   ];
@@ -39,6 +40,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: <FaComments />, labelKey: "dash.messages", href: "/admin/messages" },
     { icon: <FaCalendarAlt />, labelKey: "dash.calendar", href: "/admin/calendrier" },
     { icon: <FaVideo />, labelKey: "dash.live", href: "/admin/live" },
+    { icon: <FaEdit />, labelKey: "dash.blog", href: "/admin/blog" },
+    { icon: <FaStar />, labelKey: "dash.events", href: "/admin/evenements" },
     { icon: <FaCog />, labelKey: "dash.settings", href: "/admin/parametres" },
   ];
 
@@ -51,7 +54,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading || !user || !user.emailVerified) return <FullPageLoader message={t("dash.loading")} />;
 
-  const initials = `${user.firstName[0]}${user.lastName[0]}`;
+  const initials = `${(user.firstName || "U")[0]}${(user.lastName || "")[0] || ""}`.trim() || "U";
 
   return (
     <div className="min-h-screen flex bg-[#0a0e1a]">
@@ -147,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {initials}
                 </div>
                 <div className="hidden md:block text-left">
-                  <div className="text-xs font-semibold text-white">{user.firstName} {user.lastName}</div>
+                  <div className="text-xs font-semibold text-white">{user.firstName || ""} {user.lastName || ""}</div>
                   <div className="text-[10px] text-white/30">{user.role === "ADMIN" ? "Admin" : t("dash.learner")}</div>
                 </div>
                 <FaChevronDown className="text-white/20 text-[8px] hidden md:block" />

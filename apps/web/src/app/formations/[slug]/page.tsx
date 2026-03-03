@@ -9,6 +9,7 @@ import { AnimatedSection, Badge, Button } from "@/components/ui";
 import { useI18n } from "@/context/i18n-context";
 import { useAuth } from "@/context/auth-context";
 import api from "@/lib/api";
+import PaymentModal from "@/components/payment/payment-modal";
 import {
   FaArrowLeft, FaClock, FaBookOpen, FaUserTie, FaCheckCircle, FaPlay,
   FaStar, FaGraduationCap, FaChevronDown, FaChevronUp, FaLock, FaGlobe,
@@ -409,7 +410,63 @@ export default function FormationDetail() {
   const [enrolling, setEnrolling] = useState(false);
   const [enrollToast, setEnrollToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [alreadyEnrolled, setAlreadyEnrolled] = useState(false);
-  const formation = formationsData[slug];
+  const [showPayment, setShowPayment] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [formation, setFormation] = useState<FormationData | null>(formationsData[slug] || null);
+
+  useEffect(() => {
+    api.get<any>(`/courses/${slug}`)
+      .then((course) => {
+        const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:3002";
+        const resolveImg = (img: string | null) => img ? (img.startsWith("http") ? img : `${imgBase}${img}`) : "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1920&h=800&fit=crop";
+        const apiFormation: FormationData = {
+          slug: course.slug,
+          title: course.title,
+          subtitle: course.description?.substring(0, 100) + "..." || "",
+          description: course.description || "",
+          image: resolveImg(course.image || course.thumbnail),
+          gradient: "from-indigo-600/80 to-purple-900/90",
+          price: course.price != null ? String(course.price) : "0",
+          level: course.level || "Tous niveaux",
+          duration: course.duration ? `${course.duration} semaines` : "8 semaines",
+          modules: (course.modules || []).map((m: any) => ({
+            title: m.title,
+            lessons: (m.lessons || []).map((l: any) => ({
+              title: l.title,
+              duration: l.duration || "30 min",
+              free: l.free || l.order === 1,
+            })),
+          })),
+          instructor: course.instructor ? {
+            name: `${course.instructor.firstName} ${course.instructor.lastName}`.trim(),
+            title: course.instructor.bio?.substring(0, 60) || "Formateur",
+            bio: course.instructor.bio || "",
+            image: resolveImg(course.instructor.avatar),
+          } : { name: "Equipe LL Academie", title: "Formateur", bio: "", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
+          objectives: course.objectives || [
+            locale === "fr" ? "Maitriser les concepts fondamentaux" : "Master the core concepts",
+            locale === "fr" ? "Developper des competences pratiques" : "Build practical skills",
+            locale === "fr" ? "Obtenir une certification reconnue" : "Earn a recognized certificate",
+          ],
+          prerequisites: course.prerequisites || [
+            locale === "fr" ? "Aucun prerequis academique requis" : "No academic prerequisites required",
+            locale === "fr" ? "Acces internet stable" : "Stable internet access",
+          ],
+          audience: course.audience || [
+            locale === "fr" ? "Leaders spirituels en formation" : "Spiritual leaders in training",
+            locale === "fr" ? "Toute personne desirant grandir" : "Anyone wishing to grow",
+          ],
+          certification: course.certification || "Certificat LL Academie",
+          stats: { students: course._count?.enrollments || 0, rating: 4.8, completion: 90 },
+          testimonials: formationsData[slug]?.testimonials || [],
+        };
+        setFormation(apiFormation);
+      })
+      .catch(() => {
+        if (!formationsData[slug]) setFormation(null);
+      })
+      .finally(() => setLoading(false));
+  }, [slug, locale]);
 
   useEffect(() => {
     if (user && slug) {
@@ -418,6 +475,14 @@ export default function FormationDetail() {
         .catch(() => {});
     }
   }, [user, slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <FaSpinner className="text-gold text-3xl animate-spin" />
+      </div>
+    );
+  }
 
   if (!formation) {
     return (
@@ -434,8 +499,11 @@ export default function FormationDetail() {
   const totalLessons = formation.modules.reduce((sum, m) => sum + m.lessons.length, 0);
   const freeLessons = formation.modules.reduce((sum, m) => sum + m.lessons.filter(l => l.free).length, 0);
 
+  const priceNum = formation ? parseFloat(formation.price?.replace(/[^0-9.]/g, "") || "0") : 0;
+
   const handleEnroll = async () => {
     if (!user) { router.push("/connexion"); return; }
+    if (priceNum > 0) { setShowPayment(true); return; }
     setEnrolling(true);
     try {
       await api.post(`/enrollments/${slug}`);
@@ -450,6 +518,16 @@ export default function FormationDetail() {
     } finally {
       setEnrolling(false);
     }
+  };
+
+  const handlePaymentSuccess = async () => {
+    try {
+      await api.post(`/enrollments/${slug}`);
+    } catch {}
+    setAlreadyEnrolled(true);
+    setShowPayment(false);
+    setEnrollToast({ msg: locale === "fr" ? "Paiement reussi ! Redirection..." : "Payment successful! Redirecting...", type: "success" });
+    setTimeout(() => router.push("/dashboard/formations"), 1500);
   };
 
   return (
@@ -669,6 +747,18 @@ export default function FormationDetail() {
           </div>
         </div>
       </section>
+
+      {formation && (
+        <PaymentModal
+          isOpen={showPayment}
+          onClose={() => setShowPayment(false)}
+          onSuccess={handlePaymentSuccess}
+          courseId={slug}
+          courseTitle={formation.title}
+          amount={priceNum}
+          currency="USD"
+        />
+      )}
     </>
   );
 }

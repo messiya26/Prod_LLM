@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaFacebook, FaInstagram, FaYoutube, FaTiktok, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaArrowRight, FaHeart } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaYoutube, FaTiktok, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaHeart, FaArrowRight } from "react-icons/fa";
 import { useI18n } from "@/context/i18n-context";
 
 const socials = [
@@ -27,6 +27,13 @@ export function Footer() {
       { href: "/a-propos", label: t("footer.vision") },
       { href: "/a-propos", label: t("footer.temoignages") },
       { href: "/a-propos", label: t("footer.equipe") },
+    ],
+    "Ministere LLM": [
+      { href: "/ministere/musique", label: "Musique & Albums" },
+      { href: "/ministere/livres", label: "Livres" },
+      { href: "/ministere/evenements", label: "Evenements" },
+      { href: "/ministere/dons", label: "Faire un don" },
+      { href: "/ministere/blog", label: "Blog" },
     ],
     [t("footer.legal")]: [
       { href: "/mentions-legales", label: t("footer.mentions") },
@@ -66,15 +73,11 @@ export function Footer() {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
         <div className="max-w-7xl mx-auto px-6 pt-7 md:pt-8 pb-4 relative">
           <div className="grid grid-cols-2 md:grid-cols-12 gap-5 md:gap-4">
-            <div className="col-span-2 md:col-span-4 lg:col-span-4">
+            <div className="col-span-2 md:col-span-4">
               <Link href="/" className="flex items-center gap-3 mb-4 group">
-                <div className="relative">
-                  <div className="absolute -inset-1 bg-gold/20 rounded-xl blur-sm group-hover:bg-gold/30 transition-all" />
-                  <Image src="/logo-icon.svg" alt="Lord Lombo Academie" width={44} height={44} className="relative group-hover:scale-105 transition-transform" />
-                </div>
+                <Image src="/images/logo-llm-official.jpeg" alt="Lord Lombo Ministries" width={44} height={44} className="rounded-lg group-hover:opacity-90 transition-all" />
                 <div>
-                  <span className="text-lg font-bold text-cream font-heading leading-none block group-hover:text-gold transition-colors">Lord Lombo</span>
-                  <span className="text-[11px] text-gold/60 font-medium tracking-[0.25em] uppercase leading-none">Academie</span>
+                  <span className="text-base font-bold text-cream font-heading leading-none block group-hover:text-gold transition-colors">Lord Lombo Ministries</span>
                 </div>
               </Link>
 
@@ -101,7 +104,7 @@ export function Footer() {
             </div>
 
             {Object.entries(footerLinks).map(([title, links]) => (
-              <div key={title} className="col-span-1 md:col-span-2 lg:col-span-2">
+              <div key={title} className="col-span-1 md:col-span-2">
                 <h4 className="text-xs font-bold text-cream/60 uppercase tracking-[0.2em] mb-4 relative">
                   {title}
                   <span className="absolute -bottom-2 left-0 w-6 h-0.5 bg-gradient-to-r from-gold/40 to-transparent rounded-full" />
@@ -115,24 +118,6 @@ export function Footer() {
                 </ul>
               </div>
             ))}
-
-            <div className="col-span-2 md:col-span-4 lg:col-span-2">
-              <div className="relative rounded-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-gold/5 backdrop-blur-sm" />
-                <div className="absolute inset-0 border border-gold/10 rounded-2xl" />
-                <div className="relative p-5">
-                  <div className="w-9 h-9 rounded-lg bg-gold/15 flex items-center justify-center mb-3">
-                    <FaArrowRight className="text-gold text-sm" />
-                  </div>
-                  <h4 className="text-cream font-bold text-sm mb-2">{t("footer.start")}</h4>
-                  <p className="text-cream/35 text-xs leading-relaxed mb-4">{t("footer.start.desc")}</p>
-                  <Link href="/inscription" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-gold to-gold-light text-navy text-xs font-bold hover:shadow-lg hover:shadow-gold/20 transition-all group">
-                    {t("footer.start.button")}
-                    <FaArrowRight className="text-[10px] group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div className="mt-6 pt-4 border-t border-cream/[0.04]">

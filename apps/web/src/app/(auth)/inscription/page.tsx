@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaPhone, FaGoogle, FaArrowRight, FaCheck, FaExclamationTriangle } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaPhone, FaGoogle, FaArrowRight, FaArrowLeft, FaCheck, FaExclamationTriangle } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
 import { ValidationModal } from "@/components/ui/validation-modal";
@@ -74,6 +74,9 @@ export default function Inscription() {
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         <div className="mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 text-cream/40 hover:text-gold text-sm mb-6 transition-colors">
+            <FaArrowLeft className="text-xs" /> {t("auth.backHome")}
+          </Link>
           <h1 className="text-3xl font-bold text-cream mb-2">{t("auth.join")}</h1>
           <p className="text-cream/40 text-sm">{t("auth.register.desc")}</p>
         </div>

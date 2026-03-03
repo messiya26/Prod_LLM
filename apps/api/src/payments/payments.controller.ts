@@ -10,7 +10,7 @@ export class PaymentsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Req() req: any, @Body() dto: { courseId: string; amount: number; method: string }) {
+  create(@Req() req: any, @Body() dto: { courseId: string; amount: number; method: string; metadata?: string }) {
     return this.paymentsService.create(req.user.id, dto);
   }
 

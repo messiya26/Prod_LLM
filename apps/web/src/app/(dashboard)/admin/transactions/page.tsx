@@ -26,8 +26,12 @@ const statusMap: Record<string, { label: string; cls: string }> = {
 };
 
 const methodLabels: Record<string, string> = {
+  PAYPAL: "PayPal",
   STRIPE: "Carte bancaire",
   MOBILE_MONEY: "Mobile Money",
+  ILLICOCASH: "Illicocash",
+  CASH_APP: "Cash App",
+  MPESA: "M-Pesa",
   BANK_TRANSFER: "Virement",
   FREE: "Gratuit",
 };
@@ -38,6 +42,8 @@ export default function AdminTransactions() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Payment | null>(null);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     api.get<Payment[]>("/payments")
@@ -50,6 +56,10 @@ export default function AdminTransactions() {
     `${tx.user.firstName} ${tx.user.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
     tx.reference.toLowerCase().includes(search.toLowerCase())
   );
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [search]);
 
   const totalRevenue = payments.filter(tx => tx.status === "COMPLETED").reduce((s, tx) => s + parseFloat(tx.amount), 0);
   const pendingAmount = payments.filter(tx => tx.status === "PENDING").reduce((s, tx) => s + parseFloat(tx.amount), 0);
@@ -96,7 +106,7 @@ export default function AdminTransactions() {
           <tbody>
             {filtered.length === 0 ? (
               <tr><td colSpan={7} className="text-center py-12 text-white/20 text-sm">Aucune transaction</td></tr>
-            ) : filtered.map((tx) => (
+            ) : paged.map((tx) => (
               <tr key={tx.id} className="border-b border-white/[0.02] hover:bg-white/[0.015] transition-colors cursor-pointer" onClick={() => setSelected(tx)}>
                 <td className="px-6 py-4 text-xs text-white/40 font-mono">{tx.reference}</td>
                 <td className="px-6 py-4 text-xs text-white font-medium">{tx.user.firstName} {tx.user.lastName}</td>
@@ -114,6 +124,25 @@ export default function AdminTransactions() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-white/20 text-xs">{filtered.length} resultats &middot; Page {page}/{totalPages}</p>
+          <div className="flex gap-1">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+              className="px-3 py-1.5 rounded-lg text-xs text-white/30 hover:text-gold disabled:opacity-20 transition-colors">&larr;</button>
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+              const start = Math.max(1, Math.min(page - 2, totalPages - 4));
+              return start + i;
+            }).filter(p => p <= totalPages).map(n => (
+              <button key={n} onClick={() => setPage(n)}
+                className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === n ? "bg-gold/20 text-gold" : "text-white/30 hover:text-gold"}`}>{n}</button>
+            ))}
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+              className="px-3 py-1.5 rounded-lg text-xs text-white/30 hover:text-gold disabled:opacity-20 transition-colors">&rarr;</button>
+          </div>
+        </div>
+      )}
 
       {/* Detail Modal */}
       <AnimatePresence>

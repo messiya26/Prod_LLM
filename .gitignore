@@ -4,6 +4,11 @@ dist
 .turbo
 .env*.local
 .env
+.env.production
 *.tsbuildinfo
+*.db
+*.db-journal
 .DS_Store
 .vercel
+uploads/
+logs/

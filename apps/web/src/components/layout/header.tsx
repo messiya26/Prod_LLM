@@ -15,6 +15,7 @@ import {
   FaEnvelope, FaQuestionCircle, FaFileInvoiceDollar, FaPhoneAlt,
   FaArrowRight, FaStar, FaChurch, FaHeart,
   FaUser, FaSignOutAlt, FaCog, FaChartBar,
+  FaMusic, FaBookOpen, FaTicketAlt, FaHandHoldingHeart, FaMicrophone, FaRss,
 } from "react-icons/fa";
 
 interface MegaMenuItem {
@@ -57,15 +58,17 @@ const megaMenuData: MegaMenuSection[] = [
     navKey: "nav.ministere",
     items: [
       { labelKey: "mega.apropos", href: "/a-propos", icon: <FaStar />, descKey: "mega.apropos.desc" },
-      { labelKey: "mega.events", href: "/a-propos", icon: <FaCalendarAlt />, descKey: "mega.events.desc" },
-      { labelKey: "mega.eglise", href: "/a-propos", icon: <FaChurch />, descKey: "mega.eglise.desc" },
-      { labelKey: "mega.temoignages", href: "/a-propos", icon: <FaHeart />, descKey: "mega.temoignages.desc" },
+      { labelKey: "mega.events", href: "/ministere/evenements", icon: <FaCalendarAlt />, descKey: "mega.events.desc" },
+      { labelKey: "mega.musique", href: "/ministere/musique", icon: <FaMusic />, descKey: "mega.musique.desc" },
+      { labelKey: "mega.livres2", href: "/ministere/livres", icon: <FaBookOpen />, descKey: "mega.livres2.desc" },
+      { labelKey: "mega.blog2", href: "/ministere/blog", icon: <FaRss />, descKey: "mega.blog2.desc" },
+      { labelKey: "mega.soutenir", href: "/ministere/dons", icon: <FaHandHoldingHeart />, descKey: "mega.soutenir.desc", badgeKey: "badge.nouveau" },
     ],
     featured: {
       titleKey: "mega.conference",
       descKey: "mega.conference.desc",
       image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&h=250&fit=crop",
-      href: "/a-propos",
+      href: "/ministere/evenements",
     },
   },
   {
@@ -148,18 +151,15 @@ export function Header() {
           <div className="flex items-center justify-between h-16 md:h-20">
             <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
               <Image
-                src="/logo-icon.svg"
-                alt="Lord Lombo Academie"
+                src="/images/logo-llm-official.jpeg"
+                alt="Lord Lombo Ministries"
                 width={40}
                 height={40}
-                className="group-hover:scale-110 transition-transform duration-300"
+                className="rounded-lg group-hover:opacity-90 transition-all duration-300"
               />
               <div className="hidden sm:block">
-                <span className="text-lg font-bold text-cream group-hover:text-gold transition-colors font-heading leading-none block">
-                  Lord Lombo
-                </span>
-                <span className="text-[11px] text-gold/70 font-medium tracking-[0.2em] uppercase leading-none">
-                  Academie
+                <span className="text-base font-bold text-cream group-hover:text-gold transition-colors font-heading leading-none block">
+                  Lord Lombo Ministries
                 </span>
               </div>
             </Link>
@@ -220,7 +220,7 @@ export function Header() {
                     className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-cream/[0.08] hover:border-gold/30 hover:bg-cream/[0.03] transition-all group"
                   >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-navy font-bold text-xs">
-                      {user.firstName[0]}{user.lastName[0]}
+                      {(user.firstName?.[0] || "U").toUpperCase()}{(user.lastName?.[0] || "").toUpperCase()}
                     </div>
                     <span className="text-cream/70 text-sm font-medium group-hover:text-cream transition-colors hidden xl:block">{user.firstName}</span>
                   </button>

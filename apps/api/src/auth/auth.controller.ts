@@ -50,7 +50,7 @@ export class AuthController {
   @Put("users/:id/role")
   changeRole(
     @Param("id") userId: string,
-    @Body("role") role: "STUDENT" | "INSTRUCTOR" | "ADMIN",
+    @Body("role") role: "STUDENT" | "INSTRUCTOR" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN",
     @Request() req: any,
   ) {
     return this.authService.changeRole(userId, role, req.user.id);

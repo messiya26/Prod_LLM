@@ -109,11 +109,13 @@ export default function AdminParametres() {
               <h3 className="text-sm font-bold text-white mb-4">Configuration des paiements</h3>
               <div className="space-y-4">
                 {[
-                  { name: "Stripe", status: "Connecte", icon: "💳", active: true },
-                  { name: "PayPal", status: "Connecte", icon: "🅿️", active: true },
-                  { name: "Mobile Money (MTN)", status: "Phase 2", icon: "📱", active: false },
-                  { name: "Mobile Money (Orange)", status: "Phase 2", icon: "📱", active: false },
-                  { name: "Wave", status: "Phase 2", icon: "🌊", active: false },
+                  { name: "PayPal", status: "Actif", icon: "🅿️", active: true },
+                  { name: "Carte bancaire (Stripe)", status: "Actif", icon: "💳", active: true },
+                  { name: "M-Pesa", status: "Actif", icon: "📱", active: true },
+                  { name: "Illicocash", status: "Actif", icon: "💰", active: true },
+                  { name: "Cash App", status: "Actif", icon: "💵", active: true },
+                  { name: "Mobile Money (MTN/Orange/Airtel)", status: "Actif", icon: "📲", active: true },
+                  { name: "Virement bancaire", status: "Actif", icon: "🏦", active: true },
                 ].map((p) => (
                   <div key={p.name} className={`flex items-center justify-between p-4 rounded-xl border ${p.active ? "bg-white/[0.02] border-white/[0.06]" : "bg-white/[0.01] border-white/[0.03]"}`}>
                     <div className="flex items-center gap-3">

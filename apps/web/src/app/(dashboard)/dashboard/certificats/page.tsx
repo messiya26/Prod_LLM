@@ -31,6 +31,66 @@ export default function CertificatsPage() {
 
   const formatDate = (d: string) => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
+  const handleDownloadPDF = (cert: Certificate) => {
+    const w = window.open("", "_blank");
+    if (!w) return;
+    const name = user ? `${user.firstName} ${user.lastName}` : "Apprenant";
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Certificat ${cert.certificateId}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f1a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Inter',sans-serif}
+.cert{width:900px;background:linear-gradient(145deg,#0f0f1a,#1a1a2e);border-radius:20px;padding:60px;position:relative;overflow:hidden}
+.cert::before{content:'';position:absolute;inset:20px;border:2px solid rgba(212,175,55,0.25);border-radius:14px;pointer-events:none}
+.corner{position:absolute;width:50px;height:50px;border-color:rgba(212,175,55,0.5);border-style:solid;border-width:0}
+.tl{top:20px;left:20px;border-top-width:3px;border-left-width:3px;border-top-left-radius:14px}
+.tr{top:20px;right:20px;border-top-width:3px;border-right-width:3px;border-top-right-radius:14px}
+.bl{bottom:20px;left:20px;border-bottom-width:3px;border-left-width:3px;border-bottom-left-radius:14px}
+.br{bottom:20px;right:20px;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:14px}
+.logo{color:rgba(212,175,55,0.9);font-size:11px;letter-spacing:6px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+h1{font-family:'Playfair Display',serif;color:#f5f5f5;font-size:36px;margin-bottom:4px}
+.line{width:80px;height:2px;background:linear-gradient(90deg,transparent,#d4af37,transparent);margin:20px auto}
+.sub{color:rgba(245,245,245,0.35);font-size:14px;margin-bottom:6px;font-weight:300}
+.name{font-family:'Playfair Display',serif;color:#d4af37;font-size:28px;font-weight:700;margin:12px 0 20px}
+.course{color:#f5f5f5;font-size:18px;font-weight:600;margin-bottom:20px}
+.meta{display:flex;gap:30px;justify-content:center;color:rgba(245,245,245,0.3);font-size:12px;margin:20px 0 30px}
+.footer{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(245,245,245,0.06);padding-top:20px;margin-top:30px}
+.mono{font-family:monospace;color:rgba(245,245,245,0.15);font-size:9px}
+.sig{text-align:right;color:rgba(245,245,245,0.4);font-size:12px;font-style:italic}
+.sig small{display:block;color:rgba(245,245,245,0.2);font-size:10px;font-style:normal;margin-top:2px}
+.seal{width:70px;height:70px;border-radius:12px;background:rgba(212,175,55,0.08);display:flex;align-items:center;justify-content:center;border:1px solid rgba(212,175,55,0.15)}
+.seal svg{width:36px;height:36px;fill:rgba(212,175,55,0.3)}
+.grade{display:inline-block;padding:4px 14px;border-radius:20px;background:rgba(212,175,55,0.12);color:#d4af37;font-size:12px;font-weight:600;margin-bottom:16px}
+@media print{body{background:#0f0f1a}@page{size:landscape;margin:0}}
+</style></head><body>
+<div class="cert">
+<div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+<div style="text-align:center">
+<div class="logo">Lord Lombo Ministries</div>
+<h1>Certificat de Reussite</h1>
+<div class="line"></div>
+<p class="sub">Ce certificat est decerne a</p>
+<p class="name">${name}</p>
+<p class="sub">Pour avoir complete avec succes la formation</p>
+<p class="course">${cert.courseName}</p>
+${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
+<div class="meta">
+<span>Date : ${formatDate(cert.issuedAt)}</span>
+<span>Duree : ${cert.hoursCompleted}h de formation</span>
+<span>ID : ${cert.certificateId}</span>
+</div>
+</div>
+<div class="footer">
+<div><div class="mono">${cert.certificateId}</div><div class="mono" style="margin-top:3px">SHA256: ${cert.verificationHash.slice(0, 24)}...</div></div>
+<div class="seal"><svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
+<div class="sig">${cert.instructorName || "Equipe Pedagogique"}<small>Formateur</small></div>
+</div>
+</div>
+</body></html>`);
+    w.document.close();
+    setTimeout(() => { w.print(); }, 500);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -83,7 +143,7 @@ export default function CertificatsPage() {
                   <button onClick={() => setViewCert(cert)} className="flex-1 py-2.5 rounded-xl bg-gold/10 text-gold text-xs font-semibold hover:bg-gold/20 transition-all flex items-center justify-center gap-2">
                     <FaEye className="text-[10px]" /> Voir
                   </button>
-                  <button className="flex-1 py-2.5 rounded-xl bg-cream/[0.04] text-cream/50 text-xs font-semibold hover:bg-cream/[0.08] transition-all flex items-center justify-center gap-2">
+                  <button onClick={() => handleDownloadPDF(cert)} className="flex-1 py-2.5 rounded-xl bg-cream/[0.04] text-cream/50 text-xs font-semibold hover:bg-cream/[0.08] transition-all flex items-center justify-center gap-2">
                     <FaDownload className="text-[10px]" /> PDF
                   </button>
                 </div>
@@ -145,7 +205,7 @@ export default function CertificatsPage() {
                 </div>
 
                 <div className="px-8 pb-8 flex gap-3">
-                  <button className="flex-1 py-3 rounded-xl bg-gradient-to-r from-gold to-gold-light text-navy font-semibold text-sm flex items-center justify-center gap-2">
+                  <button onClick={() => handleDownloadPDF(viewCert)} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-gold to-gold-light text-navy font-semibold text-sm flex items-center justify-center gap-2">
                     <FaDownload className="text-xs" /> Telecharger PDF
                   </button>
                   <button onClick={() => setViewCert(null)} className="px-6 py-3 rounded-xl bg-cream/[0.04] text-cream/50 text-sm font-semibold hover:bg-cream/[0.08] transition-all">Fermer</button>

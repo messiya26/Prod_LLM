@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaArrowRight, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaArrowRight, FaArrowLeft, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
 import { ValidationModal } from "@/components/ui/validation-modal";
@@ -72,7 +72,12 @@ function ConnexionContent() {
       setLoading(false);
       setFullLoading(true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t("auth.login.error"));
+      const msg = err instanceof Error ? err.message : t("auth.login.error");
+      // Message specifique pour comptes Google
+      const isGoogleAccount = msg.toLowerCase().includes("incorrect") || msg.toLowerCase().includes("unauthorized");
+      setError(isGoogleAccount
+        ? "Email ou mot de passe incorrect. Si vous vous etes inscrit avec Google, utilisez le bouton 'Continuer avec Google'."
+        : msg);
       setLoading(false);
       setFullLoading(false);
       setSuccess("");
@@ -93,6 +98,9 @@ function ConnexionContent() {
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         <div className="mb-10">
+          <Link href="/" className="inline-flex items-center gap-2 text-cream/40 hover:text-gold text-sm mb-6 transition-colors">
+            <FaArrowLeft className="text-xs" /> {t("auth.backHome") || "Retour a l\u0027accueil"}
+          </Link>
           <h1 className="text-3xl font-bold text-cream mb-2">{t("auth.welcome")}</h1>
           <p className="text-cream/40 text-sm">{t("auth.login.desc")}</p>
         </div>
@@ -161,6 +169,26 @@ function ConnexionContent() {
           {t("auth.no.account")}{" "}
           <Link href="/inscription" className="text-gold/70 hover:text-gold font-medium transition-colors">{t("auth.create.account")}</Link>
         </p>
+
+        {/* Comptes de test */}
+        <div className="mt-6 p-4 rounded-xl bg-cream/[0.02] border border-cream/[0.06]">
+          <p className="text-cream/20 text-[10px] uppercase tracking-wider mb-3">Comptes de test</p>
+          <div className="space-y-2">
+            {[
+              { label: "Admin", email: "admin@lordlomboacademie.com", pwd: "Admin2026!" },
+              { label: "Etudiant", email: "jean@demo.com", pwd: "Student2026!" },
+            ].map((acc) => (
+              <button
+                key={acc.email}
+                onClick={() => { setEmail(acc.email); setPassword(acc.pwd); }}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-cream/[0.03] hover:bg-cream/[0.06] transition-all text-left"
+              >
+                <span className="text-cream/50 text-xs font-medium">{acc.label}</span>
+                <span className="text-cream/25 text-[10px]">{acc.email}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </motion.div>
     </>
   );

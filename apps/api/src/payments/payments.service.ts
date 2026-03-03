@@ -5,7 +5,7 @@ import { PrismaService } from "../prisma/prisma.service";
 export class PaymentsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(userId: string, dto: { courseId: string; amount: number; method: string }) {
+  async create(userId: string, dto: { courseId: string; amount: number; method: string; metadata?: string }) {
     const ref = `PAY-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const payment = await this.prisma.payment.create({
       data: {
@@ -15,6 +15,7 @@ export class PaymentsService {
         method: dto.method as any || "STRIPE",
         reference: ref,
         status: dto.amount === 0 ? "COMPLETED" : "PENDING",
+        metadata: dto.metadata || null,
       },
       include: { course: true, user: { select: { id: true, firstName: true, lastName: true, email: true } } },
     });

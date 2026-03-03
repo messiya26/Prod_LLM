@@ -74,46 +74,15 @@ async function main() {
   ]);
 
   const courses = [
-    {
-      title: "Les Fondements du Leadership Pastoral",
-      slug: "fondements-leadership-pastoral",
-      description: "Un parcours complet pour comprendre et exercer le leadership pastoral avec excellence. Apprenez les principes bibliques et pratiques du leadership.",
-      level: "BEGINNER" as const,
-      price: 0,
-      published: true,
-      categoryId: categories[0].id,
-      instructorId: instructor1.id,
-    },
-    {
-      title: "Masterclass Louange & Worship",
-      slug: "masterclass-louange-worship",
-      description: "Perfectionnez votre ministère de louange. Techniques vocales, direction de chorale, et sensibilité spirituelle dans le worship.",
-      level: "INTERMEDIATE" as const,
-      price: 49.99,
-      published: true,
-      categoryId: categories[1].id,
-      instructorId: instructor2.id,
-    },
-    {
-      title: "Étude Approfondie des Épîtres",
-      slug: "etude-approfondie-epitres",
-      description: "Plongez dans l'étude des épîtres pauliniennes. Contexte historique, exégèse et application contemporaine.",
-      level: "ADVANCED" as const,
-      price: 79.99,
-      published: true,
-      categoryId: categories[2].id,
-      instructorId: instructor1.id,
-    },
-    {
-      title: "Communication Efficace pour Ministères",
-      slug: "communication-efficace-ministeres",
-      description: "Maîtrisez l'art de communiquer votre vision. Réseaux sociaux, branding, et engagement communautaire.",
-      level: "ALL_LEVELS" as const,
-      price: 29.99,
-      published: true,
-      categoryId: categories[3].id,
-      instructorId: instructor2.id,
-    },
+    { title: "Fondements de la Foi et du Leadership", slug: "fondements-foi-leadership", description: "Un parcours complet pour comprendre et exercer le leadership pastoral avec excellence.", level: "ALL_LEVELS" as const, price: 149, published: true, categoryId: categories[0].id, instructorId: instructor1.id },
+    { title: "Leadership et Vision Ministerielle", slug: "leadership-vision-ministerielle", description: "Developper une vision claire et impactante pour votre ministere.", level: "INTERMEDIATE" as const, price: 199, published: true, categoryId: categories[0].id, instructorId: instructor1.id },
+    { title: "Communication et Influence", slug: "communication-influence", description: "Maitrisez l'art de communiquer avec puissance et authenticite.", level: "ALL_LEVELS" as const, price: 129, published: true, categoryId: categories[3].id, instructorId: instructor2.id },
+    { title: "Counseling Pastoral Avance", slug: "counseling-pastoral-avance", description: "Accompagnez vos fideles avec sagesse et competence biblique.", level: "ADVANCED" as const, price: 249, published: true, categoryId: categories[0].id, instructorId: instructor1.id },
+    { title: "Louange et Adoration", slug: "louange-adoration", description: "Perfectionnez votre ministere de louange et de worship.", level: "ALL_LEVELS" as const, price: 119, published: true, categoryId: categories[1].id, instructorId: instructor2.id },
+    { title: "Mentorat Ministeriel", slug: "mentorat-ministeriel", description: "Programme de mentorat intensif pour leaders pastoraux.", level: "ADVANCED" as const, price: 0, published: true, categoryId: categories[0].id, instructorId: instructor1.id },
+    { title: "Gestion des Emotions et Resilience", slug: "gestion-emotions-resilience", description: "Developpez votre intelligence emotionnelle pour mieux servir.", level: "ALL_LEVELS" as const, price: 139, published: true, categoryId: categories[0].id, instructorId: instructor2.id },
+    { title: "Leadership Feminin", slug: "leadership-feminin", description: "Formation specifique pour les femmes leaders dans le ministere.", level: "INTERMEDIATE" as const, price: 179, published: true, categoryId: categories[0].id, instructorId: instructor2.id },
+    { title: "Theologie Pratique", slug: "theologie-pratique", description: "Approfondissez vos connaissances theologiques pour un ministere solide.", level: "ADVANCED" as const, price: 219, published: true, categoryId: categories[2].id, instructorId: instructor1.id },
   ];
 
   for (const c of courses) {
@@ -160,11 +129,11 @@ async function main() {
   }
 
   await prisma.enrollment.upsert({
-    where: { userId_courseId: { userId: student.id, courseId: (await prisma.course.findUnique({ where: { slug: "fondements-leadership-pastoral" } }))!.id } },
+    where: { userId_courseId: { userId: student.id, courseId: (await prisma.course.findUnique({ where: { slug: "fondements-foi-leadership" } }))!.id } },
     update: {},
     create: {
       userId: student.id,
-      courseId: (await prisma.course.findUnique({ where: { slug: "fondements-leadership-pastoral" } }))!.id,
+      courseId: (await prisma.course.findUnique({ where: { slug: "fondements-foi-leadership" } }))!.id,
       status: "ACTIVE",
       progress: 35,
     },
