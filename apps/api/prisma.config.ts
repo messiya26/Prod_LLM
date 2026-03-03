@@ -1,17 +1,18 @@
 import path from "node:path";
+import dotenv from "dotenv";
 import { defineConfig } from "prisma/config";
 
-const dbPath = path.join(__dirname, "prisma", "dev.db");
+dotenv.config();
 
 export default defineConfig({
   earlyAccess: true,
   schema: path.join(__dirname, "prisma", "schema.prisma"),
   datasource: {
-    url: `file:${dbPath}`,
+    url: process.env.DATABASE_URL!,
   },
   migrate: {
     async url() {
-      return `file:${dbPath}`;
+      return process.env.DATABASE_URL!;
     },
   },
 });
