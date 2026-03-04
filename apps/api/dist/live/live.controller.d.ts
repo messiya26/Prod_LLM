@@ -1,0 +1,243 @@
+import { LiveService } from "./live.service";
+import { CreateLiveSessionDto, UpdateLiveSessionDto } from "./live.dto";
+export declare class LiveController {
+    private readonly svc;
+    constructor(svc: LiveService);
+    findAll(): Promise<({
+        _count: {
+            attendees: number;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    })[]>;
+    findUpcoming(): Promise<({
+        _count: {
+            attendees: number;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    })[]>;
+    findPast(): Promise<({
+        _count: {
+            attendees: number;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    })[]>;
+    findById(id: string): Promise<({
+        _count: {
+            attendees: number;
+        };
+        attendees: {
+            id: string;
+            userId: string;
+            sessionId: string;
+            joinedAt: Date;
+            leftAt: Date | null;
+        }[];
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }) | null>;
+    create(req: any, dto: CreateLiveSessionDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }>;
+    update(id: string, dto: UpdateLiveSessionDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }>;
+    start(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }>;
+    end(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }>;
+    cancel(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }>;
+    delete(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        title: string;
+        status: import(".prisma/client").$Enums.LiveStatus;
+        courseId: string | null;
+        description: string | null;
+        duration: number | null;
+        platform: import(".prisma/client").$Enums.LivePlatform;
+        meetingUrl: string | null;
+        meetingId: string | null;
+        roomName: string;
+        hostId: string;
+        maxAttendees: number;
+        scheduledAt: Date;
+        startedAt: Date | null;
+        endedAt: Date | null;
+        replayUrl: string | null;
+    }>;
+    join(req: any, id: string): Promise<{
+        id: string;
+        userId: string;
+        sessionId: string;
+        joinedAt: Date;
+        leftAt: Date | null;
+    }>;
+    leave(req: any, id: string): Promise<{
+        id: string;
+        userId: string;
+        sessionId: string;
+        joinedAt: Date;
+        leftAt: Date | null;
+    }>;
+}
