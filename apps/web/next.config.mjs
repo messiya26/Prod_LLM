@@ -9,7 +9,7 @@ const cspDirectives = [
   "font-src 'self' https://fonts.gstatic.com",
   isDev
     ? "connect-src 'self' ws://localhost:* http://localhost:*"
-    : "connect-src 'self' https://accounts.google.com https://*.lordlomboministries.com https://*.lordlomboacademie.com",
+    : "connect-src 'self' https://accounts.google.com https://*.lordlomboministries.com https://*.lordlomboacademie.com https://prod-llm.onrender.com",
   "frame-src 'self' https://accounts.google.com https://www.youtube.com https://meet.jit.si https://*.zoom.us",
   "object-src 'none'",
   "base-uri 'self'",
@@ -32,6 +32,9 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "https://prod-llm.onrender.com/api/v1",
+  },
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
   compress: true,
@@ -44,6 +47,7 @@ const nextConfig = {
       { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "m.media-amazon.com" },
       { protocol: "http", hostname: "localhost" },
+      { protocol: "https", hostname: "prod-llm.onrender.com" },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
