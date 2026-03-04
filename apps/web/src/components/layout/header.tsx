@@ -49,12 +49,11 @@ const megaMenuData: MegaMenuSection[] = [
       titleKey: "mega.masterclass",
       descKey: "mega.masterclass.desc",
       image: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=400&h=250&fit=crop",
-      href: "/formations",
+      href: "/masterclasses",
       badgeKey: "badge.exclusif",
     },
   },
   {
-    titleKey: "mega.ministere",
     navKey: "nav.ministere",
     items: [
       { labelKey: "mega.apropos", href: "/a-propos", icon: <FaStar />, descKey: "mega.apropos.desc" },

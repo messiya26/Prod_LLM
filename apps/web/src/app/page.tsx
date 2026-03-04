@@ -2,17 +2,19 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Button, AnimatedSection, Badge } from "@/components/ui";
 import { FloatingParticles } from "@/components/ui/floating-particles";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useI18n } from "@/context/i18n-context";
+import api from "@/lib/api";
 import { FaPlay, FaCrown, FaCross, FaCertificate, FaGlobe, FaHandsHelping, FaStar, FaArrowRight, FaBookOpen, FaMusic, FaCalendarAlt, FaHandHoldingHeart, FaYoutube, FaQuoteLeft, FaChevronLeft, FaChevronRight, FaTimes, FaSpotify, FaFacebook } from "react-icons/fa";
 
 const TestimonialCarousel = dynamic(() => import("@/components/ui/testimonial-carousel").then(m => ({ default: m.TestimonialCarousel })), { ssr: false });
 const FormationCarousel = dynamic(() => import("@/components/ui/formation-carousel").then(m => ({ default: m.FormationCarousel })), { ssr: false });
+const MasterclassShowcase = dynamic(() => import("@/components/ui/masterclass-showcase").then(m => ({ default: m.MasterclassShowcase })), { ssr: false });
 
 const featureKeys = [
   { icon: <FaCross className="text-2xl" />, titleKey: "feature.croissance", descKey: "feature.croissance.desc", image: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=400&h=300&fit=crop" },
@@ -71,9 +73,36 @@ const LLM_PROMO_SLIDES = [
 ];
 
 export default function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const fr = locale === "fr";
   const [promoIdx, setPromoIdx] = useState(0);
   const [promoDismissed, setPromoDismissed] = useState(false);
+  const [heroMcList, setHeroMcList] = useState<any[]>([]);
+  const [heroMcIdx, setHeroMcIdx] = useState(0);
+
+  useEffect(() => {
+    api.get("/masterclasses?status=PUBLISHED&limit=6").then((res: any) => {
+      const list = Array.isArray(res) ? res : res.data || [];
+      setHeroMcList(list);
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (heroMcList.length <= 1) return;
+    const t = setInterval(() => setHeroMcIdx((i) => (i + 1) % heroMcList.length), 4000);
+    return () => clearInterval(t);
+  }, [heroMcList.length]);
+
+  const heroMc = heroMcList[heroMcIdx] || null;
+
+  const mcFallbackImages: Record<string, string> = {
+    worship: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=700&h=500&fit=crop",
+    leadership: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=700&h=500&fit=crop",
+    writing: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=700&h=500&fit=crop",
+    music: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=700&h=500&fit=crop",
+    general: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=700&h=500&fit=crop",
+  };
+  const heroMcImage = heroMc?.thumbnail || mcFallbackImages[heroMc?.category] || mcFallbackImages.general;
 
   useEffect(() => {
     if (promoDismissed) return;
@@ -155,43 +184,79 @@ export default function Home() {
                   <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <button className="flex items-center justify-center sm:justify-start gap-3 text-cream/70 hover:text-gold transition-all group">
+              <Link href="/masterclasses" className="flex items-center justify-center sm:justify-start gap-3 text-cream/70 hover:text-gold transition-all group">
                 <span className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-gold/40 flex items-center justify-center group-hover:border-gold group-hover:bg-gold/10 transition-all group-hover:scale-110">
                   <FaPlay className="text-gold text-sm ml-0.5" />
                 </span>
                 <span className="font-medium">{t("home.hero.discover")}</span>
-              </button>
+              </Link>
             </m.div>
           </div>
           <m.div initial={{ opacity: 0, scale: 0.8, rotate: 3 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 1, delay: 0.4 }} className="hidden lg:block">
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-gold/20 to-navy-light/30 rounded-3xl blur-2xl" />
               <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-gold/20">
-                <Image src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=700&h=500&fit=crop" alt="Conference" width={700} height={500} className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark/50 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="glass rounded-xl p-3 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center text-navy">
-                      <FaPlay className="text-xs ml-0.5" />
-                    </div>
-                    <div>
-                      <div className="text-cream font-bold text-xs">{t("home.hero.masterclass")}</div>
-                      <div className="text-cream/50 text-[10px]">{t("home.hero.masterclass.sub")}</div>
-                    </div>
-                    <div className="ml-auto">
-                      <div className="animate-border-dance rounded-full px-2.5 py-0.5">
-                        <span className="text-white text-[10px] font-bold">LIVE</span>
+                <AnimatePresence mode="wait">
+                  <m.div key={heroMcIdx} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.5 }}>
+                    <Link href={heroMc ? `/masterclasses/${heroMc.slug}` : "/masterclasses"} className="block group">
+                      <Image src={heroMcImage} alt={heroMc ? (fr ? heroMc.title : heroMc.titleEn || heroMc.title) : "Masterclass"} width={700} height={500} className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/20 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <div className="glass rounded-xl p-3 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center text-navy group-hover:scale-110 transition-transform">
+                            <FaPlay className="text-xs ml-0.5" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-cream font-bold text-xs truncate">
+                              {heroMc ? (fr ? heroMc.title : heroMc.titleEn || heroMc.title) : t("home.hero.masterclass")}
+                            </div>
+                            <div className="text-cream/50 text-[10px] truncate">
+                              {heroMc ? (fr ? heroMc.shortDesc : heroMc.shortDescEn || heroMc.shortDesc) : t("home.hero.masterclass.sub")}
+                            </div>
+                          </div>
+                          <div className="ml-auto flex-shrink-0">
+                            {heroMc && heroMc.seatsLeft < heroMc.maxSeats * 0.3 ? (
+                              <span className="px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold animate-pulse">{fr ? "COMPLET" : "FULL"}</span>
+                            ) : (
+                              <div className="animate-border-dance rounded-full px-2.5 py-0.5">
+                                <span className="text-white text-[10px] font-bold">LIVE</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                      {heroMc && (
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          {heroMc.certificateIncluded && <span className="px-3 py-1 rounded-lg bg-black/60 text-emerald-400 text-[11px] font-bold backdrop-blur-md border border-emerald-400/30"><FaCertificate className="inline mr-1 text-[10px]" />{fr ? "Certifie" : "Certified"}</span>}
+                          <span className="px-3 py-1 rounded-lg bg-black/60 text-gold text-[11px] font-bold backdrop-blur-md border border-gold/30">
+                            <FaCalendarAlt className="inline mr-1 text-[10px]" />{new Date(heroMc.startDate).toLocaleDateString(fr ? "fr-FR" : "en-US", { day: "numeric", month: "short" })}
+                          </span>
+                        </div>
+                      )}
+                    </Link>
+                  </m.div>
+                </AnimatePresence>
+                {/* Mini dots + progress */}
+                {heroMcList.length > 1 && (
+                  <div className="absolute bottom-[72px] left-4 flex items-center gap-1.5 z-10">
+                    {heroMcList.map((_, i) => (
+                      <button key={i} onClick={(e) => { e.preventDefault(); setHeroMcIdx(i); }}
+                        className={`rounded-full transition-all duration-300 ${i === heroMcIdx ? "w-6 h-1.5 bg-gold" : "w-1.5 h-1.5 bg-cream/25 hover:bg-cream/50"}`} />
+                    ))}
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </m.div>
         </div>
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
-          <m.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }} className="w-5 h-8 border-2 border-cream/20 rounded-full flex justify-center pt-1.5">
-            <div className="w-1 h-1 bg-gold rounded-full" />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
+          <m.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-2 cursor-pointer group"
+            onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" })}>
+            <span className="text-cream/40 text-[10px] uppercase tracking-[0.25em] font-semibold group-hover:text-gold transition-colors">Scroll</span>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" className="text-gold/60 group-hover:text-gold transition-colors">
+              <path d="M8 0v18M2 14l6 6 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </m.div>
         </div>
       </section>
@@ -223,6 +288,9 @@ export default function Home() {
           <FormationCarousel />
         </div>
       </section>
+
+      {/* MASTERCLASSES LORD LOMBO — Carousel innovant */}
+      <MasterclassShowcase />
 
       {/* POURQUOI NOUS — Compact 2x3 grid */}
       <section className="py-10 sm:py-16 px-4 sm:px-6">

@@ -1,11 +1,20 @@
 import { Controller, Post, Get, Put, Patch, Param, Body, UseGuards, Request } from "@nestjs/common";
 import { EnrollmentsService } from "./enrollments.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { Roles } from "../auth/guards/roles.decorator";
 
 @Controller("enrollments")
 @UseGuards(JwtAuthGuard)
 export class EnrollmentsController {
   constructor(private enrollmentsService: EnrollmentsService) {}
+
+  @Get("admin/recent")
+  @UseGuards(RolesGuard)
+  @Roles("ADMIN")
+  getRecentEnrollments() {
+    return this.enrollmentsService.getRecentEnrollments();
+  }
 
   @Post(":courseId")
   enroll(@Request() req: any, @Param("courseId") courseId: string) {

@@ -50,7 +50,7 @@ export default function CourseStudentView() {
     }).finally(() => setLoading(false));
   }, [slug]);
 
-  const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:3002";
+  const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:4000";
 
   if (loading) return <div className="flex items-center justify-center h-64"><FaSpinner className="text-gold text-2xl animate-spin" /></div>;
   if (!course) return <div className="text-center py-20 text-cream/30">Formation introuvable</div>;

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FaVideo, FaPlay, FaUsers, FaClock, FaPlus, FaTimes, FaSpinner, FaCheck,
   FaStop, FaBan, FaTrash, FaExternalLinkAlt, FaChevronLeft, FaChevronRight,
-  FaDesktop, FaExclamationTriangle
+  FaDesktop, FaExclamationTriangle, FaBook
 } from "react-icons/fa";
 import { SiZoom, SiGooglemeet } from "react-icons/si";
 import { useAuth } from "@/context/auth-context";
@@ -16,11 +16,13 @@ interface LiveSession {
   platform: "JITSI" | "ZOOM" | "GOOGLE_MEET";
   status: "SCHEDULED" | "LIVE" | "ENDED" | "CANCELLED";
   meetingUrl?: string; roomName: string; hostId: string;
-  courseId?: string; maxAttendees: number;
+  courseId?: string; courseName?: string; maxAttendees: number;
   scheduledAt: string; startedAt?: string; endedAt?: string;
   duration?: number; replayUrl?: string;
   _count: { attendees: number };
 }
+
+interface CourseOption { id: string; title: string; }
 
 const platformLabel: Record<string, string> = { JITSI: "Jitsi Meet", ZOOM: "Zoom", GOOGLE_MEET: "Google Meet" };
 const platformIcon: Record<string, React.ReactNode> = {
@@ -48,9 +50,10 @@ export default function AdminLive() {
   const [deleteConfirm, setDeleteConfirm] = useState<LiveSession | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [page, setPage] = useState(1);
+  const [courses, setCourses] = useState<CourseOption[]>([]);
   const [form, setForm] = useState({
     title: "", description: "", platform: "JITSI",
-    scheduledAt: "", maxAttendees: 100, meetingUrl: "",
+    scheduledAt: "", maxAttendees: 100, meetingUrl: "", courseId: "",
   });
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
@@ -66,6 +69,12 @@ export default function AdminLive() {
   }, []);
 
   useEffect(() => { fetchSessions(); }, [fetchSessions]);
+
+  useEffect(() => {
+    api.get<CourseOption[]>("/courses?published=true").then(data => {
+      if (Array.isArray(data)) setCourses(data);
+    }).catch(() => {});
+  }, []);
 
   const upcoming = sessions.filter(s => s.status === "SCHEDULED" || s.status === "LIVE");
   const past = sessions.filter(s => s.status === "ENDED" || s.status === "CANCELLED");
@@ -92,9 +101,10 @@ export default function AdminLive() {
         scheduledAt: new Date(form.scheduledAt).toISOString(),
         maxAttendees: form.maxAttendees,
         meetingUrl: form.meetingUrl || undefined,
+        courseId: form.courseId || undefined,
       });
       setShowModal(false);
-      setForm({ title: "", description: "", platform: "JITSI", scheduledAt: "", maxAttendees: 100, meetingUrl: "" });
+      setForm({ title: "", description: "", platform: "JITSI", scheduledAt: "", maxAttendees: 100, meetingUrl: "", courseId: "" });
       showToast("Session programmee !");
       await fetchSessions();
     } catch { showToast("Erreur lors de la creation", "error"); } finally { setSaving(false); }
@@ -317,6 +327,20 @@ export default function AdminLive() {
                   <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
                     className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-gold/40 transition-all resize-none"
                     placeholder="Optionnel..." />
+                </div>
+                <div>
+                  <label className="block text-white/50 text-xs font-medium mb-1.5 uppercase tracking-wider">Formation liee</label>
+                  <div className="relative">
+                    <FaBook className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs" />
+                    <select value={form.courseId} onChange={e => setForm({ ...form, courseId: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-gold/40 transition-all appearance-none">
+                      <option value="" className="bg-[#0d1a2e]">Aucune (session libre)</option>
+                      {courses.map(c => (
+                        <option key={c.id} value={c.id} className="bg-[#0d1a2e]">{c.title}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <p className="text-white/20 text-[10px] mt-1.5">Les etudiants inscrits seront notifies automatiquement</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

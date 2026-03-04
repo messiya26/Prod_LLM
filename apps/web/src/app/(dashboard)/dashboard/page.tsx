@@ -19,12 +19,17 @@ interface EnrollmentData {
   course: { id: string; title: string; slug: string; thumbnail: string | null; level: string; _count?: { modules: number } };
 }
 
+interface LiveEvent { id: string; title: string; scheduledAt: string; status: string; platform: string; }
+interface Notification { id: string; title: string; message: string; createdAt: string; read: boolean; }
+
 export default function Dashboard() {
   const { user, resendVerification } = useAuth();
   const { t, locale } = useI18n();
   const [resent, setResent] = useState(false);
   const [enrollments, setEnrollments] = useState<EnrollmentData[]>([]);
   const [loadingEnroll, setLoadingEnroll] = useState(true);
+  const [liveEvents, setLiveEvents] = useState<LiveEvent[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t("dash.hello") : hour < 18 ? t("dash.afternoon") : t("dash.evening");
 
@@ -33,6 +38,12 @@ export default function Dashboard() {
       .then((d) => setEnrollments(Array.isArray(d) ? d : []))
       .catch(() => {})
       .finally(() => setLoadingEnroll(false));
+    api.get<LiveEvent[]>("/live/upcoming")
+      .then((d) => setLiveEvents(Array.isArray(d) ? d.slice(0, 3) : []))
+      .catch(() => {});
+    api.get<Notification[]>("/notifications")
+      .then((d) => setNotifications(Array.isArray(d) ? d.slice(0, 5) : []))
+      .catch(() => {});
   }, []);
 
   const totalProgress = useMemo(() => {
@@ -158,21 +169,19 @@ export default function Dashboard() {
               <FaCalendarAlt className="text-white/15 text-xs" />
             </div>
             <div className="space-y-3">
-              {[
-                { title: "Masterclass Live - Leadership", date: "28 Fev 2026", time: "14h00", live: true },
-                { title: "Session Q&A - Formation Pastorale", date: "02 Mar 2026", time: "10h00", live: false },
-                { title: "Webinaire - Croissance Spirituelle", date: "05 Mar 2026", time: "18h00", live: false },
-              ].map((ev) => (
-                <div key={ev.title} className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-all cursor-pointer group">
+              {liveEvents.length === 0 ? (
+                <p className="text-white/20 text-xs text-center py-4">{locale === "fr" ? "Aucun evenement" : "No events"}</p>
+              ) : liveEvents.map((ev) => (
+                <Link key={ev.id} href="/dashboard/live" className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-all cursor-pointer group">
                   <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    {ev.live ? <FaPlay className="text-gold text-xs" /> : <FaCalendarAlt className="text-gold/50 text-xs" />}
+                    {ev.status === "LIVE" ? <FaPlay className="text-gold text-xs" /> : <FaCalendarAlt className="text-gold/50 text-xs" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-medium text-white group-hover:text-gold transition-colors truncate">{ev.title}</div>
-                    <div className="text-[10px] text-white/25">{ev.date} - {ev.time}</div>
+                    <div className="text-[10px] text-white/25">{new Date(ev.scheduledAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })} - {new Date(ev.scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
                   </div>
-                  {ev.live && <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-red-500/15 text-red-400 animate-pulse">LIVE</span>}
-                </div>
+                  {ev.status === "LIVE" && <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-red-500/15 text-red-400 animate-pulse">LIVE</span>}
+                </Link>
               ))}
             </div>
           </motion.div>
@@ -183,14 +192,12 @@ export default function Dashboard() {
               <div className="relative"><FaBell className="text-white/15 text-xs" /><span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" /></div>
             </div>
             <div className="space-y-2">
-              {[
-                { text: "Nouveau module disponible dans Leadership & Influence", time: "Il y a 2h" },
-                { text: "Votre certificat Croissance Spirituelle est bientot pret", time: "Il y a 1j" },
-                { text: "Live Masterclass demain a 14h00", time: "Il y a 1j" },
-              ].map((n) => (
-                <div key={n.text} className="p-3 rounded-xl hover:bg-white/[0.03] transition-all cursor-pointer">
-                  <div className="text-xs text-white/60">{n.text}</div>
-                  <div className="text-[10px] text-white/20 mt-1">{n.time}</div>
+              {notifications.length === 0 ? (
+                <p className="text-white/20 text-xs text-center py-4">{locale === "fr" ? "Aucune notification" : "No notifications"}</p>
+              ) : notifications.map((n) => (
+                <div key={n.id} className={`p-3 rounded-xl hover:bg-white/[0.03] transition-all cursor-pointer ${!n.read ? "border-l-2 border-l-gold" : ""}`}>
+                  <div className="text-xs text-white/60">{n.message || n.title}</div>
+                  <div className="text-[10px] text-white/20 mt-1">{new Date(n.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" })}</div>
                 </div>
               ))}
             </div>

@@ -1,14 +1,19 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   FaUsers, FaBookOpen, FaVideo, FaDollarSign,
   FaArrowRight, FaChevronLeft, FaChevronRight,
-  FaEllipsisV, FaGlobeAfrica
+  FaEllipsisV, FaGlobeAfrica, FaSpinner
 } from "react-icons/fa";
 import { useI18n } from "@/context/i18n-context";
+import api from "@/lib/api";
+
+interface DashStats { totalStudents: number; totalCourses: number; totalLive: number; totalRevenue: number; }
+interface RecentEnroll { id: string; user: { firstName: string; lastName: string }; course: { title: string }; createdAt: string; status: string; }
+interface Payment { id: string; amount: number; currency: string; user?: { firstName: string; lastName: string }; createdAt: string; }
 
 const chartData = [32, 45, 38, 52, 48, 60, 55, 70, 65, 78, 72, 85, 80, 92, 88, 95, 90, 105, 98, 115, 108, 120, 115, 130, 125, 140, 135, 148, 142, 155];
 
@@ -16,6 +21,37 @@ export default function AdminDashboard() {
   const { t } = useI18n();
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [calYear, setCalYear] = useState(new Date().getFullYear());
+  const [stats, setStats] = useState<DashStats>({ totalStudents: 0, totalCourses: 0, totalLive: 0, totalRevenue: 0 });
+  const [enrollments, setEnrollments] = useState<RecentEnroll[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [users, courses, live, pays, enroll] = await Promise.all([
+        api.get<any[]>("/users").catch(() => []),
+        api.get<any[]>("/courses").catch(() => []),
+        api.get<any[]>("/live").catch(() => []),
+        api.get<any[]>("/payments").catch(() => []),
+        api.get<any[]>("/enrollments/admin/recent").catch(() => []),
+      ]);
+      const uArr = Array.isArray(users) ? users : [];
+      const cArr = Array.isArray(courses) ? courses : [];
+      const lArr = Array.isArray(live) ? live : [];
+      const pArr = Array.isArray(pays) ? pays : [];
+      const eArr = Array.isArray(enroll) ? enroll : [];
+      setStats({
+        totalStudents: uArr.length,
+        totalCourses: cArr.length,
+        totalLive: lArr.length,
+        totalRevenue: pArr.reduce((s: number, p: any) => s + (p.amount || 0), 0),
+      });
+      setPayments(pArr.slice(0, 4));
+      setEnrollments(eArr.slice(0, 5));
+    } catch {} finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const calDays = useMemo(() => {
     const first = new Date(calYear, calMonth, 1).getDay();
@@ -35,25 +71,13 @@ export default function AdminDashboard() {
   const svgH = 120;
   const points = chartData.map((v, i) => `${(i / (chartData.length - 1)) * svgW},${svgH - (v / maxChart) * svgH}`).join(" ");
 
-  const stats = [
-    { icon: <FaUsers />, labelKey: "admin.totalStudents", value: "1,247", bg: "from-blue-500/20 to-blue-600/10", iconBg: "bg-blue-500", iconColor: "text-white" },
-    { icon: <FaBookOpen />, labelKey: "admin.totalFormations", value: "12", bg: "from-emerald-500/20 to-emerald-600/10", iconBg: "bg-emerald-500", iconColor: "text-white" },
-    { icon: <FaVideo />, labelKey: "admin.totalVideos", value: "186", bg: "from-rose-500/20 to-rose-600/10", iconBg: "bg-rose-500", iconColor: "text-white" },
-    { icon: <FaDollarSign />, labelKey: "admin.totalRevenue", value: "$12,450", bg: "from-gold/20 to-gold/10", iconBg: "bg-gold", iconColor: "text-navy" },
-  ];
+  const formatCurrency = (amount: number) => `$${amount.toLocaleString("en-US", { minimumFractionDigits: 0 })}`;
 
-  const topCourses = [
-    { nameKey: "formations.f4.title", sales: 347, revenue: "$2,500", color: "bg-amber-500" },
-    { nameKey: "formations.f2.title", sales: 283, revenue: "$1,450", color: "bg-blue-500" },
-    { nameKey: "formations.f1.title", sales: 219, revenue: "$1,240", color: "bg-emerald-500" },
-    { nameKey: "formations.f3.title", sales: 198, revenue: "$980", color: "bg-gold" },
-  ];
-
-  const transactions = [
-    { name: "Marie Katanga", amount: "$150", time: "06:24 PM", avatar: "MK" },
-    { name: "Patrick Mbala", amount: "$87", time: "11:47 AM", avatar: "PM" },
-    { name: "Grace Mutombo", amount: "$132", time: "07:16 PM", avatar: "GM" },
-    { name: "David Luntala", amount: "$95", time: "09:30 AM", avatar: "DL" },
+  const statCards = [
+    { icon: <FaUsers />, labelKey: "admin.totalStudents", value: stats.totalStudents.toLocaleString(), bg: "from-blue-500/20 to-blue-600/10", iconBg: "bg-blue-500", iconColor: "text-white" },
+    { icon: <FaBookOpen />, labelKey: "admin.totalFormations", value: String(stats.totalCourses), bg: "from-emerald-500/20 to-emerald-600/10", iconBg: "bg-emerald-500", iconColor: "text-white" },
+    { icon: <FaVideo />, labelKey: "admin.totalVideos", value: String(stats.totalLive), bg: "from-rose-500/20 to-rose-600/10", iconBg: "bg-rose-500", iconColor: "text-white" },
+    { icon: <FaDollarSign />, labelKey: "admin.totalRevenue", value: formatCurrency(stats.totalRevenue), bg: "from-gold/20 to-gold/10", iconBg: "bg-gold", iconColor: "text-navy" },
   ];
 
   const engagementData = [
@@ -63,13 +87,9 @@ export default function AdminDashboard() {
     { country: "Belgique", pct: 5, color: "bg-rose-500" },
   ];
 
-  const recentEnrollments = [
-    { name: "Marie Katanga", courseKey: "formations.f4.title", dateKey: "admin.ago2h", amount: "$150", statusKey: "admin.active" },
-    { name: "Patrick Mbala", courseKey: "formations.f2.title", dateKey: "admin.ago5h", amount: "$87", statusKey: "admin.active" },
-    { name: "Grace Mutombo", courseKey: "formations.f1.title", dateKey: "admin.yesterday", amount: "$132", statusKey: "admin.pending" },
-    { name: "David Luntala", courseKey: "formations.f3.title", dateKey: "admin.ago2d", amount: "$95", statusKey: "admin.active" },
-    { name: "Sarah Ngoy", courseKey: "formations.f4.title", dateKey: "admin.ago3d", amount: "$150", statusKey: "admin.active" },
-  ];
+  if (loading) return (
+    <div className="flex items-center justify-center h-64"><FaSpinner className="text-gold text-2xl animate-spin" /></div>
+  );
 
   return (
     <div className="space-y-6 max-w-[1400px]">
@@ -79,7 +99,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s, i) => (
+        {statCards.map((s, i) => (
           <motion.div key={s.labelKey} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className={`rounded-2xl bg-gradient-to-br ${s.bg} border border-white/[0.06] p-5 relative overflow-hidden group hover:border-white/10 transition-all`}>
             <div className="absolute top-0 right-0 w-24 h-24 bg-white/[0.02] rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className={`w-11 h-11 rounded-xl ${s.iconBg} ${s.iconColor} flex items-center justify-center text-lg shadow-lg mb-3`}>{s.icon}</div>
@@ -95,8 +115,6 @@ export default function AdminDashboard() {
             <h3 className="text-sm font-bold text-white">{t("admin.activity")}</h3>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-gold" /><span className="text-[10px] text-white/30">{t("admin.thisMonth")}</span></div>
-              <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-white/10" /><span className="text-[10px] text-white/30">{t("admin.lastMonth")}</span></div>
-              <button className="text-white/20 hover:text-white/40 transition-colors"><FaEllipsisV className="text-xs" /></button>
             </div>
           </div>
           <div className="relative h-36">
@@ -104,58 +122,34 @@ export default function AdminDashboard() {
               <defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#D4A853" stopOpacity="0.3" /><stop offset="100%" stopColor="#D4A853" stopOpacity="0" /></linearGradient></defs>
               <polygon points={`0,${svgH} ${points} ${svgW},${svgH}`} fill="url(#chartGrad)" />
               <polyline points={points} fill="none" stroke="#D4A853" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-              <circle cx={(19 / 29) * svgW} cy={svgH - (chartData[19] / maxChart) * svgH} r="5" fill="#D4A853" stroke="#0a0e1a" strokeWidth="3" />
             </svg>
-            <div className="absolute bg-[#0d1a2e] border border-gold/20 rounded-lg px-3 py-2 shadow-xl pointer-events-none" style={{ left: `${(19 / 29) * 100}%`, top: `${((1 - chartData[19] / maxChart) * 100) - 28}%`, transform: "translateX(-50%)" }}>
-              <div className="text-[10px] text-white/40">{t("admin.thisMonth")}</div>
-              <div className="text-sm font-bold text-white">1,247</div>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] text-white/15 px-1">
-              {["01", "05", "10", "15", "20", "25", "30"].map((d) => (<span key={d}>{d}</span>))}
-            </div>
           </div>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="lg:col-span-2 rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-bold text-white">{t("admin.topFormations")}</h3>
-            <Link href="/admin/formations" className="text-[10px] text-gold hover:text-gold-light transition-colors">{t("dash.seeAll")}</Link>
+            <h3 className="text-sm font-bold text-white">{t("admin.transactions")}</h3>
+            <Link href="/admin/transactions" className="text-[10px] text-gold hover:text-gold-light transition-colors">{t("dash.seeAll")}</Link>
           </div>
-          <div className="space-y-4">
-            {topCourses.map((c) => (
-              <div key={c.nameKey} className="flex items-center gap-3 group">
-                <div className={`w-9 h-9 rounded-xl ${c.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>{t(c.nameKey).charAt(0)}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-white truncate">{t(c.nameKey)}</div>
-                  <div className="text-[10px] text-white/25">{c.sales} {t("admin.sales")}</div>
+          <div className="space-y-3">
+            {payments.length === 0 && <p className="text-white/20 text-xs text-center py-4">Aucune transaction</p>}
+            {payments.map((tr) => (
+              <div key={tr.id} className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold/30 to-gold-light/20 flex items-center justify-center text-[10px] font-bold text-gold flex-shrink-0">
+                  {(tr.user?.firstName?.[0] || "?")}{(tr.user?.lastName?.[0] || "")}
                 </div>
-                <div className="text-right"><div className="text-xs font-bold text-white">{c.revenue}</div></div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-medium text-white">{t("admin.received")} <span className="text-emerald-400 font-bold">{formatCurrency(tr.amount)}</span></div>
+                  <div className="text-[10px] text-white/25">{tr.user ? `${tr.user.firstName} ${tr.user.lastName}` : "Anonyme"}</div>
+                </div>
+                <div className="text-[10px] text-white/20">{new Date(tr.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
               </div>
             ))}
           </div>
         </motion.div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-bold text-white">{t("admin.transactions")}</h3>
-            <Link href="/admin/transactions" className="text-[10px] text-gold hover:text-gold-light transition-colors">{t("dash.seeAll")}</Link>
-          </div>
-          <div className="space-y-3">
-            {transactions.map((tr) => (
-              <div key={tr.name} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold/30 to-gold-light/20 flex items-center justify-center text-[10px] font-bold text-gold flex-shrink-0">{tr.avatar}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-white">{t("admin.received")} <span className="text-emerald-400 font-bold">{tr.amount}</span></div>
-                  <div className="text-[10px] text-white/25">{t("admin.from")} {tr.name}</div>
-                </div>
-                <div className="text-[10px] text-white/20">{tr.time}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
+      <div className="grid md:grid-cols-2 gap-5">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-sm font-bold text-white">{t("admin.engagement")}</h3>
@@ -165,9 +159,6 @@ export default function AdminDashboard() {
             <div className="relative w-28 h-28">
               <FaGlobeAfrica className="w-full h-full text-gold/20" />
               <div className="absolute inset-0 flex items-center justify-center"><div className="w-3 h-3 rounded-full bg-gold shadow-lg shadow-gold/40 animate-pulse" /></div>
-              {[{ top: "20%", left: "25%", size: "w-2 h-2", color: "bg-emerald-400" }, { top: "40%", left: "70%", size: "w-1.5 h-1.5", color: "bg-amber-400" }, { top: "65%", left: "40%", size: "w-2 h-2", color: "bg-rose-400" }].map((dot, i) => (
-                <div key={i} className={`absolute ${dot.size} ${dot.color} rounded-full shadow-lg animate-pulse`} style={{ top: dot.top, left: dot.left }} />
-              ))}
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
@@ -207,25 +198,29 @@ export default function AdminDashboard() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/[0.04]">
-              {["admin.student", "admin.formation", "admin.date", "admin.amount", "admin.status"].map((hk) => (
+              {["admin.student", "admin.formation", "admin.date", "admin.status"].map((hk) => (
                 <th key={hk} className="text-left text-white/25 text-[10px] font-medium uppercase tracking-wider px-6 py-3">{t(hk)}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {recentEnrollments.map((u) => (
-              <tr key={u.name + u.courseKey} className="border-b border-white/[0.02] hover:bg-white/[0.015] transition-colors">
+            {enrollments.length === 0 && (
+              <tr><td colSpan={4} className="px-6 py-8 text-center text-white/20 text-xs">Aucune inscription recente</td></tr>
+            )}
+            {enrollments.map((u) => (
+              <tr key={u.id} className="border-b border-white/[0.02] hover:bg-white/[0.015] transition-colors">
                 <td className="px-6 py-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/30 to-gold-light/20 flex items-center justify-center text-[10px] font-bold text-gold">{u.name.split(" ").map(n => n[0]).join("")}</div>
-                    <span className="text-xs font-medium text-white">{u.name}</span>
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/30 to-gold-light/20 flex items-center justify-center text-[10px] font-bold text-gold">
+                      {u.user?.firstName?.[0] || "?"}{u.user?.lastName?.[0] || ""}
+                    </div>
+                    <span className="text-xs font-medium text-white">{u.user?.firstName} {u.user?.lastName}</span>
                   </div>
                 </td>
-                <td className="px-6 py-3 text-xs text-white/40">{t(u.courseKey)}</td>
-                <td className="px-6 py-3 text-xs text-white/25">{t(u.dateKey)}</td>
-                <td className="px-6 py-3 text-xs font-semibold text-white">{u.amount}</td>
+                <td className="px-6 py-3 text-xs text-white/40">{u.course?.title}</td>
+                <td className="px-6 py-3 text-xs text-white/25">{new Date(u.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" })}</td>
                 <td className="px-6 py-3">
-                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${u.statusKey === "admin.active" ? "bg-emerald-400/10 text-emerald-400" : "bg-amber-400/10 text-amber-400"}`}>{t(u.statusKey)}</span>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${u.status === "ACTIVE" ? "bg-emerald-400/10 text-emerald-400" : "bg-amber-400/10 text-amber-400"}`}>{u.status === "ACTIVE" ? t("admin.active") : t("admin.pending")}</span>
                 </td>
               </tr>
             ))}

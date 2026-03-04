@@ -54,6 +54,8 @@ export default function AdminFormations() {
   const [toggling, setToggling] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [form, setForm] = useState({ title: "", description: "", price: "", level: "ALL_LEVELS", categoryId: "", instructorId: "" });
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
   const [manageCourse, setManageCourse] = useState<Course | null>(null);
@@ -113,13 +115,22 @@ export default function AdminFormations() {
     e.preventDefault();
     setSaving(true);
     try {
+      let thumbnail = "";
+      if (thumbnailFile) {
+        const fd = new FormData();
+        fd.append("file", thumbnailFile);
+        const upRes = await api.upload<{ url: string }>("/upload", fd);
+        thumbnail = upRes.url;
+      }
       await api.post("/courses", {
         title: form.title, description: form.description,
         price: parseFloat(form.price) || 0, level: form.level,
         categoryId: form.categoryId, instructorId: form.instructorId || undefined,
+        thumbnail,
       });
       setShowModal(false);
       setForm({ title: "", description: "", price: "", level: "ALL_LEVELS", categoryId: "", instructorId: "" });
+      setThumbnailFile(null); setThumbnailPreview(null);
       showToast("Formation ajoutee avec succes !");
       await fetchData();
     } catch { showToast("Erreur lors de la creation", "error"); } finally { setSaving(false); }
@@ -646,6 +657,29 @@ export default function AdminFormations() {
                     </select>
                   </div>
                 </div>
+                <div>
+                  <label className="block text-white/50 text-xs font-medium mb-1.5 uppercase tracking-wider">Miniature / Image</label>
+                  <div className="relative">
+                    {thumbnailPreview ? (
+                      <div className="relative w-full h-32 rounded-xl overflow-hidden border border-gold/20">
+                        <img src={thumbnailPreview} alt="preview" className="w-full h-full object-cover" />
+                        <button type="button" onClick={() => { setThumbnailFile(null); setThumbnailPreview(null); }}
+                          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-red-500/80 transition-all">
+                          <FaTimes className="text-[10px]" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed border-white/10 hover:border-gold/30 bg-white/[0.02] cursor-pointer transition-all group">
+                        <FaPlus className="text-white/20 group-hover:text-gold/50 mb-1 transition-colors" />
+                        <span className="text-white/20 text-xs group-hover:text-white/40">Cliquer pour ajouter</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) { setThumbnailFile(file); setThumbnailPreview(URL.createObjectURL(file)); }
+                        }} />
+                      </label>
+                    )}
+                  </div>
+                </div>
                 <div className="flex justify-end gap-3 pt-2">
                   <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 rounded-xl text-white/40 text-sm hover:text-white hover:bg-white/[0.04] transition-all">
                     Annuler
@@ -730,7 +764,7 @@ export default function AdminFormations() {
                             {r.duration ? <span className="text-white/15 text-[10px]">{r.duration} min</span> : null}
                           </div>
                         </div>
-                        <a href={r.url.startsWith("http") ? r.url : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:3002"}${r.url}`} target="_blank" rel="noopener noreferrer"
+                        <a href={r.url.startsWith("http") ? r.url : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:4000"}${r.url}`} target="_blank" rel="noopener noreferrer"
                           className="p-2 rounded-lg hover:bg-blue-400/10 text-white/20 hover:text-blue-400 transition-all" title="Voir/Telecharger">
                           <FaEye className="text-xs" />
                         </a>

@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 enum Role {
@@ -52,6 +52,9 @@ model User {
   invitations   Invitation[] @relation("invitedBy")
   blogPosts     BlogPost[]   @relation("BlogAuthor")
   events        Event[]      @relation("EventAuthor")
+  subscriptions Subscription[]
+  masterclassesInstructed Masterclass[] @relation("MasterclassInstructor")
+  masterclassRegistrations MasterclassRegistration[]
 
   @@map("users")
 }
@@ -457,4 +460,136 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 
   @@map("site_content")
+}
+
+enum SubscriptionPlan {
+  FREE
+  ESSENTIAL
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAST_DUE
+}
+
+model Subscription {
+  id          String             @id @default(cuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id])
+  plan        SubscriptionPlan   @default(FREE)
+  status      SubscriptionStatus @default(ACTIVE)
+  amount      Float              @default(0)
+  currency    String             @default("USD")
+  interval    String             @default("monthly")
+  startDate   DateTime           @default(now())
+  endDate     DateTime?
+  cancelledAt DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@map("subscriptions")
+}
+
+model PricingPlan {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  nameFr        String
+  nameEn        String
+  descFr        String   @default("")
+  descEn        String   @default("")
+  monthlyPrice  Float    @default(0)
+  annualPrice   Float    @default(0)
+  currency      String   @default("USD")
+  featuresFr    String   @default("[]")
+  featuresEn    String   @default("[]")
+  popular       Boolean  @default(false)
+  isFree        Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  active        Boolean  @default(true)
+  ctaFr         String   @default("Choisir")
+  ctaEn         String   @default("Choose")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("pricing_plans")
+}
+
+enum MasterclassStatus {
+  DRAFT
+  PUBLISHED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum MasterclassFormat {
+  ONLINE
+  IN_PERSON
+  HYBRID
+}
+
+model Masterclass {
+  id              String             @id @default(cuid())
+  title           String
+  titleEn         String             @default("")
+  slug            String             @unique
+  description     String
+  descriptionEn   String             @default("")
+  shortDesc       String             @default("")
+  shortDescEn     String             @default("")
+  thumbnail       String             @default("")
+  bannerImage     String             @default("")
+  category        String             @default("general")
+  level           String             @default("all")
+  format          MasterclassFormat  @default(ONLINE)
+  status          MasterclassStatus  @default(DRAFT)
+  startDate       DateTime
+  endDate         DateTime
+  dailyStartTime  String             @default("09:00")
+  dailyEndTime    String             @default("17:00")
+  timezone        String             @default("Africa/Kinshasa")
+  location        String             @default("")
+  meetingLink     String             @default("")
+  price           Float              @default(0)
+  currency        String             @default("USD")
+  earlyBirdPrice  Float?
+  earlyBirdEnd    DateTime?
+  maxSeats        Int                @default(50)
+  seatsLeft       Int                @default(50)
+  instructorId    String?
+  instructor      User?              @relation("MasterclassInstructor", fields: [instructorId], references: [id])
+  programFr       String             @default("[]")
+  programEn       String             @default("[]")
+  whatYouLearnFr  String             @default("[]")
+  whatYouLearnEn  String             @default("[]")
+  prerequisites   String             @default("[]")
+  includedFr      String             @default("[]")
+  includedEn      String             @default("[]")
+  testimonials    String             @default("[]")
+  isFeatured      Boolean            @default(false)
+  certificateIncluded Boolean        @default(true)
+  replayAvailable Boolean            @default(true)
+  registrations   MasterclassRegistration[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@map("masterclasses")
+}
+
+model MasterclassRegistration {
+  id              String      @id @default(cuid())
+  masterclassId   String
+  masterclass     Masterclass @relation(fields: [masterclassId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          String      @default("PENDING")
+  paymentRef      String?
+  amountPaid      Float       @default(0)
+  registeredAt    DateTime    @default(now())
+
+  @@unique([masterclassId, userId])
+  @@map("masterclass_registrations")
 }

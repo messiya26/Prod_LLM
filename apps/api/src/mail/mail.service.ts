@@ -295,4 +295,40 @@ export class MailService implements OnModuleInit {
       return false;
     }
   }
+
+  async sendRegistrationConfirmation(to: string, data: { userName: string; eventTitle: string; eventDate: string; eventTime: string; eventLocation: string; type: "masterclass" | "course" }) {
+    const isMc = data.type === "masterclass";
+    const content = `
+      <div style="text-align:center;padding:30px 20px;">
+        <div style="font-size:60px;margin-bottom:10px;">${isMc ? "🎓" : "📚"}</div>
+        <div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:32px;color:#fff;">✓</span>
+        </div>
+        <h1 style="color:#F0C75E;font-size:24px;margin:0 0 8px;">Votre inscription a ete traitee.</h1>
+        <p style="color:#94a3b8;font-size:14px;margin:0 0 30px;">Nous vous avons envoye un e-mail de confirmation a<br/><strong style="color:#e2e8f0;">${to}</strong></p>
+        <div style="background:#0f2744;border:1px solid rgba(240,199,94,0.15);border-radius:16px;padding:24px;text-align:left;max-width:400px;margin:0 auto;">
+          <h3 style="color:#e2e8f0;margin:0 0 16px;font-size:16px;">${data.eventTitle}</h3>
+          <div style="color:#94a3b8;font-size:13px;line-height:2;">
+            <div>📅 ${data.eventDate}</div>
+            <div>🕐 ${data.eventTime}</div>
+            <div>📍 ${data.eventLocation}</div>
+          </div>
+        </div>
+        <p style="color:#64748b;font-size:12px;margin-top:25px;">Conservez cet e-mail. Vous recevrez un rappel avant l'evenement.</p>
+      </div>
+    `;
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"Lord Lombo Ministries" <${process.env.SMTP_USER || "noreply@lordlomboministries.com"}>`,
+        to,
+        subject: `Inscription confirmee - ${data.eventTitle}`,
+        html: this.baseTemplate(content),
+      });
+      this.logPreviewUrl(info);
+      return true;
+    } catch (err) {
+      console.error("[Mail] Erreur envoi registration confirmation:", err);
+      return false;
+    }
+  }
 }

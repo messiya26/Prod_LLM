@@ -85,4 +85,15 @@ export class EnrollmentsService {
       },
     });
   }
+
+  async getRecentEnrollments() {
+    return this.prisma.enrollment.findMany({
+      take: 10,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { firstName: true, lastName: true } },
+        course: { select: { title: true } },
+      },
+    });
+  }
 }

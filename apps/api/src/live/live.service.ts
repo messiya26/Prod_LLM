@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
+import { NotificationsService } from "../notifications/notifications.service";
 import { CreateLiveSessionDto, UpdateLiveSessionDto } from "./live.dto";
 import { randomBytes } from "crypto";
 
 @Injectable()
 export class LiveService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private notifications: NotificationsService) {}
 
   private generateRoomName(title: string): string {
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 30);
@@ -51,7 +52,7 @@ export class LiveService {
       meetingUrl = `https://meet.jit.si/${roomName}`;
     }
 
-    return this.prisma.liveSession.create({
+    const session = await this.prisma.liveSession.create({
       data: {
         title: dto.title,
         description: dto.description,
@@ -64,6 +65,27 @@ export class LiveService {
         hostId,
       },
     });
+
+    if (dto.courseId) {
+      const enrollments = await this.prisma.enrollment.findMany({
+        where: { courseId: dto.courseId },
+        select: { userId: true },
+      });
+      const scheduled = new Date(dto.scheduledAt);
+      const dateStr = scheduled.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      await Promise.all(
+        enrollments.map(e =>
+          this.notifications.create(e.userId, {
+            title: "Nouvelle session live programmee",
+            message: `"${dto.title}" est programmee le ${dateStr}. Ne manquez pas !`,
+            type: "live",
+            link: `/dashboard/live`,
+          })
+        )
+      );
+    }
+
+    return session;
   }
 
   async update(id: string, dto: UpdateLiveSessionDto) {

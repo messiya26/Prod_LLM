@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   FaHome, FaBookOpen, FaCog, FaSignOutAlt, FaUsers,
   FaChartBar, FaBars, FaTimes, FaMoneyBillWave, FaComments,
-  FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward, FaEdit, FaStar,
+  FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward, FaEdit, FaStar, FaUserTie, FaGem, FaFire,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
@@ -36,12 +36,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: <FaChartBar />, labelKey: "dash.admin", href: "/admin" },
     { icon: <FaBookOpen />, labelKey: "dash.formations", href: "/admin/formations" },
     { icon: <FaUsers />, labelKey: "dash.students", href: "/admin/utilisateurs" },
+    { icon: <FaUserTie />, labelKey: "dash.instructors", href: "/admin/formateurs" },
     { icon: <FaMoneyBillWave />, labelKey: "dash.transactions", href: "/admin/transactions" },
     { icon: <FaComments />, labelKey: "dash.messages", href: "/admin/messages" },
     { icon: <FaCalendarAlt />, labelKey: "dash.calendar", href: "/admin/calendrier" },
     { icon: <FaVideo />, labelKey: "dash.live", href: "/admin/live" },
     { icon: <FaEdit />, labelKey: "dash.blog", href: "/admin/blog" },
     { icon: <FaStar />, labelKey: "dash.events", href: "/admin/evenements" },
+    { icon: <FaGem />, labelKey: "dash.subscriptions", href: "/admin/abonnements" },
+    { icon: <FaFire />, labelKey: "dash.masterclasses", href: "/admin/masterclasses" },
     { icon: <FaCog />, labelKey: "dash.settings", href: "/admin/parametres" },
   ];
 

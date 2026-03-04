@@ -95,7 +95,7 @@ export default function AdminBlog() {
         <div className="grid gap-3">
           {filtered.map(p => (
             <div key={p.id} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 flex items-center gap-4 hover:border-gold/10 transition-all">
-              {p.image ? <img src={p.image.startsWith("/") ? `http://localhost:3002${p.image}` : p.image} alt="" className="w-16 h-16 rounded-lg object-cover flex-shrink-0" /> : <div className="w-16 h-16 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/15 flex-shrink-0"><FaImage className="text-xl" /></div>}
+              {p.image ? <img src={p.image.startsWith("/") ? `http://localhost:4000${p.image}` : p.image} alt="" className="w-16 h-16 rounded-lg object-cover flex-shrink-0" /> : <div className="w-16 h-16 rounded-lg bg-white/[0.04] flex items-center justify-center text-white/15 flex-shrink-0"><FaImage className="text-xl" /></div>}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="text-white font-bold text-sm truncate">{p.title}</h3>
@@ -151,7 +151,7 @@ export default function AdminBlog() {
               <div><label className="block text-white/40 text-xs mb-1.5 uppercase">Image</label>
                 <div className="flex items-center gap-3">
                   <input type="file" accept="image/*" onChange={handleUploadImage} className="text-xs text-white/40 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gold/10 file:text-gold file:text-xs file:font-bold file:cursor-pointer" />
-                  {form.image && <img src={form.image.startsWith("/") ? `http://localhost:3002${form.image}` : form.image} alt="" className="w-12 h-12 rounded-lg object-cover" />}
+                  {form.image && <img src={form.image.startsWith("/") ? `http://localhost:4000${form.image}` : form.image} alt="" className="w-12 h-12 rounded-lg object-cover" />}
                 </div>
               </div>
               <label className="flex items-center gap-3 cursor-pointer">

@@ -22,6 +22,8 @@ import { BlogModule } from "./blog/blog.module";
 import { EventsModule } from "./events/events.module";
 import { SiteContentModule } from "./site-content/site-content.module";
 import { CourseModulesModule } from "./modules/modules.module";
+import { SubscriptionsModule } from "./subscriptions/subscriptions.module";
+import { MasterclassesModule } from "./masterclasses/masterclasses.module";
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { CourseModulesModule } from "./modules/modules.module";
     EventsModule,
     SiteContentModule,
     CourseModulesModule,
+    SubscriptionsModule,
+    MasterclassesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },
