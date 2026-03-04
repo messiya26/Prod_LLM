@@ -1,4 +1,5 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+export const API_HOST = API_BASE.replace("/api/v1", "");
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
