@@ -145,11 +145,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    setUser(null);
-    setError(null);
     localStorage.removeItem("lla_user");
     localStorage.removeItem("lla_token");
     clearAuthCookies();
+    setUser(null);
+    setError(null);
+    setLoading(false);
     router.push("/connexion");
   };
 
