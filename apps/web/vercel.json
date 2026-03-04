@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "http://3.128.44.226/api/v1",
+    "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "176805915108-jodl67oj2oi8eq0e5vivujm1fu2mqsgh.apps.googleusercontent.com"
+  }
+}
