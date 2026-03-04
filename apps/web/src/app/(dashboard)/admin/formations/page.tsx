@@ -764,7 +764,7 @@ export default function AdminFormations() {
                             {r.duration ? <span className="text-white/15 text-[10px]">{r.duration} min</span> : null}
                           </div>
                         </div>
-                        <a href={r.url.startsWith("http") ? r.url : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:4000"}${r.url}`} target="_blank" rel="noopener noreferrer"
+                        <a href={r.url.startsWith("http") ? r.url : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "https://prod-llm.onrender.com"}${r.url}`} target="_blank" rel="noopener noreferrer"
                           className="p-2 rounded-lg hover:bg-blue-400/10 text-white/20 hover:text-blue-400 transition-all" title="Voir/Telecharger">
                           <FaEye className="text-xs" />
                         </a>

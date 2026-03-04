@@ -64,7 +64,7 @@ const DEFAULT_IMAGES = [
 ];
 
 function mapApiCourse(c: ApiCourse, idx: number): FormationDisplay {
-  const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:4000";
+  const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "https://prod-llm.onrender.com";
   return {
     slug: c.slug,
     title: c.title,

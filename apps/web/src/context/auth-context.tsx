@@ -119,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1"}/auth/google`;
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "https://prod-llm.onrender.com/api/v1"}/auth/google`;
     } catch {
       setError("Google login non disponible");
       setLoading(false);

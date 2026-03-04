@@ -203,7 +203,7 @@ export default function MasterclassesPage() {
                     <div className={`relative h-44 bg-gradient-to-br ${catGradients[mc.category] || catGradients.general} flex items-center justify-center overflow-hidden`}>
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(212,175,55,0.15),transparent_60%)]" />
                       {mc.thumbnail ? (
-                        <img src={mc.thumbnail.startsWith("http") ? mc.thumbnail : `http://localhost:4000${mc.thumbnail}`} alt={mc.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                        <img src={mc.thumbnail.startsWith("http") ? mc.thumbnail : `https://prod-llm.onrender.com${mc.thumbnail}`} alt={mc.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
                       ) : null}
                       <div className="relative text-center z-10">
                         {(() => { const Icon = catIcons[mc.category] || FaFire; return <Icon className="text-gold/40 text-4xl mx-auto mb-2" />; })()}

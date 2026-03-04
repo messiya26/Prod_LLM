@@ -417,7 +417,7 @@ export default function FormationDetail() {
   useEffect(() => {
     api.get<any>(`/courses/${slug}`)
       .then((course) => {
-        const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:4000";
+        const imgBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "https://prod-llm.onrender.com";
         const resolveImg = (img: string | null) => img ? (img.startsWith("http") ? img : `${imgBase}${img}`) : "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1920&h=800&fit=crop";
         const apiFormation: FormationData = {
           slug: course.slug,

@@ -99,7 +99,7 @@ export default function MesFormations() {
               >
                 <div className="relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-cream/[0.05]">
                   {enrollment.course.thumbnail ? (
-                    <Image src={enrollment.course.thumbnail.startsWith("http") ? enrollment.course.thumbnail : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:4000"}${enrollment.course.thumbnail}`} alt={enrollment.course.title} fill className="object-cover" />
+                    <Image src={enrollment.course.thumbnail.startsWith("http") ? enrollment.course.thumbnail : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "https://prod-llm.onrender.com"}${enrollment.course.thumbnail}`} alt={enrollment.course.title} fill className="object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center"><FaPlay className="text-gold/30" /></div>
                   )}
