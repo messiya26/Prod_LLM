@@ -1,0 +1,21 @@
+version: 1
+applications:
+  - appRoot: apps/web
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install
+        build:
+          commands:
+            - echo "NEXT_PUBLIC_API_URL=http://3.128.44.226/api/v1" >> .env.production
+            - echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=176805915108-jodl67oj2oi8eq0e5vivujm1fu2mqsgh.apps.googleusercontent.com" >> .env.production
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
