@@ -12,18 +12,18 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         userId: string;
         courseId: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         progress: number;
     }>;
     activateAfterPayment(userId: string, courseIdOrSlug: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         userId: string;
         courseId: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         progress: number;
     }>;
     getMyEnrollments(userId: string): Promise<({
@@ -37,11 +37,11 @@ export declare class EnrollmentsService {
             updatedAt: Date;
             title: string;
             slug: string;
-            published: boolean;
             description: string;
             thumbnail: string | null;
             level: import(".prisma/client").$Enums.Level;
             price: import(".prisma/client/runtime/library").Decimal;
+            published: boolean;
             categoryId: string;
             instructorId: string | null;
         };
@@ -49,9 +49,9 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         userId: string;
         courseId: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         progress: number;
     })[]>;
     checkEnrolled(userId: string, courseIdOrSlug: string): Promise<{
@@ -69,9 +69,9 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         userId: string;
         courseId: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         progress: number;
     }>;
     getRecentEnrollments(): Promise<({
@@ -86,9 +86,9 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         userId: string;
         courseId: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         progress: number;
     })[]>;
 }

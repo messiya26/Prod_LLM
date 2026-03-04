@@ -4,19 +4,19 @@ export declare class CoursesService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(published?: boolean): import(".prisma/client").Prisma.PrismaPromise<({
-        _count: {
-            enrollments: number;
-            modules: number;
-        };
         category: {
             name: string;
             id: string;
             slug: string;
         };
+        _count: {
+            enrollments: number;
+            modules: number;
+        };
         instructor: {
-            id: string;
             firstName: string;
             lastName: string;
+            id: string;
             avatar: string | null;
             bio: string | null;
         } | null;
@@ -26,27 +26,27 @@ export declare class CoursesService {
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
+        published: boolean;
         categoryId: string;
         instructorId: string | null;
     })[]>;
     findBySlug(slug: string): Promise<{
-        _count: {
-            enrollments: number;
-        };
         category: {
             name: string;
             id: string;
             slug: string;
         };
+        _count: {
+            enrollments: number;
+        };
         instructor: {
-            id: string;
             firstName: string;
             lastName: string;
+            id: string;
             avatar: string | null;
             bio: string | null;
         } | null;
@@ -54,8 +54,8 @@ export declare class CoursesService {
             lessons: {
                 id: string;
                 title: string;
-                content: string | null;
                 order: number;
+                content: string | null;
                 muxAssetId: string | null;
                 muxPlaybackId: string | null;
                 duration: number | null;
@@ -73,11 +73,11 @@ export declare class CoursesService {
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
+        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;
@@ -88,9 +88,9 @@ export declare class CoursesService {
             slug: string;
         };
         instructor: {
-            id: string;
             firstName: string;
             lastName: string;
+            id: string;
         } | null;
     } & {
         id: string;
@@ -98,11 +98,11 @@ export declare class CoursesService {
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
+        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;
@@ -112,11 +112,11 @@ export declare class CoursesService {
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
+        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;
@@ -133,10 +133,10 @@ export declare class CoursesService {
         slug: string;
     })[]>;
     getInstructors(): Promise<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
+        id: string;
         avatar: string | null;
         bio: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -150,11 +150,11 @@ export declare class CoursesService {
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
+        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;

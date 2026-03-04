@@ -3,23 +3,23 @@ export declare class UsersController {
     private usersService;
     constructor(usersService: UsersService);
     findAll(page?: string, limit?: string): import(".prisma/client").Prisma.PrismaPromise<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
+        id: string;
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
     }[]>;
     count(): Promise<number>;
     getInvitations(): Promise<{
-        id: string;
+        token: string;
         email: string;
+        id: string;
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
-        token: string;
         expiresAt: Date;
-        accepted: boolean;
         invitedBy: string;
+        accepted: boolean;
     }[]>;
     invite(body: {
         email: string;
@@ -36,12 +36,12 @@ export declare class UsersController {
     updateRole(id: string, body: {
         role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
     }): Promise<{
-        id: string;
-        email: string;
-        passwordHash: string;
         firstName: string;
         lastName: string;
+        email: string;
         phone: string | null;
+        id: string;
+        passwordHash: string;
         avatar: string | null;
         bio: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -50,11 +50,11 @@ export declare class UsersController {
         updatedAt: Date;
     }>;
     findById(id: string): import(".prisma/client").Prisma.Prisma__UserClient<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
         phone: string | null;
+        id: string;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
@@ -69,9 +69,9 @@ export declare class UsersController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.EnrollmentStatus;
             userId: string;
             courseId: string;
+            status: import(".prisma/client").$Enums.EnrollmentStatus;
             progress: number;
         })[];
     } | null, null, import(".prisma/client/runtime/library").DefaultArgs>;

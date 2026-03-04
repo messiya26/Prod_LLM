@@ -66,11 +66,11 @@ export declare class AuthService {
         };
     }>;
     getProfile(userId: string): Promise<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
         phone: string | null;
+        id: string;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
@@ -81,28 +81,28 @@ export declare class AuthService {
         lastName?: string;
         phone?: string;
     }): Promise<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
         phone: string | null;
+        id: string;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
         createdAt: Date;
     }>;
     promoteToAdmin(userId: string, currentUserId: string): Promise<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
+        id: string;
         role: import(".prisma/client").$Enums.Role;
     }>;
     changeRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN", currentUserId: string): Promise<{
-        id: string;
-        email: string;
         firstName: string;
         lastName: string;
+        email: string;
+        id: string;
         role: import(".prisma/client").$Enums.Role;
     }>;
     private generateTokens;

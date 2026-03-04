@@ -14,7 +14,7 @@ async function bootstrap() {
     }));
     const allowedOrigins = process.env.CORS_ORIGINS
         ? process.env.CORS_ORIGINS.split(",")
-        : ["http://localhost:3000", "http://localhost:3001", "http://localhost:3005"];
+        : ["http://localhost:3000", "http://localhost:3001", "http://localhost:3005", "https://lordlomboministries.com", "https://www.lordlomboministries.com", "https://lord-lombo-academie.vercel.app"];
     app.enableCors({ origin: allowedOrigins, credentials: true });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,

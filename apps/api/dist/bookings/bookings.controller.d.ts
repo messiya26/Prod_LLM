@@ -12,50 +12,50 @@ export declare class BookingsController {
         notes?: string;
     }): Promise<{
         name: string;
-        id: string;
+        subject: string;
+        date: Date;
         email: string;
         phone: string | null;
+        id: string;
         createdAt: Date;
-        date: Date;
-        slot: string;
-        subject: string;
-        notes: string | null;
-        status: string;
         userId: string | null;
+        status: string;
+        slot: string;
+        notes: string | null;
     }>;
     getAvailableSlots(date: string): Promise<string[]>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
-            id: string;
             firstName: string;
             lastName: string;
+            id: string;
         } | null;
     } & {
         name: string;
-        id: string;
+        subject: string;
+        date: Date;
         email: string;
         phone: string | null;
+        id: string;
         createdAt: Date;
-        date: Date;
-        slot: string;
-        subject: string;
-        notes: string | null;
-        status: string;
         userId: string | null;
+        status: string;
+        slot: string;
+        notes: string | null;
     })[]>;
     updateStatus(id: string, dto: {
         status: string;
     }): import(".prisma/client").Prisma.Prisma__BookingClient<{
         name: string;
-        id: string;
+        subject: string;
+        date: Date;
         email: string;
         phone: string | null;
+        id: string;
         createdAt: Date;
-        date: Date;
-        slot: string;
-        subject: string;
-        notes: string | null;
-        status: string;
         userId: string | null;
+        status: string;
+        slot: string;
+        notes: string | null;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
 }

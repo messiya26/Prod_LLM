@@ -6,8 +6,8 @@ export declare class ModulesService {
         lessons: {
             id: string;
             title: string;
-            content: string | null;
             order: number;
+            content: string | null;
             muxAssetId: string | null;
             muxPlaybackId: string | null;
             duration: number | null;
@@ -25,8 +25,8 @@ export declare class ModulesService {
         lessons: {
             id: string;
             title: string;
-            content: string | null;
             order: number;
+            content: string | null;
             muxAssetId: string | null;
             muxPlaybackId: string | null;
             duration: number | null;
@@ -45,8 +45,8 @@ export declare class ModulesService {
         lessons: {
             id: string;
             title: string;
-            content: string | null;
             order: number;
+            content: string | null;
             muxAssetId: string | null;
             muxPlaybackId: string | null;
             duration: number | null;
@@ -68,8 +68,8 @@ export declare class ModulesService {
     }): Promise<{
         id: string;
         title: string;
-        content: string | null;
         order: number;
+        content: string | null;
         muxAssetId: string | null;
         muxPlaybackId: string | null;
         duration: number | null;
@@ -83,8 +83,8 @@ export declare class ModulesService {
     }): Promise<{
         id: string;
         title: string;
-        content: string | null;
         order: number;
+        content: string | null;
         muxAssetId: string | null;
         muxPlaybackId: string | null;
         duration: number | null;

@@ -9,10 +9,10 @@ export declare class PaymentsService {
         metadata?: string;
     }): Promise<{
         user: {
-            id: string;
-            email: string;
             firstName: string;
             lastName: string;
+            email: string;
+            id: string;
         };
         course: {
             id: string;
@@ -20,11 +20,11 @@ export declare class PaymentsService {
             updatedAt: Date;
             title: string;
             slug: string;
-            published: boolean;
             description: string;
             thumbnail: string | null;
             level: import(".prisma/client").$Enums.Level;
             price: import(".prisma/client/runtime/library").Decimal;
+            published: boolean;
             categoryId: string;
             instructorId: string | null;
         };
@@ -32,38 +32,38 @@ export declare class PaymentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.PaymentStatus;
         userId: string;
         courseId: string;
-        enrollmentId: string | null;
-        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        enrollmentId: string | null;
     }>;
     confirm(reference: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.PaymentStatus;
         userId: string;
         courseId: string;
-        enrollmentId: string | null;
-        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        enrollmentId: string | null;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
-            id: string;
-            email: string;
             firstName: string;
             lastName: string;
+            email: string;
+            id: string;
         };
         course: {
             id: string;
@@ -73,16 +73,16 @@ export declare class PaymentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.PaymentStatus;
         userId: string;
         courseId: string;
-        enrollmentId: string | null;
-        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        enrollmentId: string | null;
     })[]>;
     findByUser(userId: string): import(".prisma/client").Prisma.PrismaPromise<({
         course: {
@@ -93,16 +93,16 @@ export declare class PaymentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.PaymentStatus;
         userId: string;
         courseId: string;
-        enrollmentId: string | null;
-        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        enrollmentId: string | null;
     })[]>;
     stats(): import(".prisma/client").Prisma.PrismaPromise<unknown>;
 }

@@ -4,45 +4,45 @@ export declare class ResourcesService {
     private prisma;
     constructor(prisma: PrismaService);
     getCourseResources(courseId: string): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         type: import(".prisma/client").$Enums.ResourceType;
         title: string;
-        courseId: string;
         description: string | null;
+        courseId: string;
         order: number;
         duration: number | null;
         moduleId: string | null;
-        url: string;
         fileSize: number | null;
     }[]>;
     addResource(courseId: string, dto: CreateResourceDto): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         type: import(".prisma/client").$Enums.ResourceType;
         title: string;
-        courseId: string;
         description: string | null;
+        courseId: string;
         order: number;
         duration: number | null;
         moduleId: string | null;
-        url: string;
         fileSize: number | null;
     }>;
     updateResource(id: string, dto: Partial<CreateResourceDto>): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         type: import(".prisma/client").$Enums.ResourceType;
         title: string;
-        courseId: string;
         description: string | null;
+        courseId: string;
         order: number;
         duration: number | null;
         moduleId: string | null;
-        url: string;
         fileSize: number | null;
     }>;
     deleteResource(id: string): Promise<{
@@ -50,21 +50,21 @@ export declare class ResourcesService {
     }>;
     getCourseQuiz(courseId: string): Promise<({
         questions: {
+            options: string;
             id: string;
             order: number;
-            quizId: string;
             question: string;
-            options: string;
             correctAnswer: string;
             explanation: string | null;
+            quizId: string;
         }[];
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        courseId: string;
         description: string | null;
+        courseId: string;
         passingScore: number;
     }) | null>;
     createOrUpdateQuiz(courseId: string, dto: CreateQuizDto): Promise<{
@@ -72,18 +72,18 @@ export declare class ResourcesService {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        courseId: string;
         description: string | null;
+        courseId: string;
         passingScore: number;
     }>;
     addQuestion(quizId: string, dto: CreateQuestionDto): Promise<{
+        options: string;
         id: string;
         order: number;
-        quizId: string;
         question: string;
-        options: string;
         correctAnswer: string;
         explanation: string | null;
+        quizId: string;
     }>;
     deleteQuestion(id: string): Promise<{
         deleted: boolean;
@@ -97,8 +97,8 @@ export declare class ResourcesService {
             id: string;
             createdAt: Date;
             userId: string;
-            quizId: string;
             answers: string;
+            quizId: string;
             score: number;
             passed: boolean;
         };
@@ -107,8 +107,8 @@ export declare class ResourcesService {
         id: string;
         createdAt: Date;
         userId: string;
-        quizId: string;
         answers: string;
+        quizId: string;
         score: number;
         passed: boolean;
     }[]>;

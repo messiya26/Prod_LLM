@@ -5,33 +5,33 @@ export declare class ContactService {
     constructor(prisma: PrismaService);
     create(dto: CreateContactDto): import(".prisma/client").Prisma.Prisma__ContactMessageClient<{
         name: string;
-        id: string;
+        subject: string;
         email: string;
         phone: string | null;
+        id: string;
         createdAt: Date;
-        subject: string;
         userId: string | null;
         message: string;
         read: boolean;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
     findAll(page?: number, limit?: number): import(".prisma/client").Prisma.PrismaPromise<{
         name: string;
-        id: string;
+        subject: string;
         email: string;
         phone: string | null;
+        id: string;
         createdAt: Date;
-        subject: string;
         userId: string | null;
         message: string;
         read: boolean;
     }[]>;
     markAsRead(id: string): import(".prisma/client").Prisma.Prisma__ContactMessageClient<{
         name: string;
-        id: string;
+        subject: string;
         email: string;
         phone: string | null;
+        id: string;
         createdAt: Date;
-        subject: string;
         userId: string | null;
         message: string;
         read: boolean;
