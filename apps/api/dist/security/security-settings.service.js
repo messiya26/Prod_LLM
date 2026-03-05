@@ -19,7 +19,12 @@ let SecuritySettingsService = class SecuritySettingsService {
     async get() {
         let settings = await this.prisma.securitySettings.findUnique({ where: { id: "default" } });
         if (!settings) {
-            settings = await this.prisma.securitySettings.create({ data: { id: "default" } });
+            try {
+                settings = await this.prisma.securitySettings.create({ data: { id: "default" } });
+            }
+            catch {
+                settings = await this.prisma.securitySettings.findUnique({ where: { id: "default" } });
+            }
         }
         return settings;
     }
@@ -33,8 +38,10 @@ let SecuritySettingsService = class SecuritySettingsService {
     async validatePassword(password) {
         const settings = await this.get();
         const errors = [];
+        if (!settings)
+            return { valid: true, errors };
         if (password.length < settings.passwordMinLength)
-            errors.push(`Le mot de passe doit contenir au moins ${settings.passwordMinLength} caractères`);
+            errors.push(`Le mot de passe doit contenir au moins ${settings.passwordMinLength} caracteres`);
         if (settings.passwordRequireUpper && !/[A-Z]/.test(password))
             errors.push("Le mot de passe doit contenir au moins une majuscule");
         if (settings.passwordRequireLower && !/[a-z]/.test(password))
@@ -42,7 +49,7 @@ let SecuritySettingsService = class SecuritySettingsService {
         if (settings.passwordRequireNumber && !/[0-9]/.test(password))
             errors.push("Le mot de passe doit contenir au moins un chiffre");
         if (settings.passwordRequireSpecial && !/[!@#$%^&*(),.?":{}|<>]/.test(password))
-            errors.push("Le mot de passe doit contenir au moins un caractère spécial");
+            errors.push("Le mot de passe doit contenir au moins un caractere special");
         return { valid: errors.length === 0, errors };
     }
 };
