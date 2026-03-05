@@ -158,7 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setError(null);
     setLoading(false);
-    router.push("/connexion");
+    window.location.href = "/connexion";
   };
 
   const clearError = () => setError(null);
