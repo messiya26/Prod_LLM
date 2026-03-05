@@ -18,6 +18,7 @@ interface Payment {
   method: string;
   createdAt: string;
   course: { id: string; title: string };
+  user?: { firstName: string; lastName: string; email: string };
 }
 
 const statusMap: Record<string, { label: string; cls: string; icon: any }> = {
@@ -33,12 +34,16 @@ const methodLabels: Record<string, string> = {
   BANK_TRANSFER: "Virement", FREE: "Gratuit",
 };
 
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="60" height="66"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0C75E"/><stop offset="50%" stop-color="#D4A438"/><stop offset="100%" stop-color="#B8860B"/></linearGradient></defs><rect x="40" y="10" width="38" height="130" rx="3" fill="url(#g1)"/><rect x="90" y="45" width="32" height="95" rx="3" fill="#0D2240"/><path d="M38 140 Q70 125,100 140 T160 135 L160 150 Q130 160,100 150 T38 155Z" fill="#D4A438"/><text x="100" y="185" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="bold" letter-spacing="4" fill="#FEF9ED">LORD LOMBO</text><text x="108" y="208" text-anchor="middle" font-family="Georgia,serif" font-size="16" font-style="italic" fill="#D4A438">Academie</text></svg>`;
+
 function generateReceiptHTML(p: Payment) {
+  const clientName = p.user ? `${p.user.firstName} ${p.user.lastName}` : "N/A";
+  const clientEmail = p.user?.email || "N/A";
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Recu ${p.reference}</title>
 <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f8f9fa;padding:40px}
 .receipt{max-width:600px;margin:auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08)}
 .header{background:linear-gradient(135deg,#0a1628,#162d50);color:#fff;padding:32px;text-align:center}
-.header img{height:60px;margin-bottom:12px}
+.header .logo{margin:0 auto 12px}
 .header h1{font-size:20px;margin-bottom:4px}.header .ref{color:#d4a853;font-size:13px;font-family:monospace}
 .body{padding:32px}.row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f0f0f0}
 .row:last-child{border:none}.label{color:#888;font-size:13px}.value{font-weight:600;font-size:14px;color:#222}
@@ -49,9 +54,11 @@ function generateReceiptHTML(p: Payment) {
 .FAILED{background:#fee2e2;color:#dc2626}.REFUNDED{background:#ffedd5;color:#ea580c}
 .footer{text-align:center;padding:24px;color:#999;font-size:11px;border-top:1px solid #f0f0f0}
 @media print{body{padding:0;background:#fff}.receipt{box-shadow:none}}</style></head>
-<body><div class="receipt"><div class="header"><img src="/logo-llm-academie.svg" alt="LL Academie" onerror="this.style.display='none'"><h1>Lord Lombo Academy</h1><p class="ref">${p.reference}</p></div>
+<body><div class="receipt"><div class="header"><div class="logo">${LOGO_SVG}</div><h1>Lord Lombo Academy</h1><p class="ref">${p.reference}</p></div>
 <div class="body"><div class="amount-box"><div class="amount">${parseFloat(p.amount).toLocaleString("fr-FR")} FCFA</div>
 <div class="currency"><span class="status ${p.status}">${statusMap[p.status]?.label || p.status}</span></div></div>
+<div class="row"><span class="label">Client</span><span class="value">${clientName}</span></div>
+<div class="row"><span class="label">Email</span><span class="value">${clientEmail}</span></div>
 <div class="row"><span class="label">Formation</span><span class="value">${p.course?.title || "-"}</span></div>
 <div class="row"><span class="label">Methode</span><span class="value">${methodLabels[p.method] || p.method}</span></div>
 <div class="row"><span class="label">Date</span><span class="value">${new Date(p.createdAt).toLocaleString("fr-FR")}</span></div>

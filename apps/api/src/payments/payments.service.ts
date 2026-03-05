@@ -57,7 +57,10 @@ export class PaymentsService {
   findByUser(userId: string) {
     return this.prisma.payment.findMany({
       where: { userId },
-      include: { course: { select: { id: true, title: true } } },
+      include: {
+        course: { select: { id: true, title: true } },
+        user: { select: { firstName: true, lastName: true, email: true } },
+      },
       orderBy: { createdAt: "desc" },
     });
   }

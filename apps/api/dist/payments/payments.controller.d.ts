@@ -86,6 +86,11 @@ export declare class PaymentsController {
     })[]>;
     stats(): import(".prisma/client").Prisma.PrismaPromise<unknown>;
     findMy(req: any): import(".prisma/client").Prisma.PrismaPromise<({
+        user: {
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
         course: {
             id: string;
             title: string;
@@ -163,6 +168,11 @@ export declare class PaymentsController {
         progress: number;
     })[]>;
     findByUserId(userId: string): import(".prisma/client").Prisma.PrismaPromise<({
+        user: {
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
         course: {
             id: string;
             title: string;
