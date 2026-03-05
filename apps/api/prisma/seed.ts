@@ -136,7 +136,37 @@ async function main() {
     },
   });
 
-  console.log("Seed completed: admin, student, 2 instructors, 4 categories, 4 courses with modules/lessons, 1 enrollment");
+  const modHash = await bcrypt.hash("Moderateur2026!", 12);
+  await prisma.user.upsert({
+    where: { email: "moderateur@lordlomboacademie.com" },
+    update: {},
+    create: {
+      email: "moderateur@lordlomboacademie.com",
+      passwordHash: modHash,
+      firstName: "Grace",
+      lastName: "Kabongo",
+      role: "MODERATOR",
+      bio: "Moderatrice de la plateforme Lord Lombo Academy.",
+      emailVerified: true,
+    },
+  });
+
+  const superHash = await bcrypt.hash("SuperAdmin2026!", 12);
+  await prisma.user.upsert({
+    where: { email: "superadmin@lordlomboacademie.com" },
+    update: {},
+    create: {
+      email: "superadmin@lordlomboacademie.com",
+      passwordHash: superHash,
+      firstName: "Urbain",
+      lastName: "Ahoadi",
+      role: "SUPER_ADMIN",
+      bio: "Super administrateur de la plateforme.",
+      emailVerified: true,
+    },
+  });
+
+  console.log("Seed completed: admin, student, 2 instructors, moderator, super_admin, 4 categories, courses with modules/lessons, 1 enrollment");
 
   const allCourses = await prisma.course.findMany();
   const paymentData = [

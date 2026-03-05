@@ -72,4 +72,54 @@ export class PaymentsService {
       FROM payments
     `;
   }
+
+  async instructorStats(instructorId: string) {
+    const courses = await this.prisma.course.findMany({
+      where: { instructorId },
+      select: { id: true, title: true },
+    });
+    const courseIds = courses.map(c => c.id);
+    if (!courseIds.length) return { totalRevenue: 0, totalStudents: 0, payments: [], courses: [] };
+
+    const payments = await this.prisma.payment.findMany({
+      where: { courseId: { in: courseIds }, status: "COMPLETED" },
+      include: {
+        user: { select: { id: true, firstName: true, lastName: true, email: true } },
+        course: { select: { id: true, title: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const totalRevenue = payments.reduce((s, p) => s + Number(p.amount), 0);
+    const uniqueStudents = new Set(payments.map(p => p.userId));
+
+    return {
+      totalRevenue,
+      totalStudents: uniqueStudents.size,
+      payments: payments.slice(0, 20),
+      courses: courses.map(c => ({
+        ...c,
+        revenue: payments.filter(p => p.courseId === c.id).reduce((s, p) => s + Number(p.amount), 0),
+        students: new Set(payments.filter(p => p.courseId === c.id).map(p => p.userId)).size,
+      })),
+    };
+  }
+
+  async instructorStudents(instructorId: string) {
+    const courses = await this.prisma.course.findMany({
+      where: { instructorId },
+      select: { id: true },
+    });
+    const courseIds = courses.map(c => c.id);
+    if (!courseIds.length) return [];
+
+    return this.prisma.enrollment.findMany({
+      where: { courseId: { in: courseIds } },
+      include: {
+        user: { select: { id: true, firstName: true, lastName: true, email: true, avatar: true } },
+        course: { select: { id: true, title: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }

@@ -21,6 +21,14 @@ export class LiveService {
     });
   }
 
+  async findByHost(hostId: string) {
+    return this.prisma.liveSession.findMany({
+      where: { hostId },
+      orderBy: { scheduledAt: "desc" },
+      include: { _count: { select: { attendees: true } } },
+    });
+  }
+
   async findUpcoming() {
     return this.prisma.liveSession.findMany({
       where: { status: { in: ["SCHEDULED", "LIVE"] }, scheduledAt: { gte: new Date() } },

@@ -16,11 +16,13 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const prisma_1 = require("../prisma");
 const mail_service_1 = require("../mail/mail.service");
+const notifications_service_1 = require("../notifications/notifications.service");
 let AuthService = class AuthService {
-    constructor(prisma, jwt, mail) {
+    constructor(prisma, jwt, mail, notifications) {
         this.prisma = prisma;
         this.jwt = jwt;
         this.mail = mail;
+        this.notifications = notifications;
     }
     async register(dto) {
         const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
@@ -47,6 +49,12 @@ let AuthService = class AuthService {
             },
         });
         this.mail.sendVerificationEmail(user.email, user.firstName, token).catch(() => { });
+        this.notifications.create(user.id, {
+            title: "Bienvenue sur Lord Lombo Academy !",
+            message: `Bonjour ${user.firstName}, votre compte a ete cree avec succes. Verifiez votre email pour activer toutes les fonctionnalites.`,
+            type: "welcome",
+            link: "/dashboard",
+        }).catch(() => { });
         const tokens = await this.generateTokens(user.id, user.email);
         return {
             user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, emailVerified: false },
@@ -107,6 +115,12 @@ let AuthService = class AuthService {
         const valid = await bcrypt.compare(dto.password, user.passwordHash);
         if (!valid)
             throw new common_1.UnauthorizedException("Email ou mot de passe incorrect");
+        this.notifications.create(user.id, {
+            title: "Nouvelle connexion detectee",
+            message: `Connexion a votre compte le ${new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}. Si ce n'est pas vous, changez votre mot de passe immediatement.`,
+            type: "security",
+            link: "/dashboard/parametres",
+        }).catch(() => { });
         const tokens = await this.generateTokens(user.id, user.email);
         return {
             user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, emailVerified: user.emailVerified },
@@ -128,10 +142,22 @@ let AuthService = class AuthService {
                 },
             });
             this.mail.sendWelcomeEmail(user.email, user.firstName).catch(() => { });
+            this.notifications.create(user.id, {
+                title: "Bienvenue sur Lord Lombo Academy !",
+                message: `Bonjour ${user.firstName}, votre compte a ete cree via Google. Explorez nos formations des maintenant !`,
+                type: "welcome",
+                link: "/formations",
+            }).catch(() => { });
         }
         else if (!user.emailVerified) {
             await this.prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
         }
+        this.notifications.create(user.id, {
+            title: "Connexion Google detectee",
+            message: `Connexion via Google le ${new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}.`,
+            type: "security",
+            link: "/dashboard/parametres",
+        }).catch(() => { });
         const tokens = await this.generateTokens(user.id, user.email);
         return {
             user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, emailVerified: true },
@@ -196,6 +222,7 @@ exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_1.PrismaService,
         jwt_1.JwtService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        notifications_service_1.NotificationsService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

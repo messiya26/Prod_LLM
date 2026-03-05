@@ -30,6 +30,13 @@ let LiveService = class LiveService {
             include: { _count: { select: { attendees: true } } },
         });
     }
+    async findByHost(hostId) {
+        return this.prisma.liveSession.findMany({
+            where: { hostId },
+            orderBy: { scheduledAt: "desc" },
+            include: { _count: { select: { attendees: true } } },
+        });
+    }
     async findUpcoming() {
         return this.prisma.liveSession.findMany({
             where: { status: { in: ["SCHEDULED", "LIVE"] }, scheduledAt: { gte: new Date() } },

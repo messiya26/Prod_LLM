@@ -403,6 +403,10 @@ const translations: Record<string, { fr: string; en: string }> = {
   // DASHBOARD LAYOUT
   "dash.board": { fr: "Tableau de bord", en: "Dashboard" },
   "dash.myFormations": { fr: "Mes formations", en: "My courses" },
+  "dash.myPayments": { fr: "Mes paiements", en: "My payments" },
+  "dash.myRevenue": { fr: "Mes revenus", en: "My revenue" },
+  "dash.myStudents": { fr: "Mes etudiants", en: "My students" },
+  "dash.permissions": { fr: "Habilitations", en: "Permissions" },
   "dash.settings": { fr: "Parametres", en: "Settings" },
   "dash.admin": { fr: "Dashboard", en: "Dashboard" },
   "dash.formations": { fr: "Formations", en: "Courses" },

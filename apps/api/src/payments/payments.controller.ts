@@ -39,4 +39,25 @@ export class PaymentsController {
   findMy(@Req() req: any) {
     return this.paymentsService.findByUser(req.user.id);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("INSTRUCTOR", "ADMIN")
+  @Get("instructor/stats")
+  instructorStats(@Req() req: any) {
+    return this.paymentsService.instructorStats(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("INSTRUCTOR", "ADMIN")
+  @Get("instructor/students")
+  instructorStudents(@Req() req: any) {
+    return this.paymentsService.instructorStudents(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("ADMIN")
+  @Get("user/:userId")
+  findByUserId(@Param("userId") userId: string) {
+    return this.paymentsService.findByUser(userId);
+  }
 }

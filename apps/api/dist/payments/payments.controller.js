@@ -37,6 +37,15 @@ let PaymentsController = class PaymentsController {
     findMy(req) {
         return this.paymentsService.findByUser(req.user.id);
     }
+    instructorStats(req) {
+        return this.paymentsService.instructorStats(req.user.id);
+    }
+    instructorStudents(req) {
+        return this.paymentsService.instructorStudents(req.user.id);
+    }
+    findByUserId(userId) {
+        return this.paymentsService.findByUser(userId);
+    }
 };
 exports.PaymentsController = PaymentsController;
 __decorate([
@@ -80,6 +89,33 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], PaymentsController.prototype, "findMy", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, common_1.Get)("instructor/stats"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "instructorStats", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, common_1.Get)("instructor/students"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "instructorStudents", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Get)("user/:userId"),
+    __param(0, (0, common_1.Param)("userId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "findByUserId", null);
 exports.PaymentsController = PaymentsController = __decorate([
     (0, common_1.Controller)("payments"),
     __metadata("design:paramtypes", [payments_service_1.PaymentsService])

@@ -9,6 +9,7 @@ import {
   FaHome, FaBookOpen, FaCog, FaSignOutAlt, FaUsers,
   FaChartBar, FaBars, FaTimes, FaMoneyBillWave, FaComments,
   FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward, FaEdit, FaStar, FaUserTie, FaGem, FaFire,
+  FaReceipt,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
@@ -28,8 +29,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: <FaHome />, labelKey: "dash.board", href: "/dashboard" },
     { icon: <FaBookOpen />, labelKey: "dash.myFormations", href: "/dashboard/formations" },
     { icon: <FaVideo />, labelKey: "dash.live", href: "/dashboard/live" },
+    { icon: <FaReceipt />, labelKey: "dash.myPayments", href: "/dashboard/paiements" },
     { icon: <FaAward />, labelKey: "dash.certificates", href: "/dashboard/certificats" },
     { icon: <FaCog />, labelKey: "dash.settings", href: "/dashboard/parametres" },
+  ];
+
+  const sidebarInstructor = [
+    { icon: <FaHome />, labelKey: "dash.board", href: "/dashboard" },
+    { icon: <FaBookOpen />, labelKey: "dash.myFormations", href: "/dashboard/formations" },
+    { icon: <FaVideo />, labelKey: "dash.live", href: "/dashboard/live" },
+    { icon: <FaReceipt />, labelKey: "dash.myPayments", href: "/dashboard/paiements" },
+    { icon: <FaMoneyBillWave />, labelKey: "dash.myRevenue", href: "/dashboard/revenus" },
+    { icon: <FaUsers />, labelKey: "dash.myStudents", href: "/dashboard/etudiants" },
+    { icon: <FaAward />, labelKey: "dash.certificates", href: "/dashboard/certificats" },
+    { icon: <FaCog />, labelKey: "dash.settings", href: "/dashboard/parametres" },
+  ];
+
+  const sidebarModerator = [
+    { icon: <FaChartBar />, labelKey: "dash.admin", href: "/admin" },
+    { icon: <FaBookOpen />, labelKey: "dash.formations", href: "/admin/formations" },
+    { icon: <FaUsers />, labelKey: "dash.students", href: "/admin/utilisateurs" },
+    { icon: <FaComments />, labelKey: "dash.messages", href: "/admin/messages" },
+    { icon: <FaEdit />, labelKey: "dash.blog", href: "/admin/blog" },
+    { icon: <FaStar />, labelKey: "dash.events", href: "/admin/evenements" },
+    { icon: <FaCog />, labelKey: "dash.settings", href: "/admin/parametres" },
   ];
 
   const sidebarAdmin = [
@@ -48,7 +71,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: <FaCog />, labelKey: "dash.settings", href: "/admin/parametres" },
   ];
 
-  const items = isAdminRoute ? sidebarAdmin : sidebarStudent;
+  const sidebarSuperAdmin = [
+    ...sidebarAdmin,
+    { icon: <FaGem />, labelKey: "dash.permissions", href: "/admin/permissions" },
+  ];
+
+  const roleLabels: Record<string, string> = {
+    STUDENT: "Apprenant",
+    INSTRUCTOR: "Formateur",
+    MODERATOR: "Moderateur",
+    ADMIN: "Administrateur",
+    SUPER_ADMIN: "Super Admin",
+  };
+
+  const canAccessAdmin = ["ADMIN", "SUPER_ADMIN", "MODERATOR"].includes(user?.role || "");
+  const canAccessInstructor = user?.role === "INSTRUCTOR";
+
+  const getItems = () => {
+    if (isAdminRoute) {
+      if (user?.role === "SUPER_ADMIN") return sidebarSuperAdmin;
+      if (user?.role === "MODERATOR") return sidebarModerator;
+      return sidebarAdmin;
+    }
+    if (canAccessInstructor) return sidebarInstructor;
+    return sidebarStudent;
+  };
+
+  const items = getItems();
 
   useEffect(() => {
     if (!loading && !user) router.push("/connexion");
@@ -79,7 +128,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
         </div>
 
-        {user.role === "ADMIN" && (
+        {canAccessAdmin && (
           <div className="px-4 mb-3">
             <Link
               href={isAdminRoute ? "/dashboard" : "/admin"}
@@ -91,6 +140,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               {isAdminRoute ? <><FaHome className="text-[10px]" /> {t("dash.studentView")}</> : <><FaChartBar className="text-[10px]" /> {t("dash.adminPanel")}</>}
             </Link>
+          </div>
+        )}
+
+        {canAccessInstructor && !isAdminRoute && (
+          <div className="px-4 mb-3">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-blue-400/80 bg-blue-400/5 border border-blue-400/10">
+              <FaUserTie className="text-[10px]" /> Espace Formateur
+            </div>
           </div>
         )}
 
@@ -154,7 +211,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
                 <div className="hidden md:block text-left">
                   <div className="text-xs font-semibold text-white">{user.firstName || ""} {user.lastName || ""}</div>
-                  <div className="text-[10px] text-white/30">{user.role === "ADMIN" ? "Admin" : t("dash.learner")}</div>
+                  <div className="text-[10px] text-white/30">{roleLabels[user.role] || t("dash.learner")}</div>
                 </div>
                 <FaChevronDown className="text-white/20 text-[8px] hidden md:block" />
               </button>

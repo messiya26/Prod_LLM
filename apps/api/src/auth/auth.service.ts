@@ -4,6 +4,7 @@ import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import { PrismaService } from "../prisma";
 import { MailService, decodeVerifyToken } from "../mail/mail.service";
+import { NotificationsService } from "../notifications/notifications.service";
 import { RegisterDto, LoginDto } from "./dto/auth.dto";
 
 @Injectable()
@@ -12,6 +13,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private mail: MailService,
+    private notifications: NotificationsService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -41,6 +43,13 @@ export class AuthService {
     });
 
     this.mail.sendVerificationEmail(user.email, user.firstName, token).catch(() => {});
+
+    this.notifications.create(user.id, {
+      title: "Bienvenue sur Lord Lombo Academy !",
+      message: `Bonjour ${user.firstName}, votre compte a ete cree avec succes. Verifiez votre email pour activer toutes les fonctionnalites.`,
+      type: "welcome",
+      link: "/dashboard",
+    }).catch(() => {});
 
     const tokens = await this.generateTokens(user.id, user.email);
     return {
@@ -108,6 +117,13 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) throw new UnauthorizedException("Email ou mot de passe incorrect");
 
+    this.notifications.create(user.id, {
+      title: "Nouvelle connexion detectee",
+      message: `Connexion a votre compte le ${new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}. Si ce n'est pas vous, changez votre mot de passe immediatement.`,
+      type: "security",
+      link: "/dashboard/parametres",
+    }).catch(() => {});
+
     const tokens = await this.generateTokens(user.id, user.email);
     return {
       user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, emailVerified: user.emailVerified },
@@ -132,9 +148,23 @@ export class AuthService {
       });
 
       this.mail.sendWelcomeEmail(user.email, user.firstName).catch(() => {});
+
+      this.notifications.create(user.id, {
+        title: "Bienvenue sur Lord Lombo Academy !",
+        message: `Bonjour ${user.firstName}, votre compte a ete cree via Google. Explorez nos formations des maintenant !`,
+        type: "welcome",
+        link: "/formations",
+      }).catch(() => {});
     } else if (!user.emailVerified) {
       await this.prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
     }
+
+    this.notifications.create(user.id, {
+      title: "Connexion Google detectee",
+      message: `Connexion via Google le ${new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}.`,
+      type: "security",
+      link: "/dashboard/parametres",
+    }).catch(() => {});
 
     const tokens = await this.generateTokens(user.id, user.email);
     return {
