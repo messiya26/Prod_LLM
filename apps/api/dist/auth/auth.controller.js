@@ -47,7 +47,7 @@ let AuthController = class AuthController {
     googleAuth() { }
     async googleCallback(req, res) {
         const result = await this.authService.googleLogin(req.user);
-        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3001";
+        const frontendUrl = process.env.FRONTEND_URL || "https://lordlomboministries.com";
         res.redirect(`${frontendUrl}/connexion?token=${result.accessToken}&role=${result.user.role}`);
     }
 };

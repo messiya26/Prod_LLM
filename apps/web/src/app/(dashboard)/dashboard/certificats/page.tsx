@@ -37,7 +37,7 @@ export default function CertificatsPage() {
     const name = user ? `${user.firstName} ${user.lastName}` : "Apprenant";
     w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Certificat ${cert.certificateId}</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&family=Dancing+Script:wght@700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0f0f1a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Inter',sans-serif}
 .cert{width:900px;background:linear-gradient(145deg,#0f0f1a,#1a1a2e);border-radius:20px;padding:60px;position:relative;overflow:hidden}
@@ -47,7 +47,10 @@ body{background:#0f0f1a;display:flex;align-items:center;justify-content:center;m
 .tr{top:20px;right:20px;border-top-width:3px;border-right-width:3px;border-top-right-radius:14px}
 .bl{bottom:20px;left:20px;border-bottom-width:3px;border-left-width:3px;border-bottom-left-radius:14px}
 .br{bottom:20px;right:20px;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:14px}
-.logo{color:rgba(212,175,55,0.9);font-size:11px;letter-spacing:6px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.logo-container{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+.logo-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#d4af37,#f5e6a3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#0f0f1a}
+.logo-text{color:rgba(212,175,55,0.9);font-size:11px;letter-spacing:6px;text-transform:uppercase;font-weight:600}
+.logo-sub{color:rgba(212,175,55,0.5);font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-top:2px}
 h1{font-family:'Playfair Display',serif;color:#f5f5f5;font-size:36px;margin-bottom:4px}
 .line{width:80px;height:2px;background:linear-gradient(90deg,transparent,#d4af37,transparent);margin:20px auto}
 .sub{color:rgba(245,245,245,0.35);font-size:14px;margin-bottom:6px;font-weight:300}
@@ -56,8 +59,10 @@ h1{font-family:'Playfair Display',serif;color:#f5f5f5;font-size:36px;margin-bott
 .meta{display:flex;gap:30px;justify-content:center;color:rgba(245,245,245,0.3);font-size:12px;margin:20px 0 30px}
 .footer{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(245,245,245,0.06);padding-top:20px;margin-top:30px}
 .mono{font-family:monospace;color:rgba(245,245,245,0.15);font-size:9px}
-.sig{text-align:right;color:rgba(245,245,245,0.4);font-size:12px;font-style:italic}
-.sig small{display:block;color:rgba(245,245,245,0.2);font-size:10px;font-style:normal;margin-top:2px}
+.sig-container{text-align:right}
+.sig-name{font-family:'Dancing Script',cursive;color:#d4af37;font-size:26px;margin-bottom:2px}
+.sig-title{color:rgba(245,245,245,0.3);font-size:10px;font-style:normal}
+.sig-org{color:rgba(245,245,245,0.2);font-size:9px;margin-top:1px}
 .seal{width:70px;height:70px;border-radius:12px;background:rgba(212,175,55,0.08);display:flex;align-items:center;justify-content:center;border:1px solid rgba(212,175,55,0.15)}
 .seal svg{width:36px;height:36px;fill:rgba(212,175,55,0.3)}
 .grade{display:inline-block;padding:4px 14px;border-radius:20px;background:rgba(212,175,55,0.12);color:#d4af37;font-size:12px;font-weight:600;margin-bottom:16px}
@@ -66,7 +71,10 @@ h1{font-family:'Playfair Display',serif;color:#f5f5f5;font-size:36px;margin-bott
 <div class="cert">
 <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
 <div style="text-align:center">
-<div class="logo">Lord Lombo Ministries</div>
+<div class="logo-container">
+<div class="logo-icon">LLA</div>
+<div><div class="logo-text">Lord Lombo Academie</div><div class="logo-sub">Excellence & Formation</div></div>
+</div>
 <h1>Certificat de Reussite</h1>
 <div class="line"></div>
 <p class="sub">Ce certificat est decerne a</p>
@@ -83,7 +91,7 @@ ${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
 <div class="footer">
 <div><div class="mono">${cert.certificateId}</div><div class="mono" style="margin-top:3px">SHA256: ${cert.verificationHash.slice(0, 24)}...</div></div>
 <div class="seal"><svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
-<div class="sig">${cert.instructorName || "Equipe Pedagogique"}<small>Formateur</small></div>
+<div class="sig-container"><div class="sig-name">Lord Lombo</div><div class="sig-title">Fondateur & Visionnaire</div><div class="sig-org">Lord Lombo Ministries</div></div>
 </div>
 </div>
 </body></html>`);
@@ -171,7 +179,13 @@ ${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
                     <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-gold/40 rounded-br-xl" />
 
                     <div className="text-center">
-                      <div className="text-gold text-xs tracking-[0.3em] uppercase mb-2">Lord Lombo Academie</div>
+                      <div className="flex items-center justify-center gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-navy font-bold text-lg">LLA</div>
+                        <div>
+                          <div className="text-gold text-xs tracking-[0.3em] uppercase font-semibold">Lord Lombo Academie</div>
+                          <div className="text-gold/40 text-[9px] tracking-[0.2em] uppercase">Excellence & Formation</div>
+                        </div>
+                      </div>
                       <h2 className="text-3xl font-bold text-cream mb-1">Certificat de Reussite</h2>
                       <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto my-4" />
 
@@ -196,8 +210,9 @@ ${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
                           <FaQrcode className="text-cream/20 text-2xl" />
                         </div>
                         <div className="text-right">
-                          {viewCert.instructorName && <div className="text-cream/40 text-xs italic">{viewCert.instructorName}</div>}
-                          <div className="text-cream/20 text-[10px]">Formateur</div>
+                          <div className="text-gold text-2xl italic" style={{ fontFamily: "'Dancing Script', cursive" }}>Lord Lombo</div>
+                          <div className="text-cream/30 text-[10px]">Fondateur & Visionnaire</div>
+                          <div className="text-cream/20 text-[9px]">Lord Lombo Ministries</div>
                         </div>
                       </div>
                     </div>

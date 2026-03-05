@@ -56,6 +56,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem("lla_token");
     if (token) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
       api.get<User>("/auth/profile")
         .then((u) => {
           setUser(u);
@@ -66,8 +68,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem("lla_user");
           clearAuthCookies();
         })
-        .finally(() => setLoading(false));
+        .finally(() => { clearTimeout(timeout); setLoading(false); });
     } else {
+      const cached = localStorage.getItem("lla_user");
+      if (cached) {
+        localStorage.removeItem("lla_user");
+        clearAuthCookies();
+      }
       setLoading(false);
     }
   }, []);

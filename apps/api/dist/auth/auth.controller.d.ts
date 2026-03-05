@@ -46,11 +46,11 @@ export declare class AuthController {
         message: string;
     }>;
     getProfile(req: any): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string | null;
-        id: string;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
@@ -61,21 +61,21 @@ export declare class AuthController {
         lastName?: string;
         phone?: string;
     }): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string | null;
-        id: string;
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
         createdAt: Date;
     }>;
     changeRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN", req: any): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
-        id: string;
         role: import(".prisma/client").$Enums.Role;
     }>;
     googleAuth(): void;

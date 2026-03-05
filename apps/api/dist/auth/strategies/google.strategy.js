@@ -18,7 +18,7 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
         super({
             clientID: process.env.GOOGLE_CLIENT_ID || "placeholder",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder",
-            callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://localhost:3002/api/v1/auth/google/callback",
+            callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://prod-llm.onrender.com/api/v1/auth/google/callback",
             scope: ["email", "profile"],
         });
     }
