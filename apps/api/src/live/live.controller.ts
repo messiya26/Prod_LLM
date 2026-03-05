@@ -26,7 +26,7 @@ export class LiveController {
 
   @Get("instructor/my")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   findMyLive(@Request() req: any) {
     return this.svc.findByHost(req.user.id);
   }
@@ -38,42 +38,42 @@ export class LiveController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   create(@Request() req: any, @Body() dto: CreateLiveSessionDto) {
     return this.svc.create(req.user.id, dto);
   }
 
   @Put(":id")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   update(@Param("id") id: string, @Body() dto: UpdateLiveSessionDto) {
     return this.svc.update(id, dto);
   }
 
   @Post(":id/start")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   start(@Param("id") id: string) {
     return this.svc.start(id);
   }
 
   @Post(":id/end")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   end(@Param("id") id: string) {
     return this.svc.end(id);
   }
 
   @Post(":id/cancel")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   cancel(@Param("id") id: string) {
     return this.svc.cancel(id);
   }
 
   @Delete(":id")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("INSTRUCTOR", "ADMIN")
+  @Roles("INSTRUCTOR", "ADMIN", "SUPER_ADMIN")
   delete(@Param("id") id: string) {
     return this.svc.delete(id);
   }

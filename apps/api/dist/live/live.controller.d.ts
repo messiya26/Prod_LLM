@@ -9,8 +9,6 @@ export declare class LiveController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -26,6 +24,8 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     findUpcoming(): Promise<({
         _count: {
@@ -33,8 +33,6 @@ export declare class LiveController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -50,6 +48,8 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     findPast(): Promise<({
         _count: {
@@ -57,8 +57,6 @@ export declare class LiveController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -74,6 +72,8 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     findMyLive(req: any): Promise<({
         _count: {
@@ -81,8 +81,6 @@ export declare class LiveController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -98,11 +96,10 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     findById(id: string): Promise<({
-        _count: {
-            attendees: number;
-        };
         attendees: {
             id: string;
             userId: string;
@@ -110,10 +107,11 @@ export declare class LiveController {
             joinedAt: Date;
             leftAt: Date | null;
         }[];
+        _count: {
+            attendees: number;
+        };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -129,11 +127,11 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }) | null>;
     create(req: any, dto: CreateLiveSessionDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -149,11 +147,11 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(id: string, dto: UpdateLiveSessionDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -169,11 +167,11 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     start(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -189,11 +187,11 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     end(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -209,11 +207,11 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     cancel(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -229,11 +227,11 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     delete(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         title: string;
         description: string | null;
         platform: import(".prisma/client").$Enums.LivePlatform;
@@ -249,6 +247,8 @@ export declare class LiveController {
         endedAt: Date | null;
         duration: number | null;
         replayUrl: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     join(req: any, id: string): Promise<{
         id: string;

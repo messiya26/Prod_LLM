@@ -85,7 +85,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)("instructor/my"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -101,7 +101,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -111,7 +111,7 @@ __decorate([
 __decorate([
     (0, common_1.Put)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -121,7 +121,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)(":id/start"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -130,7 +130,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)(":id/end"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -139,7 +139,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)(":id/cancel"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -148,7 +148,7 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN"),
+    (0, roles_decorator_1.Roles)("INSTRUCTOR", "ADMIN", "SUPER_ADMIN"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
