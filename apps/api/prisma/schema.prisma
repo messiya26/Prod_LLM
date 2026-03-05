@@ -56,6 +56,9 @@ model User {
   subscriptions Subscription[]
   masterclassesInstructed Masterclass[] @relation("MasterclassInstructor")
   masterclassRegistrations MasterclassRegistration[]
+  auditLogs     AuditLog[]
+  sessions      UserSession[]
+  gdprRequests  GdprRequest[]
 
   @@map("users")
 }
@@ -593,4 +596,106 @@ model MasterclassRegistration {
 
   @@unique([masterclassId, userId])
   @@map("masterclass_registrations")
+}
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  LOGIN_FAILED
+  PASSWORD_CHANGE
+  PASSWORD_RESET
+  ROLE_CHANGE
+  USER_CREATE
+  USER_UPDATE
+  USER_DELETE
+  COURSE_CREATE
+  COURSE_UPDATE
+  COURSE_DELETE
+  COURSE_PUBLISH
+  ENROLLMENT_CREATE
+  PAYMENT_CREATE
+  PAYMENT_REFUND
+  SETTINGS_UPDATE
+  PERMISSION_CHANGE
+  SESSION_REVOKE
+  DATA_EXPORT
+  DATA_DELETE_REQUEST
+  LIVE_SESSION_CREATE
+  MASTERCLASS_CREATE
+  CERTIFICATE_GENERATE
+  RESOURCE_UPLOAD
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action      AuditAction
+  targetId    String?
+  targetType  String?
+  metadata    Json?
+  ip          String?
+  userAgent   String?
+  severity    String      @default("INFO")
+  createdAt   DateTime    @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model UserSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  ip          String?
+  userAgent   String?
+  device      String?
+  location    String?
+  isActive    Boolean  @default(true)
+  lastActive  DateTime @default(now())
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("user_sessions")
+}
+
+model SecuritySettings {
+  id                    String   @id @default("default")
+  passwordMinLength     Int      @default(8)
+  passwordRequireUpper  Boolean  @default(true)
+  passwordRequireLower  Boolean  @default(true)
+  passwordRequireNumber Boolean  @default(true)
+  passwordRequireSpecial Boolean @default(false)
+  passwordExpiryDays    Int      @default(90)
+  maxLoginAttempts      Int      @default(5)
+  lockoutDurationMin    Int      @default(30)
+  sessionTimeoutMin     Int      @default(10080)
+  maxActiveSessions     Int      @default(5)
+  requireEmailVerification Boolean @default(true)
+  twoFactorEnabled      Boolean  @default(false)
+  dataRetentionDays     Int      @default(365)
+  auditRetentionDays    Int      @default(730)
+  updatedAt             DateTime @updatedAt
+
+  @@map("security_settings")
+}
+
+model GdprRequest {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String
+  status      String   @default("PENDING")
+  processedBy String?
+  processedAt DateTime?
+  data        Json?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@map("gdpr_requests")
 }

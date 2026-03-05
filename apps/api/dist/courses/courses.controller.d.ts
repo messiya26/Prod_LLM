@@ -4,19 +4,19 @@ export declare class CoursesController {
     private coursesService;
     constructor(coursesService: CoursesService);
     findAll(published?: string): import(".prisma/client").Prisma.PrismaPromise<({
+        _count: {
+            enrollments: number;
+            modules: number;
+        };
         category: {
             name: string;
             id: string;
             slug: string;
         };
-        _count: {
-            enrollments: number;
-            modules: number;
-        };
         instructor: {
+            id: string;
             firstName: string;
             lastName: string;
-            id: string;
             avatar: string | null;
             bio: string | null;
         } | null;
@@ -26,11 +26,11 @@ export declare class CoursesController {
         updatedAt: Date;
         title: string;
         slug: string;
+        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
-        published: boolean;
         categoryId: string;
         instructorId: string | null;
     })[]>;
@@ -44,10 +44,10 @@ export declare class CoursesController {
         slug: string;
     })[]>;
     getInstructors(): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
-        id: string;
         avatar: string | null;
         bio: string | null;
         role: import(".prisma/client").$Enums.Role;
@@ -56,18 +56,18 @@ export declare class CoursesController {
         };
     }[]>;
     findBySlug(slug: string): Promise<{
+        _count: {
+            enrollments: number;
+        };
         category: {
             name: string;
             id: string;
             slug: string;
         };
-        _count: {
-            enrollments: number;
-        };
         instructor: {
+            id: string;
             firstName: string;
             lastName: string;
-            id: string;
             avatar: string | null;
             bio: string | null;
         } | null;
@@ -75,8 +75,8 @@ export declare class CoursesController {
             lessons: {
                 id: string;
                 title: string;
-                order: number;
                 content: string | null;
+                order: number;
                 muxAssetId: string | null;
                 muxPlaybackId: string | null;
                 duration: number | null;
@@ -94,11 +94,11 @@ export declare class CoursesController {
         updatedAt: Date;
         title: string;
         slug: string;
+        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
-        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;
@@ -109,9 +109,9 @@ export declare class CoursesController {
             slug: string;
         };
         instructor: {
+            id: string;
             firstName: string;
             lastName: string;
-            id: string;
         } | null;
     } & {
         id: string;
@@ -119,11 +119,11 @@ export declare class CoursesController {
         updatedAt: Date;
         title: string;
         slug: string;
+        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
-        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;
@@ -133,11 +133,11 @@ export declare class CoursesController {
         updatedAt: Date;
         title: string;
         slug: string;
+        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
-        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;
@@ -147,11 +147,11 @@ export declare class CoursesController {
         updatedAt: Date;
         title: string;
         slug: string;
+        published: boolean;
         description: string;
         thumbnail: string | null;
         level: import(".prisma/client").$Enums.Level;
         price: import(".prisma/client/runtime/library").Decimal;
-        published: boolean;
         categoryId: string;
         instructorId: string | null;
     }>;

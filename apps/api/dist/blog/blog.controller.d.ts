@@ -8,17 +8,17 @@ export declare class BlogController {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     })[]>;
     findAllAdmin(): Promise<({
@@ -27,17 +27,17 @@ export declare class BlogController {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     })[]>;
     findBySlug(slug: string): Promise<({
@@ -46,17 +46,17 @@ export declare class BlogController {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }) | null>;
     create(req: any, body: any): Promise<{
@@ -65,17 +65,17 @@ export declare class BlogController {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }>;
     update(id: string, body: any): Promise<{
@@ -84,31 +84,31 @@ export declare class BlogController {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }>;
     delete(id: string): Promise<{
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }>;
 }

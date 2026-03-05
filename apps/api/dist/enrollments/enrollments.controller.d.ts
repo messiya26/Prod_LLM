@@ -15,8 +15,8 @@ export declare class EnrollmentsController {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        courseId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        courseId: string;
         progress: number;
     })[]>;
     enroll(req: any, courseId: string): Promise<{
@@ -30,8 +30,8 @@ export declare class EnrollmentsController {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        courseId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        courseId: string;
         progress: number;
     }>;
     activate(req: any, slug: string): Promise<{
@@ -39,8 +39,8 @@ export declare class EnrollmentsController {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        courseId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        courseId: string;
         progress: number;
     }>;
     checkEnrolled(req: any, slug: string): Promise<{
@@ -65,11 +65,11 @@ export declare class EnrollmentsController {
             updatedAt: Date;
             title: string;
             slug: string;
+            published: boolean;
             description: string;
             thumbnail: string | null;
             level: import(".prisma/client").$Enums.Level;
             price: import(".prisma/client/runtime/library").Decimal;
-            published: boolean;
             categoryId: string;
             instructorId: string | null;
         };
@@ -78,8 +78,8 @@ export declare class EnrollmentsController {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        courseId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        courseId: string;
         progress: number;
     })[]>;
     updateProgress(req: any, courseId: string, progress: number): Promise<{
@@ -87,8 +87,8 @@ export declare class EnrollmentsController {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        courseId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        courseId: string;
         progress: number;
     }>;
 }

@@ -24,6 +24,7 @@ import { SiteContentModule } from "./site-content/site-content.module";
 import { CourseModulesModule } from "./modules/modules.module";
 import { SubscriptionsModule } from "./subscriptions/subscriptions.module";
 import { MasterclassesModule } from "./masterclasses/masterclasses.module";
+import { SecurityModule } from "./security/security.module";
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { MasterclassesModule } from "./masterclasses/masterclasses.module";
     CourseModulesModule,
     SubscriptionsModule,
     MasterclassesModule,
+    SecurityModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

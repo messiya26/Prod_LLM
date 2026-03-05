@@ -5,8 +5,8 @@ export declare class CertificatesService {
     getByUser(userId: string): Promise<{
         id: string;
         userId: string;
-        courseId: string;
         certificateId: string;
+        courseId: string;
         studentName: string;
         courseName: string;
         instructorName: string | null;
@@ -21,8 +21,8 @@ export declare class CertificatesService {
         certificate: {
             id: string;
             userId: string;
-            courseId: string;
             certificateId: string;
+            courseId: string;
             studentName: string;
             courseName: string;
             instructorName: string | null;
@@ -36,8 +36,8 @@ export declare class CertificatesService {
     generate(enrollmentId: string, userId: string): Promise<{
         id: string;
         userId: string;
-        courseId: string;
         certificateId: string;
+        courseId: string;
         studentName: string;
         courseName: string;
         instructorName: string | null;

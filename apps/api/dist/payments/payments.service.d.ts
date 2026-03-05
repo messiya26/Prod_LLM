@@ -20,43 +20,43 @@ export declare class PaymentsService {
             updatedAt: Date;
             title: string;
             slug: string;
+            published: boolean;
             description: string;
             thumbnail: string | null;
             level: import(".prisma/client").$Enums.Level;
             price: import(".prisma/client/runtime/library").Decimal;
-            published: boolean;
             categoryId: string;
             instructorId: string | null;
         };
     } & {
         id: string;
-        amount: import(".prisma/client/runtime/library").Decimal;
-        currency: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
+        courseId: string;
+        enrollmentId: string | null;
+        currency: string;
+        amount: import(".prisma/client/runtime/library").Decimal;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        enrollmentId: string | null;
-        courseId: string;
     }>;
     confirm(reference: string): Promise<{
         id: string;
-        amount: import(".prisma/client/runtime/library").Decimal;
-        currency: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
+        courseId: string;
+        enrollmentId: string | null;
+        currency: string;
+        amount: import(".prisma/client/runtime/library").Decimal;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        enrollmentId: string | null;
-        courseId: string;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -71,18 +71,18 @@ export declare class PaymentsService {
         };
     } & {
         id: string;
-        amount: import(".prisma/client/runtime/library").Decimal;
-        currency: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
+        courseId: string;
+        enrollmentId: string | null;
+        currency: string;
+        amount: import(".prisma/client/runtime/library").Decimal;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        enrollmentId: string | null;
-        courseId: string;
     })[]>;
     findByUser(userId: string): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -96,18 +96,18 @@ export declare class PaymentsService {
         };
     } & {
         id: string;
-        amount: import(".prisma/client/runtime/library").Decimal;
-        currency: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
+        courseId: string;
+        enrollmentId: string | null;
+        currency: string;
+        amount: import(".prisma/client/runtime/library").Decimal;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        enrollmentId: string | null;
-        courseId: string;
     })[]>;
     stats(): import(".prisma/client").Prisma.PrismaPromise<unknown>;
     instructorStats(instructorId: string): Promise<{
@@ -126,18 +126,18 @@ export declare class PaymentsService {
             };
         } & {
             id: string;
-            amount: import(".prisma/client/runtime/library").Decimal;
-            currency: string;
+            createdAt: Date;
+            updatedAt: Date;
+            userId: string;
             status: import(".prisma/client").$Enums.PaymentStatus;
+            courseId: string;
+            enrollmentId: string | null;
+            currency: string;
+            amount: import(".prisma/client/runtime/library").Decimal;
             method: import(".prisma/client").$Enums.PaymentMethod;
             reference: string;
             providerTxId: string | null;
             metadata: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: string;
-            enrollmentId: string | null;
-            courseId: string;
         })[];
         courses: {
             revenue: number;
@@ -160,10 +160,10 @@ export declare class PaymentsService {
         };
     } & {
         id: string;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         courseId: string;
         progress: number;
     })[]>;

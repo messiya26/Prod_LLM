@@ -7,10 +7,10 @@ export declare class NotificationsController {
         createdAt: Date;
         type: string;
         title: string;
-        userId: string;
         message: string;
         read: boolean;
         link: string | null;
+        userId: string;
     }[]>;
     countUnread(req: any): import(".prisma/client").Prisma.PrismaPromise<number>;
     markRead(id: string): import(".prisma/client").Prisma.Prisma__NotificationClient<{
@@ -18,10 +18,10 @@ export declare class NotificationsController {
         createdAt: Date;
         type: string;
         title: string;
-        userId: string;
         message: string;
         read: boolean;
         link: string | null;
+        userId: string;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
     markAllRead(req: any): import(".prisma/client").Prisma.PrismaPromise<import(".prisma/client").Prisma.BatchPayload>;
 }

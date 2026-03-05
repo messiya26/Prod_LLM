@@ -9,7 +9,7 @@ import {
   FaHome, FaBookOpen, FaCog, FaSignOutAlt, FaUsers,
   FaChartBar, FaBars, FaTimes, FaMoneyBillWave, FaComments,
   FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward, FaEdit, FaStar, FaUserTie, FaGem, FaFire,
-  FaReceipt,
+  FaReceipt, FaShieldAlt,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
@@ -74,6 +74,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebarSuperAdmin = [
     ...sidebarAdmin,
     { icon: <FaGem />, labelKey: "dash.permissions", href: "/admin/permissions" },
+    { icon: <FaShieldAlt />, labelKey: "dash.security", href: "/admin/securite" },
   ];
 
   const roleLabels: Record<string, string> = {

@@ -5,8 +5,8 @@ export declare class CertificatesController {
     getMy(req: any): Promise<{
         id: string;
         userId: string;
-        courseId: string;
         certificateId: string;
+        courseId: string;
         studentName: string;
         courseName: string;
         instructorName: string | null;
@@ -21,8 +21,8 @@ export declare class CertificatesController {
         certificate: {
             id: string;
             userId: string;
-            courseId: string;
             certificateId: string;
+            courseId: string;
             studentName: string;
             courseName: string;
             instructorName: string | null;
@@ -36,8 +36,8 @@ export declare class CertificatesController {
     generate(enrollmentId: string, req: any): Promise<{
         id: string;
         userId: string;
-        courseId: string;
         certificateId: string;
+        courseId: string;
         studentName: string;
         courseName: string;
         instructorName: string | null;

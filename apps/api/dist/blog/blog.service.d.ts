@@ -17,17 +17,17 @@ export declare class BlogService {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }>;
     findAll(publishedOnly?: boolean): Promise<({
@@ -36,17 +36,17 @@ export declare class BlogService {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     })[]>;
     findBySlug(slug: string): Promise<({
@@ -55,17 +55,17 @@ export declare class BlogService {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }) | null>;
     update(id: string, data: Partial<{
@@ -83,31 +83,31 @@ export declare class BlogService {
             lastName: string;
         };
     } & {
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }>;
     delete(id: string): Promise<{
-        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         title: string;
         slug: string;
-        published: boolean;
-        content: string;
         excerpt: string | null;
+        content: string;
         image: string | null;
+        category: string;
         tags: string | null;
+        published: boolean;
         authorId: string;
     }>;
 }

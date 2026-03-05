@@ -33,6 +33,7 @@ const site_content_module_1 = require("./site-content/site-content.module");
 const modules_module_1 = require("./modules/modules.module");
 const subscriptions_module_1 = require("./subscriptions/subscriptions.module");
 const masterclasses_module_1 = require("./masterclasses/masterclasses.module");
+const security_module_1 = require("./security/security.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -63,6 +64,7 @@ exports.AppModule = AppModule = __decorate([
             modules_module_1.CourseModulesModule,
             subscriptions_module_1.SubscriptionsModule,
             masterclasses_module_1.MasterclassesModule,
+            security_module_1.SecurityModule,
         ],
         providers: [
             { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },

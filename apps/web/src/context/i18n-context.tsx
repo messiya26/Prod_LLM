@@ -407,6 +407,7 @@ const translations: Record<string, { fr: string; en: string }> = {
   "dash.myRevenue": { fr: "Mes revenus", en: "My revenue" },
   "dash.myStudents": { fr: "Mes etudiants", en: "My students" },
   "dash.permissions": { fr: "Habilitations", en: "Permissions" },
+  "dash.security": { fr: "Securite", en: "Security" },
   "dash.settings": { fr: "Parametres", en: "Settings" },
   "dash.admin": { fr: "Dashboard", en: "Dashboard" },
   "dash.formations": { fr: "Formations", en: "Courses" },
