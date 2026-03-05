@@ -10,33 +10,33 @@ export declare class NotificationsService {
     }): import(".prisma/client").Prisma.Prisma__NotificationClient<{
         id: string;
         createdAt: Date;
-        type: string;
+        userId: string;
         title: string;
         message: string;
+        type: string;
         read: boolean;
         link: string | null;
-        userId: string;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
     findByUser(userId: string): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
         createdAt: Date;
-        type: string;
+        userId: string;
         title: string;
         message: string;
+        type: string;
         read: boolean;
         link: string | null;
-        userId: string;
     }[]>;
     countUnread(userId: string): import(".prisma/client").Prisma.PrismaPromise<number>;
     markRead(id: string): import(".prisma/client").Prisma.Prisma__NotificationClient<{
         id: string;
         createdAt: Date;
-        type: string;
+        userId: string;
         title: string;
         message: string;
+        type: string;
         read: boolean;
         link: string | null;
-        userId: string;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
     markAllRead(userId: string): import(".prisma/client").Prisma.PrismaPromise<import(".prisma/client").Prisma.BatchPayload>;
 }

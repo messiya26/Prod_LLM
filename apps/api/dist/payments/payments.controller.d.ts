@@ -1,7 +1,9 @@
 import { PaymentsService } from "./payments.service";
+import { PaymentGatewayService } from "./payment-gateway.service";
 export declare class PaymentsController {
     private paymentsService;
-    constructor(paymentsService: PaymentsService);
+    private gatewayService;
+    constructor(paymentsService: PaymentsService, gatewayService: PaymentGatewayService);
     create(req: any, dto: {
         courseId: string;
         amount: number;
@@ -20,11 +22,11 @@ export declare class PaymentsController {
             updatedAt: Date;
             title: string;
             slug: string;
-            published: boolean;
             description: string;
             thumbnail: string | null;
             level: import(".prisma/client").$Enums.Level;
             price: import(".prisma/client/runtime/library").Decimal;
+            published: boolean;
             categoryId: string;
             instructorId: string | null;
         };
@@ -32,31 +34,31 @@ export declare class PaymentsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.PaymentStatus;
-        courseId: string;
-        enrollmentId: string | null;
-        currency: string;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        userId: string;
+        enrollmentId: string | null;
+        courseId: string;
     }>;
     confirm(reference: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.PaymentStatus;
-        courseId: string;
-        enrollmentId: string | null;
-        currency: string;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        userId: string;
+        enrollmentId: string | null;
+        courseId: string;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
@@ -73,16 +75,16 @@ export declare class PaymentsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.PaymentStatus;
-        courseId: string;
-        enrollmentId: string | null;
-        currency: string;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        userId: string;
+        enrollmentId: string | null;
+        courseId: string;
     })[]>;
     stats(): import(".prisma/client").Prisma.PrismaPromise<unknown>;
     findMy(req: any): import(".prisma/client").Prisma.PrismaPromise<({
@@ -99,16 +101,16 @@ export declare class PaymentsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.PaymentStatus;
-        courseId: string;
-        enrollmentId: string | null;
-        currency: string;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        userId: string;
+        enrollmentId: string | null;
+        courseId: string;
     })[]>;
     instructorStats(req: any): Promise<{
         totalRevenue: number;
@@ -128,16 +130,16 @@ export declare class PaymentsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            userId: string;
-            status: import(".prisma/client").$Enums.PaymentStatus;
-            courseId: string;
-            enrollmentId: string | null;
-            currency: string;
             amount: import(".prisma/client/runtime/library").Decimal;
+            currency: string;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             method: import(".prisma/client").$Enums.PaymentMethod;
             reference: string;
             providerTxId: string | null;
             metadata: string | null;
+            userId: string;
+            enrollmentId: string | null;
+            courseId: string;
         })[];
         courses: {
             revenue: number;
@@ -162,8 +164,8 @@ export declare class PaymentsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        userId: string;
         courseId: string;
         progress: number;
     })[]>;
@@ -181,15 +183,53 @@ export declare class PaymentsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.PaymentStatus;
-        courseId: string;
-        enrollmentId: string | null;
-        currency: string;
         amount: import(".prisma/client/runtime/library").Decimal;
+        currency: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         method: import(".prisma/client").$Enums.PaymentMethod;
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        userId: string;
+        enrollmentId: string | null;
+        courseId: string;
     })[]>;
+    getGateways(): Promise<{
+        id: string;
+        code: string;
+        name: string;
+        icon: string | null;
+        enabled: boolean;
+        sandboxMode: boolean;
+        config: import(".prisma/client/runtime/library").JsonValue;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    getPublicGateways(): Promise<{
+        code: string;
+        name: string;
+        icon: string | null;
+        enabled: boolean;
+    }[]>;
+    getGatewayFields(code: string): Promise<{
+        field: string;
+        label: string;
+        type: string;
+        required: boolean;
+    }[]>;
+    updateGateway(id: string, data: {
+        enabled?: boolean;
+        sandboxMode?: boolean;
+        config?: any;
+    }): Promise<{
+        id: string;
+        code: string;
+        name: string;
+        icon: string | null;
+        enabled: boolean;
+        sandboxMode: boolean;
+        config: import(".prisma/client/runtime/library").JsonValue;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

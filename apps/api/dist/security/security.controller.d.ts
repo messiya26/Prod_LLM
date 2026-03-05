@@ -19,15 +19,15 @@ export declare class SecurityController {
             } | null;
         } & {
             id: string;
+            createdAt: Date;
+            metadata: import(".prisma/client/runtime/library").JsonValue | null;
             userId: string | null;
             action: import(".prisma/client").$Enums.AuditAction;
             targetId: string | null;
             targetType: string | null;
-            metadata: import(".prisma/client/runtime/library").JsonValue | null;
             ip: string | null;
             userAgent: string | null;
             severity: string;
-            createdAt: Date;
         })[];
         total: number;
         page: number;
@@ -46,6 +46,7 @@ export declare class SecurityController {
     }>;
     getSettings(): Promise<{
         id: string;
+        updatedAt: Date;
         passwordMinLength: number;
         passwordRequireUpper: boolean;
         passwordRequireLower: boolean;
@@ -60,10 +61,10 @@ export declare class SecurityController {
         twoFactorEnabled: boolean;
         dataRetentionDays: number;
         auditRetentionDays: number;
-        updatedAt: Date;
     } | null>;
     updateSettings(body: any, req: any): Promise<{
         id: string;
+        updatedAt: Date;
         passwordMinLength: number;
         passwordRequireUpper: boolean;
         passwordRequireLower: boolean;
@@ -78,33 +79,32 @@ export declare class SecurityController {
         twoFactorEnabled: boolean;
         dataRetentionDays: number;
         auditRetentionDays: number;
-        updatedAt: Date;
     }>;
     getMySessions(req: any): Promise<{
         id: string;
+        createdAt: Date;
         userId: string;
+        token: string;
+        expiresAt: Date;
+        location: string | null;
         ip: string | null;
         userAgent: string | null;
-        createdAt: Date;
-        token: string;
         device: string | null;
-        location: string | null;
         isActive: boolean;
         lastActive: Date;
-        expiresAt: Date;
     }[]>;
     getUserSessions(userId: string): Promise<{
         id: string;
+        createdAt: Date;
         userId: string;
+        token: string;
+        expiresAt: Date;
+        location: string | null;
         ip: string | null;
         userAgent: string | null;
-        createdAt: Date;
-        token: string;
         device: string | null;
-        location: string | null;
         isActive: boolean;
         lastActive: Date;
-        expiresAt: Date;
     }[]>;
     revokeSession(id: string, req: any): Promise<{
         message: string;
@@ -115,21 +115,21 @@ export declare class SecurityController {
     exportMyData(req: any): Promise<any>;
     requestExport(req: any): Promise<{
         id: string;
-        data: import(".prisma/client/runtime/library").JsonValue | null;
-        userId: string;
         createdAt: Date;
-        type: string;
+        data: import(".prisma/client/runtime/library").JsonValue | null;
         status: string;
+        userId: string;
+        type: string;
         processedBy: string | null;
         processedAt: Date | null;
     }>;
     requestDelete(req: any): Promise<{
         id: string;
-        data: import(".prisma/client/runtime/library").JsonValue | null;
-        userId: string;
         createdAt: Date;
-        type: string;
+        data: import(".prisma/client/runtime/library").JsonValue | null;
         status: string;
+        userId: string;
+        type: string;
         processedBy: string | null;
         processedAt: Date | null;
     }>;
@@ -143,11 +143,11 @@ export declare class SecurityController {
             };
         } & {
             id: string;
-            data: import(".prisma/client/runtime/library").JsonValue | null;
-            userId: string;
             createdAt: Date;
-            type: string;
+            data: import(".prisma/client/runtime/library").JsonValue | null;
             status: string;
+            userId: string;
+            type: string;
             processedBy: string | null;
             processedAt: Date | null;
         })[];
@@ -159,11 +159,11 @@ export declare class SecurityController {
         status: "APPROVED" | "REJECTED";
     }, req: any): Promise<{
         id: string;
-        data: import(".prisma/client/runtime/library").JsonValue | null;
-        userId: string;
         createdAt: Date;
-        type: string;
+        data: import(".prisma/client/runtime/library").JsonValue | null;
         status: string;
+        userId: string;
+        type: string;
         processedBy: string | null;
         processedAt: Date | null;
     }>;

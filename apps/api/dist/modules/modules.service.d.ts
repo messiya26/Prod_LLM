@@ -6,17 +6,17 @@ export declare class ModulesService {
         lessons: {
             id: string;
             title: string;
-            content: string | null;
             order: number;
-            muxAssetId: string | null;
-            muxPlaybackId: string | null;
             duration: number | null;
             moduleId: string;
+            content: string | null;
+            muxAssetId: string | null;
+            muxPlaybackId: string | null;
         }[];
     } & {
         id: string;
-        title: string;
         courseId: string;
+        title: string;
         order: number;
     })[]>;
     createModule(courseId: string, dto: {
@@ -25,17 +25,17 @@ export declare class ModulesService {
         lessons: {
             id: string;
             title: string;
-            content: string | null;
             order: number;
-            muxAssetId: string | null;
-            muxPlaybackId: string | null;
             duration: number | null;
             moduleId: string;
+            content: string | null;
+            muxAssetId: string | null;
+            muxPlaybackId: string | null;
         }[];
     } & {
         id: string;
-        title: string;
         courseId: string;
+        title: string;
         order: number;
     }>;
     updateModule(id: string, dto: {
@@ -45,17 +45,17 @@ export declare class ModulesService {
         lessons: {
             id: string;
             title: string;
-            content: string | null;
             order: number;
-            muxAssetId: string | null;
-            muxPlaybackId: string | null;
             duration: number | null;
             moduleId: string;
+            content: string | null;
+            muxAssetId: string | null;
+            muxPlaybackId: string | null;
         }[];
     } & {
         id: string;
-        title: string;
         courseId: string;
+        title: string;
         order: number;
     }>;
     deleteModule(id: string): Promise<{
@@ -68,12 +68,12 @@ export declare class ModulesService {
     }): Promise<{
         id: string;
         title: string;
-        content: string | null;
         order: number;
-        muxAssetId: string | null;
-        muxPlaybackId: string | null;
         duration: number | null;
         moduleId: string;
+        content: string | null;
+        muxAssetId: string | null;
+        muxPlaybackId: string | null;
     }>;
     updateLesson(id: string, dto: {
         title?: string;
@@ -83,12 +83,12 @@ export declare class ModulesService {
     }): Promise<{
         id: string;
         title: string;
-        content: string | null;
         order: number;
-        muxAssetId: string | null;
-        muxPlaybackId: string | null;
         duration: number | null;
         moduleId: string;
+        content: string | null;
+        muxAssetId: string | null;
+        muxPlaybackId: string | null;
     }>;
     deleteLesson(id: string): Promise<{
         deleted: boolean;

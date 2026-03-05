@@ -4,6 +4,7 @@ export declare class SecuritySettingsService {
     constructor(prisma: PrismaService);
     get(): Promise<{
         id: string;
+        updatedAt: Date;
         passwordMinLength: number;
         passwordRequireUpper: boolean;
         passwordRequireLower: boolean;
@@ -18,10 +19,10 @@ export declare class SecuritySettingsService {
         twoFactorEnabled: boolean;
         dataRetentionDays: number;
         auditRetentionDays: number;
-        updatedAt: Date;
     } | null>;
     update(data: any): Promise<{
         id: string;
+        updatedAt: Date;
         passwordMinLength: number;
         passwordRequireUpper: boolean;
         passwordRequireLower: boolean;
@@ -36,7 +37,6 @@ export declare class SecuritySettingsService {
         twoFactorEnabled: boolean;
         dataRetentionDays: number;
         auditRetentionDays: number;
-        updatedAt: Date;
     }>;
     validatePassword(password: string): Promise<{
         valid: boolean;

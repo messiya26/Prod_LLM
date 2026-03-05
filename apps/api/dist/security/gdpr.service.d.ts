@@ -4,22 +4,22 @@ export declare class GdprService {
     constructor(prisma: PrismaService);
     exportUserData(userId: string): Promise<any>;
     createDeleteRequest(userId: string): Promise<{
-        data: import(".prisma/client/runtime/library").JsonValue | null;
         id: string;
         createdAt: Date;
-        type: string;
-        userId: string;
+        data: import(".prisma/client/runtime/library").JsonValue | null;
         status: string;
+        userId: string;
+        type: string;
         processedBy: string | null;
         processedAt: Date | null;
     }>;
     createExportRequest(userId: string): Promise<{
-        data: import(".prisma/client/runtime/library").JsonValue | null;
         id: string;
         createdAt: Date;
-        type: string;
-        userId: string;
+        data: import(".prisma/client/runtime/library").JsonValue | null;
         status: string;
+        userId: string;
+        type: string;
         processedBy: string | null;
         processedAt: Date | null;
     }>;
@@ -36,12 +36,12 @@ export declare class GdprService {
                 lastName: string;
             };
         } & {
-            data: import(".prisma/client/runtime/library").JsonValue | null;
             id: string;
             createdAt: Date;
-            type: string;
-            userId: string;
+            data: import(".prisma/client/runtime/library").JsonValue | null;
             status: string;
+            userId: string;
+            type: string;
             processedBy: string | null;
             processedAt: Date | null;
         })[];
@@ -50,12 +50,12 @@ export declare class GdprService {
         pages: number;
     }>;
     processRequest(requestId: string, processedBy: string, status: "APPROVED" | "REJECTED"): Promise<{
-        data: import(".prisma/client/runtime/library").JsonValue | null;
         id: string;
         createdAt: Date;
-        type: string;
-        userId: string;
+        data: import(".prisma/client/runtime/library").JsonValue | null;
         status: string;
+        userId: string;
+        type: string;
         processedBy: string | null;
         processedAt: Date | null;
     }>;

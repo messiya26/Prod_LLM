@@ -7,14 +7,14 @@ export declare class SubscriptionsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.SubscriptionStatus;
-        endDate: Date | null;
-        startDate: Date;
-        currency: string;
         amount: number;
+        currency: string;
+        status: import(".prisma/client").$Enums.SubscriptionStatus;
+        userId: string;
+        endDate: Date | null;
         plan: import(".prisma/client").$Enums.SubscriptionPlan;
         interval: string;
+        startDate: Date;
         cancelledAt: Date | null;
     } | {
         plan: "FREE";
@@ -26,28 +26,28 @@ export declare class SubscriptionsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.SubscriptionStatus;
-        endDate: Date | null;
-        startDate: Date;
-        currency: string;
         amount: number;
+        currency: string;
+        status: import(".prisma/client").$Enums.SubscriptionStatus;
+        userId: string;
+        endDate: Date | null;
         plan: import(".prisma/client").$Enums.SubscriptionPlan;
         interval: string;
+        startDate: Date;
         cancelledAt: Date | null;
     }>;
     cancel(req: any): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.SubscriptionStatus;
-        endDate: Date | null;
-        startDate: Date;
-        currency: string;
         amount: number;
+        currency: string;
+        status: import(".prisma/client").$Enums.SubscriptionStatus;
+        userId: string;
+        endDate: Date | null;
         plan: import(".prisma/client").$Enums.SubscriptionPlan;
         interval: string;
+        startDate: Date;
         cancelledAt: Date | null;
     } | {
         message: string;
@@ -63,14 +63,14 @@ export declare class SubscriptionsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
-        status: import(".prisma/client").$Enums.SubscriptionStatus;
-        endDate: Date | null;
-        startDate: Date;
-        currency: string;
         amount: number;
+        currency: string;
+        status: import(".prisma/client").$Enums.SubscriptionStatus;
+        userId: string;
+        endDate: Date | null;
         plan: import(".prisma/client").$Enums.SubscriptionPlan;
         interval: string;
+        startDate: Date;
         cancelledAt: Date | null;
     })[]>;
     stats(): import(".prisma/client").Prisma.GetSubscriptionGroupByPayload<{

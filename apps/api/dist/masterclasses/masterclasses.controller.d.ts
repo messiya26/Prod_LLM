@@ -13,13 +13,14 @@ export declare class MasterclassesController {
             avatar: string | null;
         } | null;
     } & {
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        currency: string;
+        status: import(".prisma/client").$Enums.MasterclassStatus;
         title: string;
         slug: string;
-        category: string;
-        status: import(".prisma/client").$Enums.MasterclassStatus;
         description: string;
         thumbnail: string;
         level: string;
@@ -27,18 +28,17 @@ export declare class MasterclassesController {
         instructorId: string | null;
         location: string;
         endDate: Date;
+        startDate: Date;
         titleEn: string;
         descriptionEn: string;
         shortDesc: string;
         shortDescEn: string;
         bannerImage: string;
         format: import(".prisma/client").$Enums.MasterclassFormat;
-        startDate: Date;
         dailyStartTime: string;
         dailyEndTime: string;
         timezone: string;
         meetingLink: string;
-        currency: string;
         earlyBirdPrice: number | null;
         earlyBirdEnd: Date | null;
         maxSeats: number;
@@ -66,13 +66,14 @@ export declare class MasterclassesController {
             avatar: string | null;
         } | null;
     } & {
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        currency: string;
+        status: import(".prisma/client").$Enums.MasterclassStatus;
         title: string;
         slug: string;
-        category: string;
-        status: import(".prisma/client").$Enums.MasterclassStatus;
         description: string;
         thumbnail: string;
         level: string;
@@ -80,18 +81,17 @@ export declare class MasterclassesController {
         instructorId: string | null;
         location: string;
         endDate: Date;
+        startDate: Date;
         titleEn: string;
         descriptionEn: string;
         shortDesc: string;
         shortDescEn: string;
         bannerImage: string;
         format: import(".prisma/client").$Enums.MasterclassFormat;
-        startDate: Date;
         dailyStartTime: string;
         dailyEndTime: string;
         timezone: string;
         meetingLink: string;
-        currency: string;
         earlyBirdPrice: number | null;
         earlyBirdEnd: Date | null;
         maxSeats: number;
@@ -134,21 +134,22 @@ export declare class MasterclassesController {
             };
         } & {
             id: string;
-            userId: string;
             status: string;
+            userId: string;
             registeredAt: Date;
             masterclassId: string;
             paymentRef: string | null;
             amountPaid: number;
         })[];
     } & {
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        currency: string;
+        status: import(".prisma/client").$Enums.MasterclassStatus;
         title: string;
         slug: string;
-        category: string;
-        status: import(".prisma/client").$Enums.MasterclassStatus;
         description: string;
         thumbnail: string;
         level: string;
@@ -156,18 +157,17 @@ export declare class MasterclassesController {
         instructorId: string | null;
         location: string;
         endDate: Date;
+        startDate: Date;
         titleEn: string;
         descriptionEn: string;
         shortDesc: string;
         shortDescEn: string;
         bannerImage: string;
         format: import(".prisma/client").$Enums.MasterclassFormat;
-        startDate: Date;
         dailyStartTime: string;
         dailyEndTime: string;
         timezone: string;
         meetingLink: string;
-        currency: string;
         earlyBirdPrice: number | null;
         earlyBirdEnd: Date | null;
         maxSeats: number;
@@ -185,13 +185,14 @@ export declare class MasterclassesController {
         replayAvailable: boolean;
     }>;
     create(dto: any): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        currency: string;
+        status: import(".prisma/client").$Enums.MasterclassStatus;
         title: string;
         slug: string;
-        category: string;
-        status: import(".prisma/client").$Enums.MasterclassStatus;
         description: string;
         thumbnail: string;
         level: string;
@@ -199,18 +200,17 @@ export declare class MasterclassesController {
         instructorId: string | null;
         location: string;
         endDate: Date;
+        startDate: Date;
         titleEn: string;
         descriptionEn: string;
         shortDesc: string;
         shortDescEn: string;
         bannerImage: string;
         format: import(".prisma/client").$Enums.MasterclassFormat;
-        startDate: Date;
         dailyStartTime: string;
         dailyEndTime: string;
         timezone: string;
         meetingLink: string;
-        currency: string;
         earlyBirdPrice: number | null;
         earlyBirdEnd: Date | null;
         maxSeats: number;
@@ -228,13 +228,14 @@ export declare class MasterclassesController {
         replayAvailable: boolean;
     }>;
     update(id: string, dto: any): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        currency: string;
+        status: import(".prisma/client").$Enums.MasterclassStatus;
         title: string;
         slug: string;
-        category: string;
-        status: import(".prisma/client").$Enums.MasterclassStatus;
         description: string;
         thumbnail: string;
         level: string;
@@ -242,18 +243,17 @@ export declare class MasterclassesController {
         instructorId: string | null;
         location: string;
         endDate: Date;
+        startDate: Date;
         titleEn: string;
         descriptionEn: string;
         shortDesc: string;
         shortDescEn: string;
         bannerImage: string;
         format: import(".prisma/client").$Enums.MasterclassFormat;
-        startDate: Date;
         dailyStartTime: string;
         dailyEndTime: string;
         timezone: string;
         meetingLink: string;
-        currency: string;
         earlyBirdPrice: number | null;
         earlyBirdEnd: Date | null;
         maxSeats: number;
@@ -271,13 +271,14 @@ export declare class MasterclassesController {
         replayAvailable: boolean;
     }>;
     remove(id: string): Promise<{
+        category: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        currency: string;
+        status: import(".prisma/client").$Enums.MasterclassStatus;
         title: string;
         slug: string;
-        category: string;
-        status: import(".prisma/client").$Enums.MasterclassStatus;
         description: string;
         thumbnail: string;
         level: string;
@@ -285,18 +286,17 @@ export declare class MasterclassesController {
         instructorId: string | null;
         location: string;
         endDate: Date;
+        startDate: Date;
         titleEn: string;
         descriptionEn: string;
         shortDesc: string;
         shortDescEn: string;
         bannerImage: string;
         format: import(".prisma/client").$Enums.MasterclassFormat;
-        startDate: Date;
         dailyStartTime: string;
         dailyEndTime: string;
         timezone: string;
         meetingLink: string;
-        currency: string;
         earlyBirdPrice: number | null;
         earlyBirdEnd: Date | null;
         maxSeats: number;
@@ -315,8 +315,8 @@ export declare class MasterclassesController {
     }>;
     register(id: string, req: any): Promise<{
         id: string;
-        userId: string;
         status: string;
+        userId: string;
         registeredAt: Date;
         masterclassId: string;
         paymentRef: string | null;
@@ -324,8 +324,8 @@ export declare class MasterclassesController {
     }>;
     checkRegistration(id: string, req: any): Promise<{
         id: string;
-        userId: string;
         status: string;
+        userId: string;
         registeredAt: Date;
         masterclassId: string;
         paymentRef: string | null;
@@ -341,8 +341,8 @@ export declare class MasterclassesController {
         };
     } & {
         id: string;
-        userId: string;
         status: string;
+        userId: string;
         registeredAt: Date;
         masterclassId: string;
         paymentRef: string | null;
@@ -352,8 +352,8 @@ export declare class MasterclassesController {
         paymentRef: string;
     }): Promise<{
         id: string;
-        userId: string;
         status: string;
+        userId: string;
         registeredAt: Date;
         masterclassId: string;
         paymentRef: string | null;

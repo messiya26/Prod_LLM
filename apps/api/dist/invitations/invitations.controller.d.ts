@@ -12,9 +12,9 @@ export declare class InvitationsController {
         };
     } & {
         id: string;
+        createdAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
-        createdAt: Date;
         token: string;
         expiresAt: Date;
         accepted: boolean;
@@ -27,9 +27,9 @@ export declare class InvitationsController {
         };
     } & {
         id: string;
+        createdAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
-        createdAt: Date;
         token: string;
         expiresAt: Date;
         accepted: boolean;
@@ -40,9 +40,9 @@ export declare class InvitationsController {
     } | null>;
     delete(id: string): Promise<{
         id: string;
+        createdAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
-        createdAt: Date;
         token: string;
         expiresAt: Date;
         accepted: boolean;
@@ -50,9 +50,9 @@ export declare class InvitationsController {
     }>;
     findByToken(token: string): Promise<{
         id: string;
+        createdAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
-        createdAt: Date;
         token: string;
         expiresAt: Date;
         accepted: boolean;
@@ -60,9 +60,9 @@ export declare class InvitationsController {
     } | null>;
     accept(token: string): Promise<{
         id: string;
+        createdAt: Date;
         email: string;
         role: import(".prisma/client").$Enums.Role;
-        createdAt: Date;
         token: string;
         expiresAt: Date;
         accepted: boolean;

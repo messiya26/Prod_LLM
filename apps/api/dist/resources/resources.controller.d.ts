@@ -4,46 +4,46 @@ export declare class ResourcesController {
     private readonly svc;
     constructor(svc: ResourcesService);
     getCourseResources(courseId: string): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        type: import(".prisma/client").$Enums.ResourceType;
-        title: string;
         courseId: string;
+        title: string;
         description: string | null;
+        type: import(".prisma/client").$Enums.ResourceType;
         order: number;
+        fileSize: number | null;
         duration: number | null;
         moduleId: string | null;
-        url: string;
-        fileSize: number | null;
     }[]>;
     addResource(courseId: string, dto: CreateResourceDto): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        type: import(".prisma/client").$Enums.ResourceType;
-        title: string;
         courseId: string;
+        title: string;
         description: string | null;
+        type: import(".prisma/client").$Enums.ResourceType;
         order: number;
+        fileSize: number | null;
         duration: number | null;
         moduleId: string | null;
-        url: string;
-        fileSize: number | null;
     }>;
     updateResource(id: string, dto: Partial<CreateResourceDto>): Promise<{
+        url: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        type: import(".prisma/client").$Enums.ResourceType;
-        title: string;
         courseId: string;
+        title: string;
         description: string | null;
+        type: import(".prisma/client").$Enums.ResourceType;
         order: number;
+        fileSize: number | null;
         duration: number | null;
         moduleId: string | null;
-        url: string;
-        fileSize: number | null;
     }>;
     deleteResource(id: string): Promise<{
         deleted: boolean;
@@ -52,18 +52,18 @@ export declare class ResourcesController {
         questions: {
             id: string;
             order: number;
-            quizId: string;
             question: string;
             options: string;
             correctAnswer: string;
             explanation: string | null;
+            quizId: string;
         }[];
     } & {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        title: string;
         courseId: string;
+        title: string;
         description: string | null;
         passingScore: number;
     }) | null>;
@@ -71,19 +71,19 @@ export declare class ResourcesController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        title: string;
         courseId: string;
+        title: string;
         description: string | null;
         passingScore: number;
     }>;
     addQuestion(quizId: string, dto: CreateQuestionDto): Promise<{
         id: string;
         order: number;
-        quizId: string;
         question: string;
         options: string;
         correctAnswer: string;
         explanation: string | null;
+        quizId: string;
     }>;
     deleteQuestion(id: string): Promise<{
         deleted: boolean;

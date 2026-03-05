@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentsController = void 0;
 const common_1 = require("@nestjs/common");
 const payments_service_1 = require("./payments.service");
+const payment_gateway_service_1 = require("./payment-gateway.service");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const roles_decorator_1 = require("../auth/guards/roles.decorator");
 let PaymentsController = class PaymentsController {
-    constructor(paymentsService) {
+    constructor(paymentsService, gatewayService) {
         this.paymentsService = paymentsService;
+        this.gatewayService = gatewayService;
     }
     create(req, dto) {
         return this.paymentsService.create(req.user.id, dto);
@@ -45,6 +47,18 @@ let PaymentsController = class PaymentsController {
     }
     findByUserId(userId) {
         return this.paymentsService.findByUser(userId);
+    }
+    getGateways() {
+        return this.gatewayService.findAll();
+    }
+    getPublicGateways() {
+        return this.gatewayService.getPublicGateways();
+    }
+    getGatewayFields(code) {
+        return this.gatewayService.getConfigFields(code);
+    }
+    updateGateway(id, data) {
+        return this.gatewayService.update(id, data);
     }
 };
 exports.PaymentsController = PaymentsController;
@@ -116,8 +130,42 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PaymentsController.prototype, "findByUserId", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Get)("gateways"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "getGateways", null);
+__decorate([
+    (0, common_1.Get)("gateways/public"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "getPublicGateways", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Get)("gateways/:code/fields"),
+    __param(0, (0, common_1.Param)("code")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "getGatewayFields", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Put)("gateways/:id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "updateGateway", null);
 exports.PaymentsController = PaymentsController = __decorate([
     (0, common_1.Controller)("payments"),
-    __metadata("design:paramtypes", [payments_service_1.PaymentsService])
+    __metadata("design:paramtypes", [payments_service_1.PaymentsService,
+        payment_gateway_service_1.PaymentGatewayService])
 ], PaymentsController);
 //# sourceMappingURL=payments.controller.js.map

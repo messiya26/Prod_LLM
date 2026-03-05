@@ -11,27 +11,27 @@ export declare class SessionsService {
     }): Promise<{
         id: string;
         createdAt: Date;
+        userId: string;
         token: string;
         expiresAt: Date;
-        userId: string;
         location: string | null;
         ip: string | null;
         userAgent: string | null;
-        isActive: boolean;
         device: string | null;
+        isActive: boolean;
         lastActive: Date;
     }>;
     findByUser(userId: string): Promise<{
         id: string;
         createdAt: Date;
+        userId: string;
         token: string;
         expiresAt: Date;
-        userId: string;
         location: string | null;
         ip: string | null;
         userAgent: string | null;
-        isActive: boolean;
         device: string | null;
+        isActive: boolean;
         lastActive: Date;
     }[]>;
     revoke(sessionId: string, userId: string): Promise<import(".prisma/client").Prisma.BatchPayload>;

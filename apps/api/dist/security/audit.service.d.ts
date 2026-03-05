@@ -14,8 +14,8 @@ export declare class AuditService {
     }): Promise<{
         id: string;
         createdAt: Date;
-        userId: string | null;
         metadata: import(".prisma/client/runtime/library").JsonValue | null;
+        userId: string | null;
         action: import(".prisma/client").$Enums.AuditAction;
         targetId: string | null;
         targetType: string | null;
@@ -43,8 +43,8 @@ export declare class AuditService {
         } & {
             id: string;
             createdAt: Date;
-            userId: string | null;
             metadata: import(".prisma/client/runtime/library").JsonValue | null;
+            userId: string | null;
             action: import(".prisma/client").$Enums.AuditAction;
             targetId: string | null;
             targetType: string | null;

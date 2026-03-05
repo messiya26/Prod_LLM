@@ -12,8 +12,8 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        userId: string;
         courseId: string;
         progress: number;
     }>;
@@ -21,8 +21,8 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        userId: string;
         courseId: string;
         progress: number;
     }>;
@@ -37,11 +37,11 @@ export declare class EnrollmentsService {
             updatedAt: Date;
             title: string;
             slug: string;
-            published: boolean;
             description: string;
             thumbnail: string | null;
             level: import(".prisma/client").$Enums.Level;
             price: import(".prisma/client/runtime/library").Decimal;
+            published: boolean;
             categoryId: string;
             instructorId: string | null;
         };
@@ -49,8 +49,8 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        userId: string;
         courseId: string;
         progress: number;
     })[]>;
@@ -69,8 +69,8 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        userId: string;
         courseId: string;
         progress: number;
     }>;
@@ -86,8 +86,8 @@ export declare class EnrollmentsService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
         status: import(".prisma/client").$Enums.EnrollmentStatus;
+        userId: string;
         courseId: string;
         progress: number;
     })[]>;

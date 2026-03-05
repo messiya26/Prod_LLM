@@ -6,8 +6,8 @@ export declare class PricingPlansController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        slug: string;
         currency: string;
+        slug: string;
         nameFr: string;
         nameEn: string;
         descFr: string;
@@ -27,8 +27,8 @@ export declare class PricingPlansController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        slug: string;
         currency: string;
+        slug: string;
         nameFr: string;
         nameEn: string;
         descFr: string;
@@ -48,8 +48,8 @@ export declare class PricingPlansController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        slug: string;
         currency: string;
+        slug: string;
         nameFr: string;
         nameEn: string;
         descFr: string;
@@ -69,8 +69,8 @@ export declare class PricingPlansController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        slug: string;
         currency: string;
+        slug: string;
         nameFr: string;
         nameEn: string;
         descFr: string;
@@ -90,8 +90,8 @@ export declare class PricingPlansController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        slug: string;
         currency: string;
+        slug: string;
         nameFr: string;
         nameEn: string;
         descFr: string;
