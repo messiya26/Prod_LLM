@@ -102,7 +102,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (!loading && !user) router.push("/connexion");
     if (!loading && user && !user.emailVerified) router.push("/verification-requise");
-  }, [user, loading, router]);
+    if (!loading && user && pathname === "/dashboard" && ["ADMIN", "SUPER_ADMIN"].includes(user.role)) {
+      router.replace("/admin");
+    }
+  }, [user, loading, router, pathname]);
 
   if (loading || !user || !user.emailVerified) return <FullPageLoader message={t("dash.loading")} />;
 
