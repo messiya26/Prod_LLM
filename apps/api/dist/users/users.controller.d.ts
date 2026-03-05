@@ -17,9 +17,9 @@ export declare class UsersController {
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
         token: string;
-        expiresAt: Date;
-        accepted: boolean;
         invitedBy: string;
+        accepted: boolean;
+        expiresAt: Date;
     }[]>;
     invite(body: {
         email: string;
@@ -34,7 +34,7 @@ export declare class UsersController {
         role: import(".prisma/client").$Enums.Role;
     }>;
     updateRole(id: string, body: {
-        role: "STUDENT" | "INSTRUCTOR" | "ADMIN";
+        role: string;
     }): Promise<{
         id: string;
         email: string;
@@ -70,8 +70,8 @@ export declare class UsersController {
             createdAt: Date;
             updatedAt: Date;
             userId: string;
-            status: import(".prisma/client").$Enums.EnrollmentStatus;
             courseId: string;
+            status: import(".prisma/client").$Enums.EnrollmentStatus;
             progress: number;
         })[];
     } | null, null, import(".prisma/client/runtime/library").DefaultArgs>;

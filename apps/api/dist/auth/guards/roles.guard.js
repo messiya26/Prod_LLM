@@ -22,7 +22,12 @@ let RolesGuard = class RolesGuard {
             return true;
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        if (!user || !roles.includes(user.role)) {
+        const userRole = user?.role;
+        if (!user || !userRole)
+            throw new common_1.ForbiddenException("Acces refuse");
+        if (userRole === "SUPER_ADMIN")
+            return true;
+        if (!roles.includes(userRole)) {
             throw new common_1.ForbiddenException("Acces refuse");
         }
         return true;

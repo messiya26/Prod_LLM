@@ -33,13 +33,13 @@ export declare class UsersService {
             createdAt: Date;
             updatedAt: Date;
             userId: string;
-            status: import(".prisma/client").$Enums.EnrollmentStatus;
             courseId: string;
+            status: import(".prisma/client").$Enums.EnrollmentStatus;
             progress: number;
         })[];
     } | null, null, import(".prisma/client/runtime/library").DefaultArgs>;
     count(): Promise<number>;
-    updateRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "ADMIN"): Promise<{
+    updateRole(userId: string, role: string): Promise<{
         id: string;
         email: string;
         passwordHash: string;
@@ -66,8 +66,8 @@ export declare class UsersService {
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
         token: string;
-        expiresAt: Date;
-        accepted: boolean;
         invitedBy: string;
+        accepted: boolean;
+        expiresAt: Date;
     }[]>;
 }

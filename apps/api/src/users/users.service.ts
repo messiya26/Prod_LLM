@@ -27,13 +27,15 @@ export class UsersService {
     return this.prisma.user.count();
   }
 
-  async updateRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "ADMIN") {
-    return this.prisma.user.update({ where: { id: userId }, data: { role } });
+  async updateRole(userId: string, role: string) {
+    const validRoles = ["STUDENT", "INSTRUCTOR", "MODERATOR", "ADMIN", "SUPER_ADMIN"];
+    if (!validRoles.includes(role)) throw new BadRequestException("Role invalide");
+    return this.prisma.user.update({ where: { id: userId }, data: { role: role as any } });
   }
 
   async inviteAdmin(email: string, role: "INSTRUCTOR" | "ADMIN", inviterId: string) {
     const inviter = await this.prisma.user.findUnique({ where: { id: inviterId } });
-    if (!inviter || inviter.role !== "ADMIN") throw new BadRequestException("Non autorise");
+    if (!inviter || !["ADMIN", "SUPER_ADMIN"].includes(inviter.role)) throw new BadRequestException("Non autorise");
 
     const existing = await this.prisma.adminInvitation.findFirst({
       where: { email, accepted: false, expiresAt: { gt: new Date() } },
