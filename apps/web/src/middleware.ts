@@ -39,7 +39,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (pathname.startsWith("/admin") && token && userRole !== "ADMIN") {
+  const adminRoles = ["ADMIN", "SUPER_ADMIN", "MODERATOR"];
+  if (pathname.startsWith("/admin") && token && !adminRoles.includes(userRole || "")) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
@@ -47,7 +48,7 @@ export function middleware(request: NextRequest) {
 
   if (isAuth && token) {
     const url = request.nextUrl.clone();
-    url.pathname = userRole === "ADMIN" ? "/admin" : "/dashboard";
+    url.pathname = adminRoles.includes(userRole || "") ? "/admin" : "/dashboard";
     return NextResponse.redirect(url);
   }
 
