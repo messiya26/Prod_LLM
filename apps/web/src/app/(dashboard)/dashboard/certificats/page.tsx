@@ -48,7 +48,8 @@ body{background:#0f0f1a;display:flex;align-items:center;justify-content:center;m
 .bl{bottom:20px;left:20px;border-bottom-width:3px;border-left-width:3px;border-bottom-left-radius:14px}
 .br{bottom:20px;right:20px;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:14px}
 .logo-container{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
-.logo-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#d4af37,#f5e6a3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#0f0f1a}
+.logo-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:48px;height:48px}
 .logo-text{color:rgba(212,175,55,0.9);font-size:11px;letter-spacing:6px;text-transform:uppercase;font-weight:600}
 .logo-sub{color:rgba(212,175,55,0.5);font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-top:2px}
 h1{font-family:'Playfair Display',serif;color:#f5f5f5;font-size:36px;margin-bottom:4px}
@@ -72,7 +73,7 @@ h1{font-family:'Playfair Display',serif;color:#f5f5f5;font-size:36px;margin-bott
 <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
 <div style="text-align:center">
 <div class="logo-container">
-<div class="logo-icon">LLA</div>
+<div class="logo-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="10" width="24" height="65" rx="3" fill="url(#goldGrad)"/><rect x="42" y="10" width="14" height="65" rx="2" fill="#1a2744"/><path d="M18 75 Q18 85 28 85 L55 85 Q65 85 65 78" stroke="#d4af37" stroke-width="5" fill="none" stroke-linecap="round"/><defs><linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4af37"/><stop offset="100%" stop-color="#f5e6a3"/></linearGradient></defs></svg></div>
 <div><div class="logo-text">Lord Lombo Academie</div><div class="logo-sub">Excellence & Formation</div></div>
 </div>
 <h1>Certificat de Reussite</h1>
@@ -180,7 +181,14 @@ ${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
 
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-navy font-bold text-lg">LLA</div>
+                        <div className="w-12 h-12 flex items-center justify-center">
+                          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12">
+                            <rect x="18" y="10" width="24" height="65" rx="3" fill="url(#goldGradM)"/>
+                            <rect x="42" y="10" width="14" height="65" rx="2" fill="#1a2744"/>
+                            <path d="M18 75 Q18 85 28 85 L55 85 Q65 85 65 78" stroke="#d4af37" strokeWidth="5" fill="none" strokeLinecap="round"/>
+                            <defs><linearGradient id="goldGradM" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#d4af37"/><stop offset="100%" stopColor="#f5e6a3"/></linearGradient></defs>
+                          </svg>
+                        </div>
                         <div>
                           <div className="text-gold text-xs tracking-[0.3em] uppercase font-semibold">Lord Lombo Academie</div>
                           <div className="text-gold/40 text-[9px] tracking-[0.2em] uppercase">Excellence & Formation</div>
