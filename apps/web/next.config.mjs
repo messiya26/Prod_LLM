@@ -3,13 +3,13 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const cspDirectives = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com",
+  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://www.googletagmanager.com https://www.google-analytics.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://i.ytimg.com https://m.media-amazon.com",
+  "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://i.ytimg.com https://m.media-amazon.com https://www.google-analytics.com https://www.googletagmanager.com",
   "font-src 'self' https://fonts.gstatic.com",
   isDev
     ? "connect-src 'self' ws://localhost:* http://localhost:*"
-    : "connect-src 'self' https://accounts.google.com https://*.lordlomboministries.com https://*.lordlomboacademie.com https://prod-llm.onrender.com",
+    : "connect-src 'self' https://accounts.google.com https://*.lordlomboministries.com https://*.lordlomboacademie.com https://prod-llm.onrender.com https://www.google-analytics.com https://www.googletagmanager.com",
   "frame-src 'self' https://accounts.google.com https://www.youtube.com https://meet.jit.si https://*.zoom.us",
   "object-src 'none'",
   "base-uri 'self'",
