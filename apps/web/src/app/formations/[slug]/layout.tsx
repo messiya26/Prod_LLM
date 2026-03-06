@@ -25,6 +25,56 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default function FormationSlugLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+async function CourseJsonLd({ slug }: { slug: string }) {
+  try {
+    const res = await fetch(`${API_URL}/courses/${slug}`, { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+    const c = await res.json();
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: c.title,
+      description: c.description || "",
+      url: `${BASE_URL}/formations/${slug}`,
+      provider: {
+        "@type": "Organization",
+        name: "Lord Lombo Ministries - Academie",
+        url: BASE_URL,
+      },
+      ...(c.instructor && { instructor: { "@type": "Person", name: c.instructor } }),
+      ...(c.thumbnail && { image: c.thumbnail }),
+      ...(c.price !== undefined && {
+        offers: {
+          "@type": "Offer",
+          price: c.price || 0,
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: `${BASE_URL}/formations/${slug}`,
+        },
+      }),
+      ...(c.category && { courseCode: c.category }),
+      inLanguage: "fr",
+      isAccessibleForFree: c.price === 0 || c.price === "0",
+      hasCourseInstance: {
+        "@type": "CourseInstance",
+        courseMode: "online",
+        courseWorkload: c.duration || "PT10H",
+      },
+    };
+    return (
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    );
+  } catch {
+    return null;
+  }
+}
+
+export default function FormationSlugLayout({ children, params }: { children: React.ReactNode; params: { slug: string } }) {
+  return (
+    <>
+      {/* @ts-expect-error Async Server Component */}
+      <CourseJsonLd slug={params.slug} />
+      {children}
+    </>
+  );
 }
