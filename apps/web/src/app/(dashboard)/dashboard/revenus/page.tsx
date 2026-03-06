@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   FaDollarSign, FaUsers, FaBookOpen, FaChartLine,
-  FaSpinner, FaArrowUp, FaArrowDown,
+  FaSpinner, FaArrowUp, FaArrowDown, FaChevronLeft, FaChevronRight,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import api from "@/lib/api";
@@ -20,6 +20,8 @@ export default function RevenusPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState<InstructorStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [payPage, setPayPage] = useState(1);
+  const PAY_PAGE_SIZE = 10;
 
   useEffect(() => {
     api.get<InstructorStats>("/payments/instructor/stats")
@@ -89,7 +91,7 @@ export default function RevenusPage() {
               </tr>
             </thead>
             <tbody>
-              {stats?.payments?.map((p: any) => (
+              {stats?.payments?.slice((payPage - 1) * PAY_PAGE_SIZE, payPage * PAY_PAGE_SIZE).map((p: any) => (
                 <tr key={p.id} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
                   <td className="py-3 text-white text-sm">{p.user?.firstName} {p.user?.lastName}</td>
                   <td className="py-3 text-white/60 text-sm">{p.course?.title}</td>
@@ -102,6 +104,23 @@ export default function RevenusPage() {
           {(!stats?.payments || stats.payments.length === 0) && (
             <p className="text-white/30 text-sm text-center py-8">Aucun paiement recu</p>
           )}
+          {(() => {
+            const total = stats?.payments?.length || 0;
+            const tp = Math.ceil(total / PAY_PAGE_SIZE);
+            if (tp <= 1) return null;
+            return (
+              <div className="flex items-center justify-between px-2 py-3 border-t border-white/[0.06]">
+                <span className="text-white/20 text-xs">{(payPage - 1) * PAY_PAGE_SIZE + 1}-{Math.min(payPage * PAY_PAGE_SIZE, total)} sur {total}</span>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setPayPage(p => Math.max(1, p - 1))} disabled={payPage === 1} className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"><FaChevronLeft className="text-[10px]" /></button>
+                  {Array.from({ length: tp }, (_, i) => i + 1).slice(Math.max(0, payPage - 3), payPage + 2).map(p => (
+                    <button key={p} onClick={() => setPayPage(p)} className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all ${payPage === p ? "bg-gold/20 text-gold border border-gold/30" : "text-white/40 hover:text-gold hover:bg-gold/10"}`}>{p}</button>
+                  ))}
+                  <button onClick={() => setPayPage(p => Math.min(tp, p + 1))} disabled={payPage === tp} className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"><FaChevronRight className="text-[10px]" /></button>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>

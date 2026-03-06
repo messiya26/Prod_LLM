@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useI18n } from "@/context/i18n-context";
 import {
   FaSave, FaSpinner, FaCheck, FaHome, FaInfoCircle, FaChartBar,
-  FaQuoteLeft, FaFootballBall, FaImage, FaPlus, FaTrash, FaTimes,
-  FaEdit, FaStar, FaGlobe
+  FaQuoteLeft, FaImage, FaPlus, FaTrash, FaGlobe, FaUpload,
+  FaChevronLeft, FaChevronRight
 } from "react-icons/fa";
-import api from "@/lib/api";
+import api, { API_HOST } from "@/lib/api";
 
 interface ContentItem {
   id: string;
@@ -164,6 +164,72 @@ function FieldInput({ label, value, onChange, type = "text", rows }: {
   );
 }
 
+function ImageUpload({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const imgSrc = value
+    ? value.startsWith("http") ? value : `${API_HOST}${value}`
+    : "";
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await api.upload<{ url: string }>("/upload", fd);
+      onChange(res.url);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+
+  return (
+    <div>
+      <label className="block text-white/40 text-[10px] font-medium uppercase tracking-wider mb-2">{label}</label>
+      <div className="flex items-start gap-3">
+        <div
+          onClick={() => inputRef.current?.click()}
+          className="w-28 h-28 rounded-xl bg-white/[0.04] border-2 border-dashed border-white/[0.1] hover:border-gold/30 flex items-center justify-center cursor-pointer overflow-hidden transition-all flex-shrink-0"
+        >
+          {uploading ? (
+            <FaSpinner className="animate-spin text-gold" />
+          ) : imgSrc ? (
+            <img src={imgSrc} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <div className="text-center">
+              <FaUpload className="text-white/20 mx-auto mb-1" />
+              <span className="text-white/20 text-[9px]">Charger</span>
+            </div>
+          )}
+        </div>
+        <div className="flex-1 space-y-2">
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="URL ou charger une image..."
+            className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white text-sm focus:outline-none focus:border-gold/30 transition-all"
+          />
+          <button
+            onClick={() => inputRef.current?.click()}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold/10 text-gold text-[10px] font-bold hover:bg-gold/20 transition-all"
+          >
+            <FaUpload className="text-[8px]" /> {uploading ? "Chargement..." : "Charger une image"}
+          </button>
+        </div>
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+    </div>
+  );
+}
+
 function HeroSection({ getValue, setValue }: { getValue: (k: string) => string; setValue: (k: string, v: string) => void }) {
   return (
     <>
@@ -176,10 +242,8 @@ function HeroSection({ getValue, setValue }: { getValue: (k: string) => string; 
           <p className="text-white/30 text-[10px]">Banniere principale de la page d'accueil</p>
         </div>
       </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <FieldInput label="Titre principal" value={getValue("hero_title")} onChange={(v) => setValue("hero_title", v)} />
-        <FieldInput label="URL image de fond" value={getValue("hero_image")} onChange={(v) => setValue("hero_image", v)} />
-      </div>
+      <FieldInput label="Titre principal" value={getValue("hero_title")} onChange={(v) => setValue("hero_title", v)} />
+      <ImageUpload label="Image de fond" value={getValue("hero_image")} onChange={(v) => setValue("hero_image", v)} />
       <FieldInput label="Sous-titre" value={getValue("hero_subtitle")} onChange={(v) => setValue("hero_subtitle", v)} rows={2} />
       <FieldInput label="Texte du bouton CTA" value={getValue("hero_cta")} onChange={(v) => setValue("hero_cta", v)} />
     </>
@@ -198,10 +262,8 @@ function AboutSection({ getValue, setValue }: { getValue: (k: string) => string;
           <p className="text-white/30 text-[10px]">Informations sur le ministere et Lord Lombo</p>
         </div>
       </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        <FieldInput label="Titre" value={getValue("about_title")} onChange={(v) => setValue("about_title", v)} />
-        <FieldInput label="URL photo" value={getValue("about_image")} onChange={(v) => setValue("about_image", v)} />
-      </div>
+      <FieldInput label="Titre" value={getValue("about_title")} onChange={(v) => setValue("about_title", v)} />
+      <ImageUpload label="Photo" value={getValue("about_image")} onChange={(v) => setValue("about_image", v)} />
       <FieldInput label="Description" value={getValue("about_description")} onChange={(v) => setValue("about_description", v)} rows={4} />
       <FieldInput label="Mission" value={getValue("about_mission")} onChange={(v) => setValue("about_mission", v)} rows={3} />
       <FieldInput label="Vision" value={getValue("about_vision")} onChange={(v) => setValue("about_vision", v)} rows={3} />
@@ -239,10 +301,17 @@ function StatsSection({ getValue, setValue }: { getValue: (k: string) => string;
   );
 }
 
+const TESTIMONIALS_PER_PAGE = 5;
+
 function TestimonialsSection({ getValue, setValue }: { getValue: (k: string) => string; setValue: (k: string, v: string) => void }) {
+  const [page, setPage] = useState(1);
   const raw = getValue("testimonials");
   let testimonials: { name: string; role: string; text: string; avatar: string }[] = [];
   try { testimonials = JSON.parse(raw || "[]"); } catch { testimonials = []; }
+
+  const totalPages = Math.max(1, Math.ceil(testimonials.length / TESTIMONIALS_PER_PAGE));
+  const start = (page - 1) * TESTIMONIALS_PER_PAGE;
+  const visible = testimonials.slice(start, start + TESTIMONIALS_PER_PAGE);
 
   const updateTestimonials = (updated: typeof testimonials) => {
     setValue("testimonials", JSON.stringify(updated));
@@ -250,15 +319,18 @@ function TestimonialsSection({ getValue, setValue }: { getValue: (k: string) => 
 
   const addTestimonial = () => {
     updateTestimonials([...testimonials, { name: "", role: "", text: "", avatar: "" }]);
+    const newTotal = Math.ceil((testimonials.length + 1) / TESTIMONIALS_PER_PAGE);
+    setPage(newTotal);
   };
 
-  const removeTestimonial = (idx: number) => {
-    updateTestimonials(testimonials.filter((_, i) => i !== idx));
+  const removeTestimonial = (globalIdx: number) => {
+    updateTestimonials(testimonials.filter((_, i) => i !== globalIdx));
+    if (page > 1 && visible.length === 1) setPage(page - 1);
   };
 
-  const updateField = (idx: number, field: string, value: string) => {
+  const updateField = (globalIdx: number, field: string, value: string) => {
     const updated = [...testimonials];
-    (updated[idx] as any)[field] = value;
+    (updated[globalIdx] as any)[field] = value;
     updateTestimonials(updated);
   };
 
@@ -270,7 +342,7 @@ function TestimonialsSection({ getValue, setValue }: { getValue: (k: string) => 
             <FaQuoteLeft className="text-purple-400 text-sm" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white">Temoignages</h3>
+            <h3 className="text-sm font-bold text-white">Temoignages ({testimonials.length})</h3>
             <p className="text-white/30 text-[10px]">Avis des etudiants affiches sur le site</p>
           </div>
         </div>
@@ -279,23 +351,47 @@ function TestimonialsSection({ getValue, setValue }: { getValue: (k: string) => 
         </button>
       </div>
       <div className="space-y-4">
-        {testimonials.map((t, idx) => (
-          <div key={idx} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] space-y-3 relative">
-            <button onClick={() => removeTestimonial(idx)} className="absolute top-3 right-3 text-red-400/50 hover:text-red-400 transition-all">
-              <FaTrash className="text-xs" />
-            </button>
-            <div className="grid md:grid-cols-3 gap-3">
-              <FieldInput label="Nom" value={t.name} onChange={(v) => updateField(idx, "name", v)} />
-              <FieldInput label="Role / Titre" value={t.role} onChange={(v) => updateField(idx, "role", v)} />
-              <FieldInput label="URL Avatar" value={t.avatar} onChange={(v) => updateField(idx, "avatar", v)} />
+        {visible.map((t, localIdx) => {
+          const globalIdx = start + localIdx;
+          return (
+            <div key={globalIdx} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.04] space-y-3 relative">
+              <button onClick={() => removeTestimonial(globalIdx)} className="absolute top-3 right-3 text-red-400/50 hover:text-red-400 transition-all">
+                <FaTrash className="text-xs" />
+              </button>
+              <div className="grid md:grid-cols-3 gap-3">
+                <FieldInput label="Nom" value={t.name} onChange={(v) => updateField(globalIdx, "name", v)} />
+                <FieldInput label="Role / Titre" value={t.role} onChange={(v) => updateField(globalIdx, "role", v)} />
+                <ImageUpload label="Avatar" value={t.avatar} onChange={(v) => updateField(globalIdx, "avatar", v)} />
+              </div>
+              <FieldInput label="Temoignage" value={t.text} onChange={(v) => updateField(globalIdx, "text", v)} rows={2} />
             </div>
-            <FieldInput label="Temoignage" value={t.text} onChange={(v) => updateField(idx, "text", v)} rows={2} />
-          </div>
-        ))}
+          );
+        })}
         {testimonials.length === 0 && (
           <div className="text-center py-8 text-white/20 text-sm">Aucun temoignage. Cliquez sur "Ajouter" pour commencer.</div>
         )}
       </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-4 border-t border-white/[0.04]">
+          <span className="text-white/20 text-xs">{start + 1}-{Math.min(start + TESTIMONIALS_PER_PAGE, testimonials.length)} sur {testimonials.length}</span>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+              <FaChevronLeft className="text-[10px]" />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <button key={p} onClick={() => setPage(p)}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all ${
+                  page === p ? "bg-gold/20 text-gold border border-gold/30" : "text-white/40 hover:text-gold hover:bg-gold/10"
+                }`}>{p}</button>
+            ))}
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+              <FaChevronRight className="text-[10px]" />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

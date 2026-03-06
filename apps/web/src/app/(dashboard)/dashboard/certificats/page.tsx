@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaAward, FaDownload, FaEye, FaShieldAlt, FaCalendarAlt, FaClock, FaCheckCircle, FaTimes, FaQrcode } from "react-icons/fa";
+import { FaAward, FaDownload, FaEye, FaShieldAlt, FaCalendarAlt, FaClock, FaCheckCircle, FaTimes, FaQrcode, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import api from "@/lib/api";
 
@@ -22,6 +22,8 @@ export default function CertificatsPage() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewCert, setViewCert] = useState<Certificate | null>(null);
+  const [certPage, setCertPage] = useState(1);
+  const CERT_PAGE_SIZE = 6;
 
   useEffect(() => {
     api.get<Certificate[]>("/certificates/my").then((data) => {
@@ -129,7 +131,7 @@ ${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-5">
-          {certificates.map((cert, i) => (
+          {certificates.slice((certPage - 1) * CERT_PAGE_SIZE, certPage * CERT_PAGE_SIZE).map((cert, i) => (
             <motion.div key={cert.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="rounded-2xl bg-cream/[0.02] border border-cream/[0.06] overflow-hidden hover:border-gold/20 transition-all group">
               <div className="h-2 bg-gradient-to-r from-gold via-gold-light to-gold" />
               <div className="p-6">
@@ -161,6 +163,22 @@ ${cert.grade ? `<span class="grade">${cert.grade}</span>` : ""}
           ))}
         </div>
       )}
+      {(() => {
+        const tp = Math.ceil(certificates.length / CERT_PAGE_SIZE);
+        if (tp <= 1) return null;
+        return (
+          <div className="flex items-center justify-between pt-4">
+            <span className="text-cream/20 text-xs">{(certPage - 1) * CERT_PAGE_SIZE + 1}-{Math.min(certPage * CERT_PAGE_SIZE, certificates.length)} sur {certificates.length}</span>
+            <div className="flex items-center gap-1">
+              <button onClick={() => setCertPage(p => Math.max(1, p - 1))} disabled={certPage === 1} className="w-8 h-8 rounded-lg flex items-center justify-center text-cream/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"><FaChevronLeft className="text-[10px]" /></button>
+              {Array.from({ length: tp }, (_, i) => i + 1).slice(Math.max(0, certPage - 3), certPage + 2).map(p => (
+                <button key={p} onClick={() => setCertPage(p)} className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all ${certPage === p ? "bg-gold/20 text-gold border border-gold/30" : "text-cream/40 hover:text-gold hover:bg-gold/10"}`}>{p}</button>
+              ))}
+              <button onClick={() => setCertPage(p => Math.min(tp, p + 1))} disabled={certPage === tp} className="w-8 h-8 rounded-lg flex items-center justify-center text-cream/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"><FaChevronRight className="text-[10px]" /></button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Certificate Preview Modal */}
       <AnimatePresence>

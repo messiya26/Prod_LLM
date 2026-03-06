@@ -8,6 +8,9 @@ class ApiError extends Error {
   }
 }
 
+const cache = new Map<string, { data: unknown; ts: number }>();
+const CACHE_TTL = 30_000;
+
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("lla_token");
@@ -40,7 +43,17 @@ async function request<T>(
 }
 
 export const api = {
-  get: <T>(endpoint: string) => request<T>(endpoint),
+  get: <T>(endpoint: string, skipCache = false): Promise<T> => {
+    const key = `${getToken() || "anon"}:${endpoint}`;
+    const cached = cache.get(key);
+    if (!skipCache && cached && Date.now() - cached.ts < CACHE_TTL) {
+      return Promise.resolve(cached.data as T);
+    }
+    return request<T>(endpoint).then(data => {
+      cache.set(key, { data, ts: Date.now() });
+      return data;
+    });
+  },
   post: <T>(endpoint: string, data?: unknown) =>
     request<T>(endpoint, { method: "POST", body: data ? JSON.stringify(data) : undefined }),
   put: <T>(endpoint: string, data?: unknown) =>
@@ -55,6 +68,13 @@ export const api = {
     const res = await fetch(`${API_BASE}${endpoint}`, { method: "POST", headers, body: formData, credentials: "include" });
     if (!res.ok) { const body = await res.json().catch(() => ({ message: res.statusText })); throw new ApiError(res.status, body.message || res.statusText); }
     return res.json();
+  },
+  invalidate: (endpoint?: string) => {
+    if (endpoint) {
+      for (const k of cache.keys()) { if (k.endsWith(endpoint)) cache.delete(k); }
+    } else {
+      cache.clear();
+    }
   },
 };
 

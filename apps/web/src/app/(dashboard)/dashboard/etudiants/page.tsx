@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUsers, FaSpinner, FaBookOpen, FaSearch } from "react-icons/fa";
+import { FaUsers, FaSpinner, FaBookOpen, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import api from "@/lib/api";
 
@@ -20,6 +20,8 @@ export default function InstructorStudentsPage() {
   const [students, setStudents] = useState<StudentEnroll[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     api.get<StudentEnroll[]>("/payments/instructor/students")
@@ -31,6 +33,9 @@ export default function InstructorStudentsPage() {
   const filtered = students.filter(s =>
     `${s.user.firstName} ${s.user.lastName} ${s.user.email} ${s.course.title}`.toLowerCase().includes(search.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (loading) return <div className="flex items-center justify-center h-64"><FaSpinner className="text-gold text-2xl animate-spin" /></div>;
 
@@ -60,7 +65,7 @@ export default function InstructorStudentsPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((s, i) => (
+            {paginated.map((s, i) => (
               <motion.tr key={s.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
                 className="border-b border-white/[0.03] hover:bg-white/[0.02]">
                 <td className="px-5 py-4">
@@ -101,6 +106,27 @@ export default function InstructorStudentsPage() {
           <div className="text-center py-12">
             <FaUsers className="text-white/10 text-3xl mx-auto mb-3" />
             <p className="text-white/30 text-sm">Aucun etudiant inscrit a vos formations</p>
+          </div>
+        )}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.06]">
+            <span className="text-white/20 text-xs">{(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} sur {filtered.length}</span>
+            <div className="flex items-center gap-1">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+                <FaChevronLeft className="text-[10px]" />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).slice(Math.max(0, page - 3), page + 2).map(p => (
+                <button key={p} onClick={() => setPage(p)}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all ${
+                    page === p ? "bg-gold/20 text-gold border border-gold/30" : "text-white/40 hover:text-gold hover:bg-gold/10"
+                  }`}>{p}</button>
+              ))}
+              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold hover:bg-gold/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+                <FaChevronRight className="text-[10px]" />
+              </button>
+            </div>
           </div>
         )}
       </div>
