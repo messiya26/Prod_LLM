@@ -18,14 +18,28 @@ let PaymentsService = class PaymentsService {
         this.prisma = prisma;
         this.mail = mail;
     }
+    mapMethod(method) {
+        const map = {
+            card: "STRIPE", stripe: "STRIPE",
+            paypal: "PAYPAL",
+            mobile_money: "MOBILE_MONEY", mobilemoney: "MOBILE_MONEY", "mobile-money": "MOBILE_MONEY",
+            mpesa: "MPESA", "m-pesa": "MPESA",
+            illicocash: "ILLICOCASH",
+            cashapp: "CASH_APP", "cash-app": "CASH_APP", cash_app: "CASH_APP",
+            bank: "BANK_TRANSFER", virement: "BANK_TRANSFER", bank_transfer: "BANK_TRANSFER",
+            free: "FREE",
+        };
+        return map[method?.toLowerCase()] || "STRIPE";
+    }
     async create(userId, dto) {
         const ref = `PAY-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+        const mappedMethod = this.mapMethod(dto.method);
         const payment = await this.prisma.payment.create({
             data: {
                 userId,
                 courseId: dto.courseId,
                 amount: dto.amount,
-                method: dto.method || "STRIPE",
+                method: mappedMethod,
                 reference: ref,
                 status: dto.amount === 0 ? "COMPLETED" : "PENDING",
                 metadata: dto.metadata || null,

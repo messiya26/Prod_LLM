@@ -204,10 +204,10 @@ export declare class PaymentsController {
         courseId: string;
     })[]>;
     getGateways(): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         code: string;
         icon: string | null;
         enabled: boolean;
@@ -231,10 +231,10 @@ export declare class PaymentsController {
         sandboxMode?: boolean;
         config?: any;
     }): Promise<{
+        name: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         code: string;
         icon: string | null;
         enabled: boolean;

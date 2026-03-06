@@ -4,6 +4,7 @@ export declare class PaymentsService {
     private prisma;
     private mail;
     constructor(prisma: PrismaService, mail: MailService);
+    private mapMethod;
     create(userId: string, dto: {
         courseId: string;
         amount: number;
