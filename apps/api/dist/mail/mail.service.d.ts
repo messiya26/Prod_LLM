@@ -39,4 +39,5 @@ export declare class MailService implements OnModuleInit {
         time: string;
         link: string;
     }): Promise<boolean>;
+    sendPasswordResetCode(to: string, firstName: string, code: string): Promise<boolean>;
 }

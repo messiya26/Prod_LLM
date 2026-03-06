@@ -439,4 +439,37 @@ export class MailService implements OnModuleInit {
       return false;
     }
   }
+
+  async sendPasswordResetCode(to: string, firstName: string, code: string): Promise<boolean> {
+    const content = `
+      <div style="text-align:center;margin-bottom:20px;">
+        <span style="font-size:50px;">&#128274;</span>
+        <h1 style="margin:8px 0;color:#F5F0E8;font-size:22px;font-weight:700;">R&eacute;initialisation de mot de passe</h1>
+      </div>
+      <p style="margin:0 0 24px;color:rgba(245,240,232,0.5);font-size:14px;text-align:center;">
+        ${firstName}, vous avez demand&eacute; la r&eacute;initialisation de votre mot de passe.
+      </p>
+      <div style="background:rgba(196,167,103,0.06);border:1px solid rgba(196,167,103,0.1);border-radius:12px;padding:24px;margin:24px 0;text-align:center;">
+        <p style="color:rgba(245,240,232,0.4);font-size:12px;margin:0 0 12px;">Votre code de v&eacute;rification</p>
+        <div style="font-size:36px;font-weight:900;color:#C4A767;letter-spacing:8px;">${code}</div>
+        <p style="color:rgba(245,240,232,0.3);font-size:11px;margin:12px 0 0;">Ce code expire dans 15 minutes</p>
+      </div>
+      <p style="color:rgba(245,240,232,0.3);font-size:12px;text-align:center;margin:24px 0 0;">
+        Si vous n'avez pas demand&eacute; cette r&eacute;initialisation, ignorez cet email. Votre compte est en s&eacute;curit&eacute;.
+      </p>
+    `;
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"Lord Lombo Academie" <${process.env.SMTP_USER || "noreply@lordlomboacademie.com"}>`,
+        to,
+        subject: `Code de reinitialisation: ${code}`,
+        html: this.baseTemplate(content),
+      });
+      this.logPreviewUrl(info);
+      return true;
+    } catch (err: any) {
+      console.error("[Mail] Erreur envoi password reset:", err);
+      return false;
+    }
+  }
 }

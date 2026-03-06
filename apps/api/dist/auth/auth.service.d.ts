@@ -108,5 +108,11 @@ export declare class AuthService {
         lastName: string;
         role: import(".prisma/client").$Enums.Role;
     }>;
+    forgotPassword(email: string): Promise<{
+        message: string;
+    }>;
+    resetPassword(email: string, code: string, newPassword: string): Promise<{
+        message: string;
+    }>;
     private generateTokens;
 }

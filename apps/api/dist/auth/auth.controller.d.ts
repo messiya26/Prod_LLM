@@ -78,6 +78,16 @@ export declare class AuthController {
         lastName: string;
         role: import(".prisma/client").$Enums.Role;
     }>;
+    forgotPassword(email: string): Promise<{
+        message: string;
+    }>;
+    resetPassword(body: {
+        email: string;
+        code: string;
+        newPassword: string;
+    }): Promise<{
+        message: string;
+    }>;
     googleAuth(): void;
     googleCallback(req: any, res: Response): Promise<void>;
 }

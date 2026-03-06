@@ -234,6 +234,51 @@ export class AuthService {
     });
   }
 
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) return { message: "Si un compte existe avec cet email, un code de reinitialisation a ete envoye." };
+
+    await this.prisma.verificationToken.updateMany({
+      where: { email, type: "PASSWORD_RESET", used: false },
+      data: { used: true },
+    });
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    await this.prisma.verificationToken.create({
+      data: {
+        token: code,
+        email,
+        type: "PASSWORD_RESET",
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+      },
+    });
+
+    this.mail.sendPasswordResetCode(email, user.firstName, code).catch(() => {});
+
+    return { message: "Si un compte existe avec cet email, un code de reinitialisation a ete envoye." };
+  }
+
+  async resetPassword(email: string, code: string, newPassword: string) {
+    const record = await this.prisma.verificationToken.findFirst({
+      where: { email, token: code, type: "PASSWORD_RESET", used: false },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!record) throw new BadRequestException("Code invalide ou expire");
+    if (record.expiresAt < new Date()) throw new BadRequestException("Code expire. Veuillez en demander un nouveau.");
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({ where: { email }, data: { passwordHash } });
+    await this.prisma.verificationToken.update({ where: { id: record.id }, data: { used: true } });
+
+    this.notifications.create(
+      (await this.prisma.user.findUnique({ where: { email } }))!.id,
+      { title: "Mot de passe modifie", message: "Votre mot de passe a ete reinitialise avec succes.", type: "security", link: "/dashboard/parametres" }
+    ).catch(() => {});
+
+    return { message: "Mot de passe reinitialise avec succes." };
+  }
+
   private async generateTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
     const [accessToken, refreshToken] = await Promise.all([

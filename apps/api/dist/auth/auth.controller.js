@@ -44,6 +44,12 @@ let AuthController = class AuthController {
     changeRole(userId, role, req) {
         return this.authService.changeRole(userId, role, req.user.id);
     }
+    forgotPassword(email) {
+        return this.authService.forgotPassword(email);
+    }
+    resetPassword(body) {
+        return this.authService.resetPassword(body.email, body.code, body.newPassword);
+    }
     googleAuth() { }
     async googleCallback(req, res) {
         const result = await this.authService.googleLogin(req.user);
@@ -112,6 +118,22 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "changeRole", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)("forgot-password"),
+    __param(0, (0, common_1.Body)("email")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)("reset-password"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "resetPassword", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)("google"),
