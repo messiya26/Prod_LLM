@@ -38,7 +38,7 @@ export declare class AuthService {
     resendVerification(email: string): Promise<{
         message: string;
     }>;
-    login(dto: LoginDto): Promise<{
+    login(dto: LoginDto, ip?: string, userAgent?: string): Promise<{
         accessToken: string;
         refreshToken: string;
         user: {
@@ -50,6 +50,7 @@ export declare class AuthService {
             emailVerified: boolean;
         };
     }>;
+    private parseDevice;
     googleLogin(googleUser: {
         email: string;
         firstName: string;

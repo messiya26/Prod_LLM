@@ -108,7 +108,7 @@ let AuthService = class AuthService {
         this.mail.sendVerificationEmail(email, user.firstName, token).catch(() => { });
         return { message: "Un nouveau lien de verification a ete envoye." };
     }
-    async login(dto) {
+    async login(dto, ip, userAgent) {
         const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
         if (!user)
             throw new common_1.UnauthorizedException("Email ou mot de passe incorrect");
@@ -121,11 +121,30 @@ let AuthService = class AuthService {
             type: "security",
             link: "/dashboard/parametres",
         }).catch(() => { });
+        this.mail.sendLoginNotification(user.email, {
+            userName: `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email,
+            device: this.parseDevice(userAgent || ""),
+            ip: ip || "inconnue",
+            date: new Date().toLocaleString("fr-FR"),
+        }).catch(() => { });
         const tokens = await this.generateTokens(user.id, user.email);
         return {
             user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, emailVerified: user.emailVerified },
             ...tokens,
         };
+    }
+    parseDevice(ua) {
+        if (/mobile|android|iphone/i.test(ua))
+            return "Mobile";
+        if (/tablet|ipad/i.test(ua))
+            return "Tablette";
+        if (/chrome/i.test(ua))
+            return "Chrome (Ordinateur)";
+        if (/firefox/i.test(ua))
+            return "Firefox (Ordinateur)";
+        if (/safari/i.test(ua))
+            return "Safari (Ordinateur)";
+        return "Navigateur";
     }
     async googleLogin(googleUser) {
         let user = await this.prisma.user.findUnique({ where: { email: googleUser.email } });

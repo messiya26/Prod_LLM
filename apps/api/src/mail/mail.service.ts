@@ -331,4 +331,112 @@ export class MailService implements OnModuleInit {
       return false;
     }
   }
+
+  async sendPaymentConfirmation(to: string, data: { userName: string; courseTitle: string; amount: number; currency: string; reference: string; method: string }): Promise<boolean> {
+    const content = `
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:28px;color:#fff;">&#10003;</span>
+        </div>
+        <h1 style="margin:0 0 8px;color:#F5F0E8;font-size:22px;font-weight:700;">Paiement confirm&eacute;</h1>
+        <p style="margin:0;color:rgba(245,240,232,0.4);font-size:13px;">Merci pour votre confiance, ${data.userName}</p>
+      </div>
+      <div style="background:rgba(196,167,103,0.06);border:1px solid rgba(196,167,103,0.1);border-radius:12px;padding:24px;margin:24px 0;">
+        <table role="presentation" cellspacing="0" cellpadding="0" width="100%">
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;width:120px;">Formation</td><td style="padding:8px 0;color:#F5F0E8;font-size:14px;font-weight:600;">${data.courseTitle}</td></tr>
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;">Montant</td><td style="padding:8px 0;color:#C4A767;font-size:16px;font-weight:700;">${data.amount} ${data.currency}</td></tr>
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;">Moyen</td><td style="padding:8px 0;color:#F5F0E8;font-size:14px;">${data.method}</td></tr>
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;">R&eacute;f&eacute;rence</td><td style="padding:8px 0;color:#F5F0E8;font-size:12px;font-family:monospace;">${data.reference}</td></tr>
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;">Date</td><td style="padding:8px 0;color:#F5F0E8;font-size:14px;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</td></tr>
+        </table>
+      </div>
+      <div style="text-align:center;margin:32px 0;">
+        <a href="${process.env.FRONTEND_URL || "http://localhost:3001"}/dashboard/formations" style="display:inline-block;padding:14px 40px;background-color:#C4A767;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:12px;">
+          Acc&eacute;der &agrave; ma formation
+        </a>
+      </div>
+      <p style="margin:0;color:rgba(245,240,232,0.25);font-size:11px;text-align:center;">
+        Conservez cet email comme re&ccedil;u de paiement.
+      </p>
+    `;
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"Lord Lombo Academie" <${process.env.SMTP_USER || "noreply@lordlomboacademie.com"}>`,
+        to,
+        subject: `Paiement confirme - ${data.courseTitle}`,
+        html: this.baseTemplate(content),
+      });
+      this.logPreviewUrl(info);
+      return true;
+    } catch (err: any) {
+      console.error("[Mail] Erreur envoi paiement:", err);
+      return false;
+    }
+  }
+
+  async sendLoginNotification(to: string, data: { userName: string; device: string; ip: string; date: string }): Promise<boolean> {
+    const content = `
+      <h1 style="margin:0 0 8px;color:#F5F0E8;font-size:22px;font-weight:700;">Nouvelle connexion d&eacute;tect&eacute;e</h1>
+      <p style="margin:0 0 24px;color:rgba(245,240,232,0.5);font-size:14px;">Bonjour ${data.userName}, une connexion a &eacute;t&eacute; effectu&eacute;e sur votre compte.</p>
+      <div style="background:rgba(196,167,103,0.06);border:1px solid rgba(196,167,103,0.1);border-radius:12px;padding:24px;margin:24px 0;">
+        <table role="presentation" cellspacing="0" cellpadding="0" width="100%">
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;width:100px;">Appareil</td><td style="padding:8px 0;color:#F5F0E8;font-size:14px;">${data.device}</td></tr>
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;">IP</td><td style="padding:8px 0;color:#F5F0E8;font-size:13px;font-family:monospace;">${data.ip}</td></tr>
+          <tr><td style="padding:8px 0;color:rgba(245,240,232,0.4);font-size:13px;">Date</td><td style="padding:8px 0;color:#F5F0E8;font-size:14px;">${data.date}</td></tr>
+        </table>
+      </div>
+      <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.1);border-radius:8px;padding:12px 16px;margin-top:24px;">
+        <p style="margin:0;color:rgba(245,240,232,0.4);font-size:12px;">
+          &#9888; Si ce n&rsquo;est pas vous, changez imm&eacute;diatement votre mot de passe.
+        </p>
+      </div>
+    `;
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"Lord Lombo Academie" <${process.env.SMTP_USER || "noreply@lordlomboacademie.com"}>`,
+        to,
+        subject: "Nouvelle connexion detectee - Lord Lombo Academie",
+        html: this.baseTemplate(content),
+      });
+      this.logPreviewUrl(info);
+      return true;
+    } catch (err: any) {
+      console.error("[Mail] Erreur envoi login notification:", err);
+      return false;
+    }
+  }
+
+  async sendLiveReminder(to: string, data: { userName: string; sessionTitle: string; date: string; time: string; link: string }): Promise<boolean> {
+    const content = `
+      <div style="text-align:center;margin-bottom:20px;">
+        <span style="font-size:50px;">&#128308;</span>
+        <h1 style="margin:8px 0;color:#F5F0E8;font-size:22px;font-weight:700;">Session live dans 1 heure !</h1>
+      </div>
+      <p style="margin:0 0 24px;color:rgba(245,240,232,0.5);font-size:14px;text-align:center;">
+        ${data.userName}, votre session live commence bient&ocirc;t.
+      </p>
+      <div style="background:rgba(196,167,103,0.06);border:1px solid rgba(196,167,103,0.1);border-radius:12px;padding:24px;margin:24px 0;text-align:center;">
+        <h3 style="margin:0 0 12px;color:#C4A767;font-size:18px;">${data.sessionTitle}</h3>
+        <p style="margin:0;color:rgba(245,240,232,0.6);font-size:14px;">&#128197; ${data.date} &agrave; ${data.time}</p>
+      </div>
+      <div style="text-align:center;margin:32px 0;">
+        <a href="${data.link}" style="display:inline-block;padding:16px 48px;background-color:#ef4444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:12px;letter-spacing:0.5px;">
+          &#9654; Rejoindre la session
+        </a>
+      </div>
+    `;
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"Lord Lombo Academie" <${process.env.SMTP_USER || "noreply@lordlomboacademie.com"}>`,
+        to,
+        subject: `Rappel: ${data.sessionTitle} dans 1h`,
+        html: this.baseTemplate(content),
+      });
+      this.logPreviewUrl(info);
+      return true;
+    } catch (err: any) {
+      console.error("[Mail] Erreur envoi live reminder:", err);
+      return false;
+    }
+  }
 }

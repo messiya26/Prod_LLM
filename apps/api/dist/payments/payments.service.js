@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const mail_service_1 = require("../mail/mail.service");
 let PaymentsService = class PaymentsService {
-    constructor(prisma) {
+    constructor(prisma, mail) {
         this.prisma = prisma;
+        this.mail = mail;
     }
     async create(userId, dto) {
         const ref = `PAY-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -43,12 +45,26 @@ let PaymentsService = class PaymentsService {
         const payment = await this.prisma.payment.update({
             where: { reference },
             data: { status: "COMPLETED" },
+            include: {
+                user: { select: { firstName: true, lastName: true, email: true } },
+                course: { select: { title: true } },
+            },
         });
         await this.prisma.enrollment.upsert({
             where: { userId_courseId: { userId: payment.userId, courseId: payment.courseId } },
             update: { status: "ACTIVE" },
             create: { userId: payment.userId, courseId: payment.courseId, status: "ACTIVE" },
         });
+        if (payment.user?.email) {
+            this.mail.sendPaymentConfirmation(payment.user.email, {
+                userName: `${payment.user.firstName || ""} ${payment.user.lastName || ""}`.trim(),
+                courseTitle: payment.course?.title || "Formation",
+                amount: Number(payment.amount),
+                currency: "USD",
+                reference: payment.reference,
+                method: payment.method,
+            }).catch(() => { });
+        }
         return payment;
     }
     findAll() {
@@ -130,6 +146,6 @@ let PaymentsService = class PaymentsService {
 exports.PaymentsService = PaymentsService;
 exports.PaymentsService = PaymentsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, mail_service_1.MailService])
 ], PaymentsService);
 //# sourceMappingURL=payments.service.js.map

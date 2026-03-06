@@ -15,8 +15,8 @@ export declare class InvitationsService {
         email: string;
         role: import(".prisma/client").$Enums.Role;
         token: string;
-        expiresAt: Date;
         accepted: boolean;
+        expiresAt: Date;
         invitedById: string;
     }>;
     findAll(): Promise<({
@@ -30,8 +30,8 @@ export declare class InvitationsService {
         email: string;
         role: import(".prisma/client").$Enums.Role;
         token: string;
-        expiresAt: Date;
         accepted: boolean;
+        expiresAt: Date;
         invitedById: string;
     })[]>;
     findByToken(token: string): Promise<{
@@ -40,8 +40,8 @@ export declare class InvitationsService {
         email: string;
         role: import(".prisma/client").$Enums.Role;
         token: string;
-        expiresAt: Date;
         accepted: boolean;
+        expiresAt: Date;
         invitedById: string;
     } | null>;
     accept(token: string): Promise<{
@@ -50,8 +50,8 @@ export declare class InvitationsService {
         email: string;
         role: import(".prisma/client").$Enums.Role;
         token: string;
-        expiresAt: Date;
         accepted: boolean;
+        expiresAt: Date;
         invitedById: string;
     } | null>;
     delete(id: string): Promise<{
@@ -60,8 +60,8 @@ export declare class InvitationsService {
         email: string;
         role: import(".prisma/client").$Enums.Role;
         token: string;
-        expiresAt: Date;
         accepted: boolean;
+        expiresAt: Date;
         invitedById: string;
     }>;
     resend(id: string): Promise<{

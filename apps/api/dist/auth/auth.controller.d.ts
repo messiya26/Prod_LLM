@@ -17,7 +17,7 @@ export declare class AuthController {
             emailVerified: boolean;
         };
     }>;
-    login(dto: LoginDto): Promise<{
+    login(dto: LoginDto, req: any): Promise<{
         accessToken: string;
         refreshToken: string;
         user: {

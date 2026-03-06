@@ -26,8 +26,8 @@ let AuthController = class AuthController {
     register(dto) {
         return this.authService.register(dto);
     }
-    login(dto) {
-        return this.authService.login(dto);
+    login(dto, req) {
+        return this.authService.login(dto, req.ip, req.headers?.["user-agent"]);
     }
     verifyEmail(ref) {
         return this.authService.verifyEmail(ref);
@@ -64,8 +64,9 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)("login"),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.LoginDto]),
+    __metadata("design:paramtypes", [auth_dto_1.LoginDto, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 __decorate([

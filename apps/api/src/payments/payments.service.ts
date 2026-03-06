@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class PaymentsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private mail: MailService) {}
 
   async create(userId: string, dto: { courseId: string; amount: number; method: string; metadata?: string }) {
     const ref = `PAY-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -35,12 +36,26 @@ export class PaymentsService {
     const payment = await this.prisma.payment.update({
       where: { reference },
       data: { status: "COMPLETED" },
+      include: {
+        user: { select: { firstName: true, lastName: true, email: true } },
+        course: { select: { title: true } },
+      },
     });
     await this.prisma.enrollment.upsert({
       where: { userId_courseId: { userId: payment.userId, courseId: payment.courseId } },
       update: { status: "ACTIVE" },
       create: { userId: payment.userId, courseId: payment.courseId, status: "ACTIVE" },
     });
+    if (payment.user?.email) {
+      this.mail.sendPaymentConfirmation(payment.user.email, {
+        userName: `${payment.user.firstName || ""} ${payment.user.lastName || ""}`.trim(),
+        courseTitle: payment.course?.title || "Formation",
+        amount: Number(payment.amount),
+        currency: "USD",
+        reference: payment.reference,
+        method: payment.method,
+      }).catch(() => {});
+    }
     return payment;
   }
 

@@ -18,4 +18,25 @@ export declare class MailService implements OnModuleInit {
         eventLocation: string;
         type: "masterclass" | "course";
     }): Promise<boolean>;
+    sendPaymentConfirmation(to: string, data: {
+        userName: string;
+        courseTitle: string;
+        amount: number;
+        currency: string;
+        reference: string;
+        method: string;
+    }): Promise<boolean>;
+    sendLoginNotification(to: string, data: {
+        userName: string;
+        device: string;
+        ip: string;
+        date: string;
+    }): Promise<boolean>;
+    sendLiveReminder(to: string, data: {
+        userName: string;
+        sessionTitle: string;
+        date: string;
+        time: string;
+        link: string;
+    }): Promise<boolean>;
 }

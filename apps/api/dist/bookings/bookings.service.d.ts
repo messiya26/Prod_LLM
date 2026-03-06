@@ -15,15 +15,15 @@ export declare class BookingsService {
         userId?: string;
     }): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
         status: string;
-        userId: string | null;
+        createdAt: Date;
         email: string;
         phone: string | null;
-        subject: string;
+        name: string;
+        userId: string | null;
         date: Date;
         slot: string;
+        subject: string;
         notes: string | null;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
@@ -34,42 +34,42 @@ export declare class BookingsService {
         } | null;
     } & {
         id: string;
-        name: string;
-        createdAt: Date;
         status: string;
-        userId: string | null;
+        createdAt: Date;
         email: string;
         phone: string | null;
-        subject: string;
+        name: string;
+        userId: string | null;
         date: Date;
         slot: string;
+        subject: string;
         notes: string | null;
     })[]>;
     findByDate(date: string): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
-        name: string;
-        createdAt: Date;
         status: string;
-        userId: string | null;
+        createdAt: Date;
         email: string;
         phone: string | null;
-        subject: string;
+        name: string;
+        userId: string | null;
         date: Date;
         slot: string;
+        subject: string;
         notes: string | null;
     }[]>;
     getAvailableSlots(date: string): Promise<string[]>;
     updateStatus(id: string, status: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
         id: string;
-        name: string;
-        createdAt: Date;
         status: string;
-        userId: string | null;
+        createdAt: Date;
         email: string;
         phone: string | null;
-        subject: string;
+        name: string;
+        userId: string | null;
         date: Date;
         slot: string;
+        subject: string;
         notes: string | null;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
 }

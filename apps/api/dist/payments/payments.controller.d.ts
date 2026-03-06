@@ -32,8 +32,6 @@ export declare class PaymentsController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         amount: import(".prisma/client/runtime/library").Decimal;
         currency: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
@@ -41,14 +39,23 @@ export declare class PaymentsController {
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string;
         enrollmentId: string | null;
         courseId: string;
     }>;
     confirm(reference: string): Promise<{
+        user: {
+            email: string;
+            firstName: string;
+            lastName: string;
+        };
+        course: {
+            title: string;
+        };
+    } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         amount: import(".prisma/client/runtime/library").Decimal;
         currency: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
@@ -56,6 +63,8 @@ export declare class PaymentsController {
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string;
         enrollmentId: string | null;
         courseId: string;
@@ -73,8 +82,6 @@ export declare class PaymentsController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         amount: import(".prisma/client/runtime/library").Decimal;
         currency: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
@@ -82,6 +89,8 @@ export declare class PaymentsController {
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string;
         enrollmentId: string | null;
         courseId: string;
@@ -99,8 +108,6 @@ export declare class PaymentsController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         amount: import(".prisma/client/runtime/library").Decimal;
         currency: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
@@ -108,6 +115,8 @@ export declare class PaymentsController {
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string;
         enrollmentId: string | null;
         courseId: string;
@@ -128,8 +137,6 @@ export declare class PaymentsController {
             };
         } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
             amount: import(".prisma/client/runtime/library").Decimal;
             currency: string;
             status: import(".prisma/client").$Enums.PaymentStatus;
@@ -137,6 +144,8 @@ export declare class PaymentsController {
             reference: string;
             providerTxId: string | null;
             metadata: string | null;
+            createdAt: Date;
+            updatedAt: Date;
             userId: string;
             enrollmentId: string | null;
             courseId: string;
@@ -162,9 +171,9 @@ export declare class PaymentsController {
         };
     } & {
         id: string;
+        status: import(".prisma/client").$Enums.EnrollmentStatus;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.EnrollmentStatus;
         userId: string;
         courseId: string;
         progress: number;
@@ -181,8 +190,6 @@ export declare class PaymentsController {
         };
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         amount: import(".prisma/client/runtime/library").Decimal;
         currency: string;
         status: import(".prisma/client").$Enums.PaymentStatus;
@@ -190,20 +197,22 @@ export declare class PaymentsController {
         reference: string;
         providerTxId: string | null;
         metadata: string | null;
+        createdAt: Date;
+        updatedAt: Date;
         userId: string;
         enrollmentId: string | null;
         courseId: string;
     })[]>;
     getGateways(): Promise<{
         id: string;
-        code: string;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
+        code: string;
         icon: string | null;
         enabled: boolean;
         sandboxMode: boolean;
         config: import(".prisma/client/runtime/library").JsonValue;
-        createdAt: Date;
-        updatedAt: Date;
     }[]>;
     getPublicGateways(): Promise<{
         code: string;
@@ -223,13 +232,13 @@ export declare class PaymentsController {
         config?: any;
     }): Promise<{
         id: string;
-        code: string;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
+        code: string;
         icon: string | null;
         enabled: boolean;
         sandboxMode: boolean;
         config: import(".prisma/client/runtime/library").JsonValue;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
 }

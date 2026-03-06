@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards, Request, Res, Query, Param, Put, Patch } from "@nestjs/common";
+import { Controller, Post, Get, Body, UseGuards, Request, Req, Res, Query, Param, Put, Patch } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from "express";
 import { AuthService } from "./auth.service";
@@ -18,8 +18,8 @@ export class AuthController {
 
   @Public()
   @Post("login")
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  login(@Body() dto: LoginDto, @Req() req: any) {
+    return this.authService.login(dto, req.ip, req.headers?.["user-agent"]);
   }
 
   @Public()

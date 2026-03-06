@@ -30,9 +30,9 @@ export declare class UsersService {
             };
         } & {
             id: string;
+            status: import(".prisma/client").$Enums.EnrollmentStatus;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.EnrollmentStatus;
             userId: string;
             courseId: string;
             progress: number;
@@ -66,8 +66,8 @@ export declare class UsersService {
         email: string;
         role: import(".prisma/client").$Enums.Role;
         token: string;
+        accepted: boolean;
         expiresAt: Date;
         invitedBy: string;
-        accepted: boolean;
     }[]>;
 }
