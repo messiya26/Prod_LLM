@@ -411,7 +411,7 @@ function GdprTab() {
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    api.get<any>("/security/gdpr/requests").then((r) => setRequests(r?.data || [])).catch(() => {}).finally(() => setLoading(false));
+    api.get<any>("/security/gdpr/requests").then((r) => setRequests(Array.isArray(r) ? r : r?.data || [])).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   const exportData = async () => {

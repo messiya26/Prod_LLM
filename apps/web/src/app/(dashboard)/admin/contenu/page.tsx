@@ -35,8 +35,8 @@ export default function AdminContenu() {
 
   const fetchContents = useCallback(async () => {
     try {
-      const res = await api.get("/site-content");
-      setContents(res.data);
+      const data = await api.get<ContentItem[]>("/site-content");
+      setContents(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
     } finally {
