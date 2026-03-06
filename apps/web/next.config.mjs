@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Build: force cache purge v2
 const isDev = process.env.NODE_ENV !== "production";
 
 const cspDirectives = [
