@@ -4,27 +4,27 @@ export declare class SiteContentController {
     constructor(siteContentService: SiteContentService);
     getAll(): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     }[]>;
     get(key: string): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     } | null>;
     upsert(key: string, body: {
         value: string;
         type?: string;
     }): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     }>;
     bulkUpsert(body: {
         items: {
@@ -34,9 +34,13 @@ export declare class SiteContentController {
         }[];
     }): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     }[]>;
+    seed(): Promise<{
+        seeded: number;
+        total: number;
+    }>;
 }

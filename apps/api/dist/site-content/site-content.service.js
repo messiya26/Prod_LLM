@@ -30,7 +30,11 @@ let SiteContentService = class SiteContentService {
         });
     }
     async bulkUpsert(items) {
-        return Promise.all(items.map(i => this.upsert(i.key, i.value, i.type || "text")));
+        const results = [];
+        for (const i of items) {
+            results.push(await this.upsert(i.key, i.value, i.type || "text"));
+        }
+        return results;
     }
 };
 exports.SiteContentService = SiteContentService;

@@ -41,8 +41,24 @@ const testimonials = [
   },
 ];
 
-export function TestimonialCarousel() {
+export function TestimonialCarousel({ dynamicTestimonials }: { dynamicTestimonials?: { name: string; role: string; text: string; avatar: string }[] } = {}) {
   const { t } = useI18n();
+
+  const items = dynamicTestimonials && dynamicTestimonials.length > 0
+    ? dynamicTestimonials.map(dt => ({
+        name: dt.name,
+        role: dt.role,
+        text: dt.text,
+        image: dt.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+        isDynamic: true,
+      }))
+    : testimonials.map(item => ({
+        name: item.name,
+        role: t(item.roleKey),
+        text: t(item.textKey),
+        image: item.image,
+        isDynamic: false,
+      }));
 
   return (
     <Swiper
@@ -59,8 +75,8 @@ export function TestimonialCarousel() {
       loop
       style={{ paddingBottom: "60px" }}
     >
-      {testimonials.map((item) => (
-        <SwiperSlide key={item.name}>
+      {items.map((item, idx) => (
+        <SwiperSlide key={item.name + idx}>
           <div className="glass rounded-2xl p-8 card-hover-lift h-full">
             <div className="flex items-center gap-4 mb-6">
               <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-gold/30 flex-shrink-0">
@@ -68,12 +84,12 @@ export function TestimonialCarousel() {
               </div>
               <div>
                 <div className="font-bold text-cream">{item.name}</div>
-                <div className="text-gold/70 text-sm">{t(item.roleKey)}</div>
+                <div className="text-gold/70 text-sm">{item.role}</div>
               </div>
             </div>
             <div className="relative mb-4">
               <span className="text-gold/15 text-7xl absolute -top-6 -left-2 font-heading leading-none">&ldquo;</span>
-              <p className="text-cream/55 text-sm leading-relaxed pl-6 pt-2">{t(item.textKey)}</p>
+              <p className="text-cream/55 text-sm leading-relaxed pl-6 pt-2">{item.text}</p>
             </div>
             <div className="flex gap-1">
               {[...Array(5)].map((_, i) => (

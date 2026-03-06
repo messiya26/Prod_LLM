@@ -144,8 +144,8 @@ export default function AdminTransactions() {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-[#0d1a2e] border border-white/[0.06] overflow-hidden">
-        <table className="w-full">
+      <div className="rounded-2xl bg-[#0d1a2e] border border-white/[0.06] overflow-hidden overflow-x-auto">
+        <table className="w-full min-w-[800px]">
           <thead><tr className="border-b border-white/[0.04] bg-white/[0.02]">
             {["Reference", "Etudiant", "Formation", "Montant", "Date", "Methode", "Statut", "Actions"].map((h) => (
               <th key={h} className="text-left text-white/25 text-[10px] font-medium uppercase tracking-wider px-5 py-3">{h}</th>

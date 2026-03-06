@@ -12,16 +12,16 @@ export declare class BookingsController {
         notes?: string;
     }): Promise<{
         id: string;
-        status: string;
-        createdAt: Date;
+        name: string;
         email: string;
         phone: string | null;
-        name: string;
-        userId: string | null;
         date: Date;
         slot: string;
         subject: string;
         notes: string | null;
+        status: string;
+        createdAt: Date;
+        userId: string | null;
     }>;
     getAvailableSlots(date: string): Promise<string[]>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
@@ -32,30 +32,30 @@ export declare class BookingsController {
         } | null;
     } & {
         id: string;
-        status: string;
-        createdAt: Date;
+        name: string;
         email: string;
         phone: string | null;
-        name: string;
-        userId: string | null;
         date: Date;
         slot: string;
         subject: string;
         notes: string | null;
+        status: string;
+        createdAt: Date;
+        userId: string | null;
     })[]>;
     updateStatus(id: string, dto: {
         status: string;
     }): import(".prisma/client").Prisma.Prisma__BookingClient<{
         id: string;
-        status: string;
-        createdAt: Date;
+        name: string;
         email: string;
         phone: string | null;
-        name: string;
-        userId: string | null;
         date: Date;
         slot: string;
         subject: string;
         notes: string | null;
+        status: string;
+        createdAt: Date;
+        userId: string | null;
     }, never, import(".prisma/client/runtime/library").DefaultArgs>;
 }

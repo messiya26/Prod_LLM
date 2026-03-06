@@ -79,6 +79,16 @@ export default function Home() {
   const [promoDismissed, setPromoDismissed] = useState(false);
   const [heroMcList, setHeroMcList] = useState<any[]>([]);
   const [heroMcIdx, setHeroMcIdx] = useState(0);
+  const [siteContent, setSiteContent] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    api.get("/site-content").then((res: any) => {
+      const list = Array.isArray(res) ? res : res.data || [];
+      const map: Record<string, string> = {};
+      list.forEach((item: any) => { map[item.key] = item.value; });
+      setSiteContent(map);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     api.get("/masterclasses?status=PUBLISHED&limit=6").then((res: any) => {
@@ -266,10 +276,10 @@ export default function Home() {
         <div className="absolute inset-0 animate-shimmer" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
-            <AnimatedCounter end={5} suffix="+" label={t("home.stats.years")} />
-            <AnimatedCounter end={30} suffix="+" label={t("home.stats.formations")} />
-            <AnimatedCounter end={500} suffix="+" label={t("home.stats.lives")} />
-            <AnimatedCounter end={98} suffix="%" label={t("home.stats.satisfaction")} />
+            <AnimatedCounter end={parseInt(siteContent.stat_students) || 2500} suffix="+" label={siteContent.stat_students_label || t("home.stats.years")} />
+            <AnimatedCounter end={parseInt(siteContent.stat_courses) || 45} suffix="+" label={siteContent.stat_courses_label || t("home.stats.formations")} />
+            <AnimatedCounter end={parseInt(siteContent.stat_countries) || 30} suffix="+" label={siteContent.stat_countries_label || t("home.stats.lives")} />
+            <AnimatedCounter end={parseInt(siteContent.stat_satisfaction) || 98} suffix="%" label={siteContent.stat_satisfaction_label || t("home.stats.satisfaction")} />
           </div>
         </div>
       </section>
@@ -328,7 +338,7 @@ export default function Home() {
               {t("home.testimonials.title1")} <span className="text-gradient-gold">{t("home.testimonials.title2")}</span>
             </h2>
           </AnimatedSection>
-          <TestimonialCarousel />
+          <TestimonialCarousel dynamicTestimonials={siteContent.testimonials ? (() => { try { return JSON.parse(siteContent.testimonials); } catch { return undefined; } })() : undefined} />
         </div>
       </section>
 

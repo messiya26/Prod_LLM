@@ -448,8 +448,8 @@ export default function AdminFormations() {
           className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-gold/40 transition-all" />
       </div>
 
-      <div className="rounded-xl border border-white/[0.05] overflow-hidden">
-        <table className="w-full">
+      <div className="rounded-xl border border-white/[0.05] overflow-hidden overflow-x-auto">
+        <table className="w-full min-w-[700px]">
           <thead>
             <tr className="border-b border-white/[0.05] bg-white/[0.01]">
               {["Formation", "Categorie", "Formateur", "Prix", "Inscrits", "Statut", "Actions"].map(h => (

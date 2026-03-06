@@ -263,7 +263,7 @@ export default function AdminAbonnements() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="text-cream/50 text-xs font-medium mb-1.5 block">Prix mensuel ($)</label>
                     <input type="number" step="0.01" value={form.monthlyPrice} onChange={(e) => setForm({ ...form, monthlyPrice: e.target.value })}

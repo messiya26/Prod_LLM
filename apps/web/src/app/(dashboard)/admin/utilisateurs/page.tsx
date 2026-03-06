@@ -298,8 +298,8 @@ export default function AdminUtilisateurs() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
-              <table className="w-full">
+            <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden overflow-x-auto">
+              <table className="w-full min-w-[700px]">
                 <thead>
                   <tr className="border-b border-white/[0.04]">
                     {["Utilisateur", "Email", "Role", "Statut", "Date", "Actions"].map((h) => (

@@ -415,6 +415,7 @@ const translations: Record<string, { fr: string; en: string }> = {
   "dash.instructors": { fr: "Formateurs", en: "Instructors" },
   "dash.subscriptions": { fr: "Abonnements", en: "Subscriptions" },
   "dash.masterclasses": { fr: "Masterclasses", en: "Masterclasses" },
+  "dash.content": { fr: "Contenu du site", en: "Site Content" },
   "dash.transactions": { fr: "Transactions", en: "Transactions" },
   "dash.messages": { fr: "Messages", en: "Messages" },
   "dash.calendar": { fr: "Calendrier", en: "Calendar" },

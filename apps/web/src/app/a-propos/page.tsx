@@ -57,6 +57,18 @@ export default function APropos() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const [siteContent, setSiteContent] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    import("@/lib/api").then(({ default: api }) => {
+      api.get("/site-content").then((res: any) => {
+        const list = Array.isArray(res) ? res : res.data || [];
+        const map: Record<string, string> = {};
+        list.forEach((item: any) => { map[item.key] = item.value; });
+        setSiteContent(map);
+      }).catch(() => {});
+    });
+  }, []);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -89,7 +101,7 @@ export default function APropos() {
               </m.h1>
               <m.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
                 className="text-cream/50 text-sm sm:text-base max-w-md leading-relaxed mb-5">
-                Fondateur de Lord Lombo Ministries, auteur best-seller et artiste international — une vie consacree a impacter les nations.
+                {siteContent.about_description || "Fondateur de Lord Lombo Ministries, auteur best-seller et artiste international — une vie consacree a impacter les nations."}
               </m.p>
               <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex flex-wrap gap-2 mb-6">
                 {["Pasteur", "Chantre", "Ecrivain", "Coach", "Visionnaire"].map((r) => (

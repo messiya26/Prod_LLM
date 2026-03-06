@@ -190,7 +190,7 @@ export default function AdminDashboard() {
         </motion.div>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden overflow-x-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.04]">
           <h3 className="text-sm font-bold text-white">{t("admin.recentEnroll")}</h3>
           <Link href="/admin/utilisateurs" className="text-[10px] text-gold hover:text-gold-light flex items-center gap-1 transition-colors">{t("dash.seeAll")} <FaArrowRight className="text-[8px]" /></Link>

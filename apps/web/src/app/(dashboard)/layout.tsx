@@ -9,7 +9,7 @@ import {
   FaHome, FaBookOpen, FaCog, FaSignOutAlt, FaUsers,
   FaChartBar, FaBars, FaTimes, FaMoneyBillWave, FaComments,
   FaCalendarAlt, FaVideo, FaBell, FaSearch, FaChevronDown, FaAward, FaEdit, FaStar, FaUserTie, FaGem, FaFire,
-  FaReceipt, FaShieldAlt,
+  FaReceipt, FaShieldAlt, FaPaintBrush,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
 import { FullPageLoader } from "@/components/ui/loader";
@@ -68,6 +68,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: <FaStar />, labelKey: "dash.events", href: "/admin/evenements" },
     { icon: <FaGem />, labelKey: "dash.subscriptions", href: "/admin/abonnements" },
     { icon: <FaFire />, labelKey: "dash.masterclasses", href: "/admin/masterclasses" },
+    { icon: <FaPaintBrush />, labelKey: "dash.content", href: "/admin/contenu" },
     { icon: <FaCog />, labelKey: "dash.settings", href: "/admin/parametres" },
   ];
 

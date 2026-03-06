@@ -152,7 +152,7 @@ export default function Livres() {
                 <p className="text-cream/35 text-sm leading-relaxed mb-6">{book.desc}</p>
 
                 {/* Animated stats */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                   {[
                     { value: animatedStats.chapters, label: "Chapitres", suffix: "", icon: "📖" },
                     { value: animatedStats.pages, label: "Pages", suffix: "", icon: "📄" },

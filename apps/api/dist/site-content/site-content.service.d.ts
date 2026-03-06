@@ -4,24 +4,24 @@ export declare class SiteContentService {
     constructor(prisma: PrismaService);
     get(key: string): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     } | null>;
     getAll(): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     }[]>;
     upsert(key: string, value: string, type?: string): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     }>;
     bulkUpsert(items: {
         key: string;
@@ -29,9 +29,9 @@ export declare class SiteContentService {
         type?: string;
     }[]): Promise<{
         id: string;
-        updatedAt: Date;
-        type: string;
         key: string;
         value: string;
+        type: string;
+        updatedAt: Date;
     }[]>;
 }

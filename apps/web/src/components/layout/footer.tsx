@@ -1,19 +1,31 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaFacebook, FaInstagram, FaYoutube, FaTiktok, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaHeart, FaArrowRight } from "react-icons/fa";
 import { useI18n } from "@/context/i18n-context";
-
-const socials = [
-  { icon: <FaFacebook />, href: "#", label: "Facebook", color: "hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-400/30" },
-  { icon: <FaInstagram />, href: "#", label: "Instagram", color: "hover:bg-pink-500/20 hover:text-pink-400 hover:border-pink-400/30" },
-  { icon: <FaYoutube />, href: "#", label: "YouTube", color: "hover:bg-red-500/20 hover:text-red-400 hover:border-red-400/30" },
-  { icon: <FaTiktok />, href: "#", label: "TikTok", color: "hover:bg-cyan-500/20 hover:text-cyan-400 hover:border-cyan-400/30" },
-];
+import api from "@/lib/api";
 
 export function Footer() {
   const { t } = useI18n();
+  const [sc, setSc] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    api.get("/site-content").then((res: any) => {
+      const list = Array.isArray(res) ? res : res.data || [];
+      const map: Record<string, string> = {};
+      list.forEach((item: any) => { map[item.key] = item.value; });
+      setSc(map);
+    }).catch(() => {});
+  }, []);
+
+  const socials = [
+    { icon: <FaFacebook />, href: sc.footer_social_facebook || "#", label: "Facebook", color: "hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-400/30" },
+    { icon: <FaInstagram />, href: sc.footer_social_instagram || "#", label: "Instagram", color: "hover:bg-pink-500/20 hover:text-pink-400 hover:border-pink-400/30" },
+    { icon: <FaYoutube />, href: sc.footer_social_youtube || "#", label: "YouTube", color: "hover:bg-red-500/20 hover:text-red-400 hover:border-red-400/30" },
+    { icon: <FaTiktok />, href: sc.footer_social_twitter || "#", label: "TikTok", color: "hover:bg-cyan-500/20 hover:text-cyan-400 hover:border-cyan-400/30" },
+  ];
 
   const footerLinks = {
     [t("footer.plateforme")]: [
@@ -82,17 +94,17 @@ export function Footer() {
               </Link>
 
               <div className="space-y-2 mb-5">
-                <a href="mailto:contact@lordlomboacademie.com" className="flex items-center gap-3 text-cream/30 hover:text-gold transition-colors text-sm group">
+                <a href={`mailto:${sc.footer_contact_email || "contact@lordlomboacademie.com"}`} className="flex items-center gap-3 text-cream/30 hover:text-gold transition-colors text-sm group">
                   <span className="w-8 h-8 rounded-lg bg-cream/5 flex items-center justify-center group-hover:bg-gold/10 transition-colors"><FaEnvelope className="text-xs" /></span>
-                  contact@lordlomboacademie.com
+                  {sc.footer_contact_email || "contact@lordlomboacademie.com"}
                 </a>
-                <a href="tel:+243000000000" className="flex items-center gap-3 text-cream/30 hover:text-gold transition-colors text-sm group">
+                <a href={`tel:${(sc.footer_contact_phone || "+243000000000").replace(/\s/g, "")}`} className="flex items-center gap-3 text-cream/30 hover:text-gold transition-colors text-sm group">
                   <span className="w-8 h-8 rounded-lg bg-cream/5 flex items-center justify-center group-hover:bg-gold/10 transition-colors"><FaPhoneAlt className="text-xs" /></span>
-                  +243 XXX XXX XXX
+                  {sc.footer_contact_phone || "+243 XXX XXX XXX"}
                 </a>
                 <div className="flex items-center gap-3 text-cream/30 text-sm">
                   <span className="w-8 h-8 rounded-lg bg-cream/5 flex items-center justify-center"><FaMapMarkerAlt className="text-xs" /></span>
-                  Kinshasa, RD Congo
+                  {sc.footer_address || "Kinshasa, RD Congo"}
                 </div>
               </div>
 
