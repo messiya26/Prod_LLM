@@ -164,26 +164,67 @@ function FieldInput({ label, value, onChange, type = "text", rows }: {
   );
 }
 
-function ImageUpload({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function ImageUpload({ label, value, onChange, maxWidth = 1200, maxHeight = 800 }: { label: string; value: string; onChange: (v: string) => void; maxWidth?: number; maxHeight?: number }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const [preview, setPreview] = useState("");
 
-  const imgSrc = value
-    ? value.startsWith("http") ? value : `${API_HOST}${value}`
-    : "";
+  useEffect(() => {
+    if (!value) { setPreview(""); return; }
+    if (value.startsWith("data:")) { setPreview(value); return; }
+    if (value.startsWith("http")) { setPreview(value); return; }
+    if (value.startsWith("/uploads/")) { setPreview(`${API_HOST}${value}`); return; }
+    if (value.startsWith("/")) { setPreview(value); return; }
+    setPreview(value);
+  }, [value]);
+
+  const resizeImage = (file: File, maxW: number, maxH: number, quality: number): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (file.type === "image/svg+xml") { resolve(reader.result as string); return; }
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let w = img.width, h = img.height;
+          if (w > maxW) { h = h * (maxW / w); w = maxW; }
+          if (h > maxH) { w = w * (maxH / h); h = maxH; }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL("image/webp", quality));
+        };
+        img.onerror = reject;
+        img.src = reader.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) return;
+    setError("");
+    const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml", "image/bmp", "image/tiff"];
+    if (!allowed.includes(file.type) && !file.type.startsWith("image/")) {
+      setError("Format non supporte"); return;
+    }
+    if (file.size > 10 * 1024 * 1024) { setError("Fichier trop volumineux (max 10 Mo)"); return; }
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await api.upload<{ url: string }>("/upload", fd);
-      onChange(res.url);
+      if (file.type === "image/svg+xml") {
+        const text = await file.text();
+        const b64 = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(text)))}`;
+        onChange(b64);
+      } else {
+        const dataUrl = await resizeImage(file, maxWidth, maxHeight, 0.85);
+        onChange(dataUrl);
+      }
     } catch (err) {
       console.error(err);
+      setError("Erreur lors du traitement");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -193,39 +234,54 @@ function ImageUpload({ label, value, onChange }: { label: string; value: string;
   return (
     <div>
       <label className="block text-white/40 text-[10px] font-medium uppercase tracking-wider mb-2">{label}</label>
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-4">
         <div
           onClick={() => inputRef.current?.click()}
-          className="w-28 h-28 rounded-xl bg-white/[0.04] border-2 border-dashed border-white/[0.1] hover:border-gold/30 flex items-center justify-center cursor-pointer overflow-hidden transition-all flex-shrink-0"
+          className="w-32 h-32 rounded-xl bg-white/[0.04] border-2 border-dashed border-white/[0.1] hover:border-gold/30 flex items-center justify-center cursor-pointer overflow-hidden transition-all flex-shrink-0 group"
         >
           {uploading ? (
-            <FaSpinner className="animate-spin text-gold" />
-          ) : imgSrc ? (
-            <img src={imgSrc} alt="" className="w-full h-full object-cover" />
-          ) : (
             <div className="text-center">
-              <FaUpload className="text-white/20 mx-auto mb-1" />
-              <span className="text-white/20 text-[9px]">Charger</span>
+              <FaSpinner className="animate-spin text-gold mx-auto mb-1" />
+              <span className="text-white/30 text-[9px]">Traitement...</span>
+            </div>
+          ) : preview ? (
+            <img src={preview} alt="" className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" onError={() => setPreview("")} />
+          ) : (
+            <div className="text-center p-2">
+              <FaImage className="text-white/15 mx-auto mb-1.5 text-lg" />
+              <span className="text-white/20 text-[9px] leading-tight block">Cliquez pour charger</span>
+              <span className="text-white/10 text-[8px]">PNG, JPG, SVG, WebP</span>
             </div>
           )}
         </div>
         <div className="flex-1 space-y-2">
           <input
             type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={value.startsWith("data:") ? "(image chargee)" : value}
+            onChange={(e) => { if (!e.target.value.startsWith("(")) onChange(e.target.value); }}
             placeholder="URL ou charger une image..."
+            readOnly={value.startsWith("data:")}
             className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white text-sm focus:outline-none focus:border-gold/30 transition-all"
           />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold/10 text-gold text-[10px] font-bold hover:bg-gold/20 transition-all"
-          >
-            <FaUpload className="text-[8px]" /> {uploading ? "Chargement..." : "Charger une image"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => inputRef.current?.click()}
+              disabled={uploading}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold/10 text-gold text-[10px] font-bold hover:bg-gold/20 transition-all disabled:opacity-50"
+            >
+              <FaUpload className="text-[8px]" /> {uploading ? "Chargement..." : "Charger une image"}
+            </button>
+            {value && (
+              <button onClick={() => onChange("")} className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 text-[10px] font-bold hover:bg-red-500/20 transition-all">
+                Supprimer
+              </button>
+            )}
+          </div>
+          {error && <p className="text-red-400 text-[10px]">{error}</p>}
+          <p className="text-white/15 text-[9px]">Formats : PNG, JPG, SVG, WebP, GIF — Max 10 Mo — Redimensionne automatiquement</p>
         </div>
       </div>
-      <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+      <input ref={inputRef} type="file" accept="image/*,.svg" onChange={handleUpload} className="hidden" />
     </div>
   );
 }
@@ -243,7 +299,7 @@ function HeroSection({ getValue, setValue }: { getValue: (k: string) => string; 
         </div>
       </div>
       <FieldInput label="Titre principal" value={getValue("hero_title")} onChange={(v) => setValue("hero_title", v)} />
-      <ImageUpload label="Image de fond" value={getValue("hero_image")} onChange={(v) => setValue("hero_image", v)} />
+      <ImageUpload label="Image de fond (1920x600 recommande)" value={getValue("hero_image")} onChange={(v) => setValue("hero_image", v)} maxWidth={1920} maxHeight={600} />
       <FieldInput label="Sous-titre" value={getValue("hero_subtitle")} onChange={(v) => setValue("hero_subtitle", v)} rows={2} />
       <FieldInput label="Texte du bouton CTA" value={getValue("hero_cta")} onChange={(v) => setValue("hero_cta", v)} />
     </>
@@ -263,7 +319,7 @@ function AboutSection({ getValue, setValue }: { getValue: (k: string) => string;
         </div>
       </div>
       <FieldInput label="Titre" value={getValue("about_title")} onChange={(v) => setValue("about_title", v)} />
-      <ImageUpload label="Photo" value={getValue("about_image")} onChange={(v) => setValue("about_image", v)} />
+      <ImageUpload label="Photo" value={getValue("about_image")} onChange={(v) => setValue("about_image", v)} maxWidth={800} maxHeight={800} />
       <FieldInput label="Description" value={getValue("about_description")} onChange={(v) => setValue("about_description", v)} rows={4} />
       <FieldInput label="Mission" value={getValue("about_mission")} onChange={(v) => setValue("about_mission", v)} rows={3} />
       <FieldInput label="Vision" value={getValue("about_vision")} onChange={(v) => setValue("about_vision", v)} rows={3} />
@@ -361,7 +417,7 @@ function TestimonialsSection({ getValue, setValue }: { getValue: (k: string) => 
               <div className="grid md:grid-cols-3 gap-3">
                 <FieldInput label="Nom" value={t.name} onChange={(v) => updateField(globalIdx, "name", v)} />
                 <FieldInput label="Role / Titre" value={t.role} onChange={(v) => updateField(globalIdx, "role", v)} />
-                <ImageUpload label="Avatar" value={t.avatar} onChange={(v) => updateField(globalIdx, "avatar", v)} />
+                <ImageUpload label="Avatar" value={t.avatar} onChange={(v) => updateField(globalIdx, "avatar", v)} maxWidth={200} maxHeight={200} />
               </div>
               <FieldInput label="Temoignage" value={t.text} onChange={(v) => updateField(globalIdx, "text", v)} rows={2} />
             </div>
