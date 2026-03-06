@@ -69,15 +69,6 @@ export class AuthController {
   }
 
   @Public()
-  @Post("admin-reset-pwd")
-  async adminResetPwd(@Body() body: { email: string; newPassword: string; secret: string }) {
-    if (body.secret !== "LLM_DEPLOY_SECRET_2026") {
-      return { error: "Unauthorized" };
-    }
-    return this.authService.adminResetPassword(body.email, body.newPassword);
-  }
-
-  @Public()
   @Get("google")
   @UseGuards(AuthGuard("google"))
   googleAuth() {}

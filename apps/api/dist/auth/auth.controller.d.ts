@@ -88,16 +88,6 @@ export declare class AuthController {
     }): Promise<{
         message: string;
     }>;
-    adminResetPwd(body: {
-        email: string;
-        newPassword: string;
-        secret: string;
-    }): Promise<{
-        message: string;
-        error?: undefined;
-    } | {
-        error: string;
-    }>;
     googleAuth(): void;
     googleCallback(req: any, res: Response): Promise<void>;
 }

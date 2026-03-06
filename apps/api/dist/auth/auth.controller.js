@@ -50,12 +50,6 @@ let AuthController = class AuthController {
     resetPassword(body) {
         return this.authService.resetPassword(body.email, body.code, body.newPassword);
     }
-    async adminResetPwd(body) {
-        if (body.secret !== "LLM_DEPLOY_SECRET_2026") {
-            return { error: "Unauthorized" };
-        }
-        return this.authService.adminResetPassword(body.email, body.newPassword);
-    }
     googleAuth() { }
     async googleCallback(req, res) {
         const result = await this.authService.googleLogin(req.user);
@@ -140,14 +134,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "resetPassword", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)("admin-reset-pwd"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "adminResetPwd", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)("google"),
