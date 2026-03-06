@@ -52,6 +52,11 @@ export default function PermissionsPage() {
     `${u.firstName} ${u.lastName} ${u.email} ${u.role}`.toLowerCase().includes(search.toLowerCase())
   );
 
+  const PAGE_SIZE = 10;
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   const openPerms = (u: UserRow) => {
     setSelectedUser(u);
     setUserPerms([...(ROLE_DEFAULTS[u.role] || [])]);
@@ -126,7 +131,7 @@ export default function PermissionsPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(u => (
+            {paginated.map(u => (
               <tr key={u.id} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
@@ -154,6 +159,18 @@ export default function PermissionsPage() {
             ))}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.06]">
+            <p className="text-white/20 text-xs">{(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} sur {filtered.length}</p>
+            <div className="flex items-center gap-1">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold disabled:opacity-20 disabled:cursor-not-allowed transition-all"><FaShieldAlt className="text-[10px]" /></button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+                <button key={n} onClick={() => setPage(n)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === n ? "bg-gold/20 text-gold border border-gold/30" : "text-white/40 hover:text-gold"}`}>{n}</button>
+              ))}
+              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-gold disabled:opacity-20 disabled:cursor-not-allowed transition-all"><FaShieldAlt className="text-[10px]" /></button>
+            </div>
+          </div>
+        )}
       </div>
 
       <AnimatePresence>

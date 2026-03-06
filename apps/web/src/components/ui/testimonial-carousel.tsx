@@ -72,7 +72,7 @@ export function TestimonialCarousel({ dynamicTestimonials }: { dynamicTestimonia
       autoplay={{ delay: 4000, disableOnInteraction: false }}
       pagination={{ clickable: true }}
       navigation
-      loop
+      loop={items.length > 3}
       style={{ paddingBottom: "60px" }}
     >
       {items.map((item, idx) => (

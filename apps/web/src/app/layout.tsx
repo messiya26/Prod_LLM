@@ -160,7 +160,8 @@ export default function RootLayout({
     <html lang="fr">
       <head>
         <link rel="canonical" href={SITE_URL} />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/images/logo-llm-official.jpeg" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#d4af37" />

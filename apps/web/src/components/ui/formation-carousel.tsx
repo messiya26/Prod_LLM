@@ -64,7 +64,7 @@ export function FormationCarousel() {
       autoplay={{ delay: 3500, disableOnInteraction: false }}
       pagination={{ clickable: true }}
       navigation
-      loop
+      loop={formations.length > 3}
       style={{ paddingBottom: "60px" }}
     >
       {formations.map((f) => (
