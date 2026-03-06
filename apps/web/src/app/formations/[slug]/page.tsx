@@ -634,8 +634,8 @@ export default function FormationDetail() {
                         {mod.lessons.map((lesson, li) => (
                           <div key={li} className="flex items-center justify-between px-6 py-3 hover:bg-cream/[0.015] transition-colors">
                             <div className="flex items-center gap-3">
-                              {lesson.free ? <FaPlay className="text-gold text-[10px]" /> : <FaLock className="text-cream/20 text-[10px]" />}
-                              <span className={`text-sm ${lesson.free ? "text-cream/70" : "text-cream/40"}`}>{lesson.title}</span>
+                              {lesson.free || alreadyEnrolled ? <FaPlay className="text-gold text-[10px]" /> : <FaLock className="text-cream/20 text-[10px]" />}
+                              <span className={`text-sm ${lesson.free || alreadyEnrolled ? "text-cream/70" : "text-cream/40"}`}>{lesson.title}</span>
                               {lesson.free && <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-gold/10 text-gold uppercase">Gratuit</span>}
                             </div>
                             <span className="text-cream/25 text-xs">{lesson.duration}</span>
