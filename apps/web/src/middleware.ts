@@ -46,7 +46,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isAuth && token) {
+  if (isAuth && token && !request.nextUrl.searchParams.has("logout")) {
     const url = request.nextUrl.clone();
     url.pathname = adminRoles.includes(userRole || "") ? "/admin" : "/dashboard";
     return NextResponse.redirect(url);

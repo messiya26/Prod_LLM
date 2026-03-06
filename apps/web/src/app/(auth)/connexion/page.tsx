@@ -28,6 +28,12 @@ function ConnexionContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("logout")) {
+      window.history.replaceState({}, "", "/connexion");
+    }
+  }, [searchParams]);
   const [fullLoading, setFullLoading] = useState(false);
   const googleError = searchParams.get("error");
   const [error, setError] = useState(googleError === "google_not_configured" ? "La connexion Google n'est pas encore disponible. Utilisez email/mot de passe." : "");
