@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "GOOGLE_VERIFICATION_CODE",
+    google: "X9Yv90W5k8dFtmRqJe2gb0AmDi4mGUk-ywsT1j3m9nA",
   },
   category: "education",
 };
