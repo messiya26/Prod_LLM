@@ -262,6 +262,14 @@ let AuthService = class AuthService {
         this.notifications.create((await this.prisma.user.findUnique({ where: { email } })).id, { title: "Mot de passe modifie", message: "Votre mot de passe a ete reinitialise avec succes.", type: "security", link: "/dashboard/parametres" }).catch(() => { });
         return { message: "Mot de passe reinitialise avec succes." };
     }
+    async adminResetPassword(email, newPassword) {
+        const user = await this.prisma.user.findUnique({ where: { email } });
+        if (!user)
+            return { error: "User not found" };
+        const passwordHash = await bcrypt.hash(newPassword, 12);
+        await this.prisma.user.update({ where: { email }, data: { passwordHash } });
+        return { message: "Password updated for " + email };
+    }
     async generateTokens(userId, email) {
         const payload = { sub: userId, email };
         const [accessToken, refreshToken] = await Promise.all([

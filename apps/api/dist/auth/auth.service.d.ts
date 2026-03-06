@@ -70,7 +70,6 @@ export declare class AuthService {
     }>;
     getProfile(userId: string): Promise<{
         id: string;
-        createdAt: Date;
         email: string;
         firstName: string;
         lastName: string;
@@ -78,6 +77,7 @@ export declare class AuthService {
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
+        createdAt: Date;
     }>;
     updateProfile(userId: string, data: {
         firstName?: string;
@@ -85,7 +85,6 @@ export declare class AuthService {
         phone?: string;
     }): Promise<{
         id: string;
-        createdAt: Date;
         email: string;
         firstName: string;
         lastName: string;
@@ -93,6 +92,7 @@ export declare class AuthService {
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
+        createdAt: Date;
     }>;
     promoteToAdmin(userId: string, currentUserId: string): Promise<{
         id: string;
@@ -113,6 +113,13 @@ export declare class AuthService {
     }>;
     resetPassword(email: string, code: string, newPassword: string): Promise<{
         message: string;
+    }>;
+    adminResetPassword(email: string, newPassword: string): Promise<{
+        error: string;
+        message?: undefined;
+    } | {
+        message: string;
+        error?: undefined;
     }>;
     private generateTokens;
 }

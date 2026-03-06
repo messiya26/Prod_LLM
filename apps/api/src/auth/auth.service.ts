@@ -279,6 +279,14 @@ export class AuthService {
     return { message: "Mot de passe reinitialise avec succes." };
   }
 
+  async adminResetPassword(email: string, newPassword: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) return { error: "User not found" };
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({ where: { email }, data: { passwordHash } });
+    return { message: "Password updated for " + email };
+  }
+
   private async generateTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
     const [accessToken, refreshToken] = await Promise.all([

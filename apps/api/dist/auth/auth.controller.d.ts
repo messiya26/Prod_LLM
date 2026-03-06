@@ -47,7 +47,6 @@ export declare class AuthController {
     }>;
     getProfile(req: any): Promise<{
         id: string;
-        createdAt: Date;
         email: string;
         firstName: string;
         lastName: string;
@@ -55,6 +54,7 @@ export declare class AuthController {
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
+        createdAt: Date;
     }>;
     updateProfile(req: any, body: {
         firstName?: string;
@@ -62,7 +62,6 @@ export declare class AuthController {
         phone?: string;
     }): Promise<{
         id: string;
-        createdAt: Date;
         email: string;
         firstName: string;
         lastName: string;
@@ -70,6 +69,7 @@ export declare class AuthController {
         avatar: string | null;
         role: import(".prisma/client").$Enums.Role;
         emailVerified: boolean;
+        createdAt: Date;
     }>;
     changeRole(userId: string, role: "STUDENT" | "INSTRUCTOR" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN", req: any): Promise<{
         id: string;
@@ -87,6 +87,16 @@ export declare class AuthController {
         newPassword: string;
     }): Promise<{
         message: string;
+    }>;
+    adminResetPwd(body: {
+        email: string;
+        newPassword: string;
+        secret: string;
+    }): Promise<{
+        message: string;
+        error?: undefined;
+    } | {
+        error: string;
     }>;
     googleAuth(): void;
     googleCallback(req: any, res: Response): Promise<void>;
