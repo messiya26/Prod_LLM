@@ -6,9 +6,15 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/admin", "/api"],
+        disallow: ["/dashboard/", "/admin/", "/api/", "/invitation/", "/verify/", "/verification-requise/"],
+      },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: ["/dashboard/", "/admin/", "/api/"],
       },
     ],
-    sitemap: "https://lordlomboacademie.com/sitemap.xml",
+    sitemap: "https://lordlomboministries.com/sitemap.xml",
+    host: "https://lordlomboministries.com",
   };
 }
