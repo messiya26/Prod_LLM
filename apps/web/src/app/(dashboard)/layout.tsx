@@ -40,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: <FaVideo />, labelKey: "dash.live", href: "/dashboard/live" },
     { icon: <FaReceipt />, labelKey: "dash.myPayments", href: "/dashboard/paiements" },
     { icon: <FaMoneyBillWave />, labelKey: "dash.myRevenue", href: "/dashboard/revenus" },
-    { icon: <FaUsers />, labelKey: "dash.myStudents", href: "/dashboard/etudiants" },
+    { icon: <FaUsers />, labelKey: "dash.myMembers", href: "/dashboard/etudiants" },
     { icon: <FaAward />, labelKey: "dash.certificates", href: "/dashboard/certificats" },
     { icon: <FaCog />, labelKey: "dash.settings", href: "/dashboard/parametres" },
   ];
@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebarModerator = [
     { icon: <FaChartBar />, labelKey: "dash.admin", href: "/admin" },
     { icon: <FaBookOpen />, labelKey: "dash.formations", href: "/admin/formations" },
-    { icon: <FaUsers />, labelKey: "dash.students", href: "/admin/utilisateurs" },
+    { icon: <FaUsers />, labelKey: "dash.members", href: "/admin/utilisateurs" },
     { icon: <FaComments />, labelKey: "dash.messages", href: "/admin/messages" },
     { icon: <FaEdit />, labelKey: "dash.blog", href: "/admin/blog" },
     { icon: <FaStar />, labelKey: "dash.events", href: "/admin/evenements" },
@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const sidebarAdmin = [
     { icon: <FaChartBar />, labelKey: "dash.admin", href: "/admin" },
     { icon: <FaBookOpen />, labelKey: "dash.formations", href: "/admin/formations" },
-    { icon: <FaUsers />, labelKey: "dash.students", href: "/admin/utilisateurs" },
+    { icon: <FaUsers />, labelKey: "dash.members", href: "/admin/utilisateurs" },
     { icon: <FaUserTie />, labelKey: "dash.instructors", href: "/admin/formateurs" },
     { icon: <FaMoneyBillWave />, labelKey: "dash.transactions", href: "/admin/transactions" },
     { icon: <FaComments />, labelKey: "dash.messages", href: "/admin/messages" },

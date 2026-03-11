@@ -405,13 +405,13 @@ const translations: Record<string, { fr: string; en: string }> = {
   "dash.myFormations": { fr: "Mes formations", en: "My courses" },
   "dash.myPayments": { fr: "Mes paiements", en: "My payments" },
   "dash.myRevenue": { fr: "Mes revenus", en: "My revenue" },
-  "dash.myStudents": { fr: "Mes etudiants", en: "My students" },
+  "dash.myStudents": { fr: "Mes membres", en: "My members" },
   "dash.permissions": { fr: "Habilitations", en: "Permissions" },
   "dash.security": { fr: "Securite", en: "Security" },
   "dash.settings": { fr: "Parametres", en: "Settings" },
   "dash.admin": { fr: "Dashboard", en: "Dashboard" },
   "dash.formations": { fr: "Formations", en: "Courses" },
-  "dash.students": { fr: "Etudiants", en: "Students" },
+  "dash.students": { fr: "Membres", en: "Members" },
   "dash.instructors": { fr: "Formateurs", en: "Instructors" },
   "dash.subscriptions": { fr: "Abonnements", en: "Subscriptions" },
   "dash.masterclasses": { fr: "Masterclasses", en: "Masterclasses" },
@@ -579,6 +579,13 @@ const translations: Record<string, { fr: string; en: string }> = {
   "404.desc": { fr: "La page que vous recherchez semble avoir disparu dans une autre dimension. Retournez a l'accueil pour continuer votre parcours.", en: "The page you're looking for seems to have disappeared into another dimension. Return to the home page to continue your journey." },
   "404.home": { fr: "Retour a l'accueil", en: "Back to home" },
   "404.explore": { fr: "Explorer les formations", en: "Explore courses" },
+
+  // MISSING KEYS
+  "admin.instructors": { fr: "Formateurs", en: "Instructors" },
+  "admin.adminPanel": { fr: "Panel Administration", en: "Admin Panel" },
+  "dash.adminPanel": { fr: "Panel Admin", en: "Admin Panel" },
+  "dash.members": { fr: "Membres", en: "Members" },
+  "dash.myMembers": { fr: "Mes membres", en: "My members" },
 };
 
 interface I18nContextType {
