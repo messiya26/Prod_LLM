@@ -88,6 +88,6 @@ export declare class AuthController {
     }): Promise<{
         message: string;
     }>;
-    googleAuth(): void;
+    googleAuth(mode: string, req: any): void;
     googleCallback(req: any, res: Response): Promise<void>;
 }

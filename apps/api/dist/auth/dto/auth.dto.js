@@ -15,34 +15,49 @@ class RegisterDto {
 }
 exports.RegisterDto = RegisterDto;
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: "Le prenom est requis" }),
+    (0, class_validator_1.IsString)({ message: "Le prenom doit etre du texte" }),
+    (0, class_validator_1.MinLength)(2, { message: "Le prenom doit contenir au moins 2 caracteres" }),
+    (0, class_validator_1.MaxLength)(50, { message: "Le prenom ne doit pas depasser 50 caracteres" }),
+    (0, class_validator_1.Matches)(/^[a-zA-ZÀ-ÿ\s'-]+$/, { message: "Le prenom contient des caracteres non autorises" }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "firstName", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: "Le nom est requis" }),
+    (0, class_validator_1.IsString)({ message: "Le nom doit etre du texte" }),
+    (0, class_validator_1.MinLength)(2, { message: "Le nom doit contenir au moins 2 caracteres" }),
+    (0, class_validator_1.MaxLength)(50, { message: "Le nom ne doit pas depasser 50 caracteres" }),
+    (0, class_validator_1.Matches)(/^[a-zA-ZÀ-ÿ\s'-]+$/, { message: "Le nom contient des caracteres non autorises" }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "lastName", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsNotEmpty)({ message: "L'email est requis" }),
+    (0, class_validator_1.IsEmail)({}, { message: "L'adresse email n'est pas valide" }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.MinLength)(8),
+    (0, class_validator_1.IsNotEmpty)({ message: "Le mot de passe est requis" }),
+    (0, class_validator_1.MinLength)(8, { message: "Le mot de passe doit contenir au moins 8 caracteres" }),
+    (0, class_validator_1.MaxLength)(128, { message: "Le mot de passe ne doit pas depasser 128 caracteres" }),
+    (0, class_validator_1.Matches)(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre" }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^[+]?[\d\s()-]{6,20}$/, { message: "Le numero de telephone n'est pas valide" }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "phone", void 0);
 class LoginDto {
 }
 exports.LoginDto = LoginDto;
 __decorate([
-    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsNotEmpty)({ message: "L'email est requis" }),
+    (0, class_validator_1.IsEmail)({}, { message: "L'adresse email n'est pas valide" }),
     __metadata("design:type", String)
 ], LoginDto.prototype, "email", void 0);
 __decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: "Le mot de passe est requis" }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);

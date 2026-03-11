@@ -36,10 +36,23 @@ function ConnexionContent() {
   }, [searchParams]);
   const [fullLoading, setFullLoading] = useState(false);
   const googleError = searchParams.get("error");
-  const [error, setError] = useState(googleError === "google_not_configured" ? "La connexion Google n'est pas encore disponible. Utilisez email/mot de passe." : "");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showValidation, setShowValidation] = useState(false);
+
+  useEffect(() => {
+    if (googleError) {
+      const messages: Record<string, string> = {
+        no_account: "Aucun compte n'est associe a ce compte Google. Veuillez d'abord creer un compte.",
+        google_error: "Une erreur est survenue lors de la connexion Google. Veuillez reessayer.",
+        google_not_configured: "La connexion Google n'est pas encore disponible.",
+      };
+      setValidationErrors([messages[googleError] || "Erreur de connexion Google"]);
+      setShowValidation(true);
+      window.history.replaceState({}, "", "/connexion");
+    }
+  }, [googleError]);
 
   useEffect(() => {
     const token = searchParams.get("token");

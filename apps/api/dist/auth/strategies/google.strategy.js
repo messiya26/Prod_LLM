@@ -20,16 +20,20 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder",
             callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://prod-llm.onrender.com/api/v1/auth/google/callback",
             scope: ["email", "profile"],
+            passReqToCallback: true,
         });
     }
-    async validate(accessToken, refreshToken, profile, done) {
+    authenticate(req, options) {
+        const mode = req.query?.mode || "login";
+        super.authenticate(req, { ...options, state: mode });
+    }
+    async validate(req, accessToken, refreshToken, profile, done) {
         const { name, emails, photos } = profile;
         const user = {
             email: emails[0].value,
             firstName: name?.givenName || "",
             lastName: name?.familyName || "",
             avatar: photos?.[0]?.value || null,
-            googleAccessToken: accessToken,
         };
         done(null, user);
     }

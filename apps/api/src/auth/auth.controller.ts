@@ -71,16 +71,30 @@ export class AuthController {
   @Public()
   @Get("google")
   @UseGuards(AuthGuard("google"))
-  googleAuth() {}
+  googleAuth(@Query("mode") mode: string, @Req() req: any) {
+    // mode is passed to Google via state parameter by the strategy
+  }
 
   @Public()
   @Get("google/callback")
   @UseGuards(AuthGuard("google"))
   async googleCallback(@Request() req: any, @Res() res: Response) {
-    const result = await this.authService.googleLogin(req.user);
     const frontendUrl = process.env.FRONTEND_URL || "https://lordlomboministries.com";
-    res.redirect(
-      `${frontendUrl}/connexion?token=${result.accessToken}&role=${result.user.role}`
-    );
+    const mode = req.query.state || "login";
+    try {
+      const result = await this.authService.googleLogin(req.user, mode as "login" | "register");
+      res.redirect(
+        `${frontendUrl}/connexion?token=${result.accessToken}&role=${result.user.role}`
+      );
+    } catch (err: any) {
+      const code = err?.message || "GOOGLE_ERROR";
+      if (code === "GOOGLE_NO_ACCOUNT") {
+        res.redirect(`${frontendUrl}/connexion?error=no_account`);
+      } else if (code === "GOOGLE_ACCOUNT_EXISTS") {
+        res.redirect(`${frontendUrl}/inscription?error=account_exists`);
+      } else {
+        res.redirect(`${frontendUrl}/connexion?error=google_error`);
+      }
+    }
   }
 }

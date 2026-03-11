@@ -50,11 +50,27 @@ let AuthController = class AuthController {
     resetPassword(body) {
         return this.authService.resetPassword(body.email, body.code, body.newPassword);
     }
-    googleAuth() { }
+    googleAuth(mode, req) {
+    }
     async googleCallback(req, res) {
-        const result = await this.authService.googleLogin(req.user);
         const frontendUrl = process.env.FRONTEND_URL || "https://lordlomboministries.com";
-        res.redirect(`${frontendUrl}/connexion?token=${result.accessToken}&role=${result.user.role}`);
+        const mode = req.query.state || "login";
+        try {
+            const result = await this.authService.googleLogin(req.user, mode);
+            res.redirect(`${frontendUrl}/connexion?token=${result.accessToken}&role=${result.user.role}`);
+        }
+        catch (err) {
+            const code = err?.message || "GOOGLE_ERROR";
+            if (code === "GOOGLE_NO_ACCOUNT") {
+                res.redirect(`${frontendUrl}/connexion?error=no_account`);
+            }
+            else if (code === "GOOGLE_ACCOUNT_EXISTS") {
+                res.redirect(`${frontendUrl}/inscription?error=account_exists`);
+            }
+            else {
+                res.redirect(`${frontendUrl}/connexion?error=google_error`);
+            }
+        }
     }
 };
 exports.AuthController = AuthController;
@@ -138,8 +154,10 @@ __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)("google"),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)("google")),
+    __param(0, (0, common_1.Query)("mode")),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "googleAuth", null);
 __decorate([

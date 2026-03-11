@@ -56,7 +56,7 @@ export declare class AuthService {
         firstName: string;
         lastName: string;
         avatar: string | null;
-    }): Promise<{
+    }, mode?: "login" | "register"): Promise<{
         accessToken: string;
         refreshToken: string;
         user: {

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaPhone, FaGoogle, FaArrowRight, FaArrowLeft, FaCheck, FaExclamationTriangle } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
@@ -10,37 +12,68 @@ import { ValidationModal } from "@/components/ui/validation-modal";
 import { useI18n } from "@/context/i18n-context";
 
 export default function Inscription() {
-  const { register, loginWithGoogle } = useAuth();
+  return (
+    <Suspense fallback={<div className="w-full max-w-md animate-pulse" />}>
+      <InscriptionContent />
+    </Suspense>
+  );
+}
+
+function InscriptionContent() {
+  const { register, registerWithGoogle } = useAuth();
   const { t } = useI18n();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [error, setError] = useState("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showValidation, setShowValidation] = useState(false);
 
+  const googleError = searchParams.get("error");
+  useEffect(() => {
+    if (googleError) {
+      const messages: Record<string, string> = {
+        account_exists: "Un compte existe deja avec cet email Google. Veuillez vous connecter a la place.",
+        google_error: "Erreur lors de l'inscription Google. Veuillez reessayer.",
+      };
+      setValidationErrors([messages[googleError] || "Erreur Google"]);
+      setShowValidation(true);
+      window.history.replaceState({}, "", "/inscription");
+    }
+  }, [googleError]);
+
   const requirements = [
-    { labelKey: "auth.pwd.min", test: (p: string) => p.length >= 8 },
-    { labelKey: "auth.pwd.upper", test: (p: string) => /[A-Z]/.test(p) },
-    { labelKey: "auth.pwd.digit", test: (p: string) => /[0-9]/.test(p) },
+    { label: "Au moins 8 caracteres", test: (p: string) => p.length >= 8 },
+    { label: "Au moins une majuscule", test: (p: string) => /[A-Z]/.test(p) },
+    { label: "Au moins un chiffre", test: (p: string) => /[0-9]/.test(p) },
   ];
 
   const allValid = requirements.every((r) => r.test(password));
+
+  const validateName = (val: string) => /^[a-zA-ZÀ-ÿ\s'-]{2,50}$/.test(val.trim());
+  const validateEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+  const validatePhone = (val: string) => !val || /^[+]?[\d\s()-]{6,20}$/.test(val.trim());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errors: string[] = [];
     if (!firstName.trim()) errors.push("Le prenom est requis");
+    else if (!validateName(firstName)) errors.push("Le prenom doit contenir entre 2 et 50 caracteres (lettres uniquement)");
     if (!lastName.trim()) errors.push("Le nom est requis");
+    else if (!validateName(lastName)) errors.push("Le nom doit contenir entre 2 et 50 caracteres (lettres uniquement)");
     if (!email.trim()) errors.push("L'adresse email est requise");
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push("L'adresse email n'est pas valide");
+    else if (!validateEmail(email)) errors.push("L'adresse email n'est pas valide");
+    if (phone && !validatePhone(phone)) errors.push("Le numero de telephone n'est pas valide (ex: +243 XXX XXX XXX)");
     if (!password) errors.push("Le mot de passe est requis");
-    else if (!allValid) errors.push("Le mot de passe ne respecte pas les criteres de securite");
+    else if (!allValid) errors.push("Le mot de passe doit contenir au moins 8 caracteres, une majuscule et un chiffre");
+    if (!acceptTerms) errors.push("Vous devez accepter les conditions generales d'utilisation");
     if (errors.length > 0) {
       setValidationErrors(errors);
       setShowValidation(true);
@@ -50,19 +83,24 @@ export default function Inscription() {
     setLoading(true);
     setLoadingMsg("Creation de votre compte...");
     try {
-      await register({ firstName, lastName, email, password, phone: phone || undefined });
+      await register({ firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim().toLowerCase(), password, phone: phone.trim() || undefined });
       setLoadingMsg("Compte cree ! Verification de votre email...");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t("auth.register.error"));
+      setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
       setLoading(false);
       setLoadingMsg("");
     }
   };
 
-  const handleGoogle = async () => {
+  const handleGoogle = () => {
+    if (!acceptTerms) {
+      setValidationErrors(["Vous devez accepter les conditions generales avant de continuer avec Google"]);
+      setShowValidation(true);
+      return;
+    }
     setLoading(true);
-    setLoadingMsg("Connexion avec Google...");
-    await loginWithGoogle();
+    setLoadingMsg("Inscription avec Google...");
+    registerWithGoogle();
   };
 
   return (
@@ -81,9 +119,9 @@ export default function Inscription() {
           <p className="text-cream/40 text-sm">{t("auth.register.desc")}</p>
         </div>
 
-        <button onClick={handleGoogle} className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border border-cream/10 bg-cream/[0.03] text-cream/70 text-sm font-medium hover:bg-cream/[0.06] hover:border-cream/20 transition-all mb-6">
+        <button onClick={handleGoogle} className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border border-cream/10 bg-cream/[0.03] text-cream/70 text-sm font-medium hover:bg-cream/[0.06] hover:border-cream/20 transition-all mb-4">
           <FaGoogle className="text-lg" />
-          {t("auth.google")}
+          S'inscrire avec Google
         </button>
 
         <div className="relative mb-6">
@@ -102,39 +140,55 @@ export default function Inscription() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.firstName")}</label>
+              <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.firstName")} *</label>
               <div className="relative">
                 <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/20 text-sm" />
-                <input type="text" placeholder="Jean" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-cream/[0.03] border border-cream/[0.08] text-cream placeholder:text-cream/20 text-sm focus:outline-none focus:border-gold/40 focus:bg-cream/[0.05] transition-all" />
+                <input type="text" placeholder="Jean" value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl bg-cream/[0.03] border text-cream placeholder:text-cream/20 text-sm focus:outline-none transition-all ${
+                    firstName && !validateName(firstName) ? "border-red-500/40 focus:border-red-500/60" : "border-cream/[0.08] focus:border-gold/40 focus:bg-cream/[0.05]"
+                  }`} />
               </div>
+              {firstName && !validateName(firstName) && <p className="text-red-400/70 text-[10px] mt-1">Lettres uniquement, 2-50 caracteres</p>}
             </div>
             <div>
-              <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.lastName")}</label>
-              <input type="text" placeholder="Kisula" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-4 py-3.5 rounded-xl bg-cream/[0.03] border border-cream/[0.08] text-cream placeholder:text-cream/20 text-sm focus:outline-none focus:border-gold/40 focus:bg-cream/[0.05] transition-all" />
+              <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.lastName")} *</label>
+              <input type="text" placeholder="Kisula" value={lastName} onChange={(e) => setLastName(e.target.value)}
+                className={`w-full px-4 py-3.5 rounded-xl bg-cream/[0.03] border text-cream placeholder:text-cream/20 text-sm focus:outline-none transition-all ${
+                  lastName && !validateName(lastName) ? "border-red-500/40 focus:border-red-500/60" : "border-cream/[0.08] focus:border-gold/40 focus:bg-cream/[0.05]"
+                }`} />
+              {lastName && !validateName(lastName) && <p className="text-red-400/70 text-[10px] mt-1">Lettres uniquement, 2-50 caracteres</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.email")}</label>
+            <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.email")} *</label>
             <div className="relative">
               <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/20 text-sm" />
-              <input type="email" placeholder="votre@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-cream/[0.03] border border-cream/[0.08] text-cream placeholder:text-cream/20 text-sm focus:outline-none focus:border-gold/40 focus:bg-cream/[0.05] transition-all" />
+              <input type="email" placeholder="votre@email.com" value={email} onChange={(e) => setEmail(e.target.value)}
+                className={`w-full pl-11 pr-4 py-3.5 rounded-xl bg-cream/[0.03] border text-cream placeholder:text-cream/20 text-sm focus:outline-none transition-all ${
+                  email && !validateEmail(email) ? "border-red-500/40 focus:border-red-500/60" : "border-cream/[0.08] focus:border-gold/40 focus:bg-cream/[0.05]"
+                }`} />
             </div>
+            {email && !validateEmail(email) && <p className="text-red-400/70 text-[10px] mt-1">Adresse email non valide</p>}
           </div>
 
           <div>
-            <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.phone")}</label>
+            <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.phone")} <span className="text-cream/20">(optionnel)</span></label>
             <div className="relative">
               <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/20 text-sm" />
-              <input type="tel" placeholder="+243 XXX XXX XXX" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-cream/[0.03] border border-cream/[0.08] text-cream placeholder:text-cream/20 text-sm focus:outline-none focus:border-gold/40 focus:bg-cream/[0.05] transition-all" />
+              <input type="tel" placeholder="+243 XXX XXX XXX" value={phone} onChange={(e) => setPhone(e.target.value)}
+                className={`w-full pl-11 pr-4 py-3.5 rounded-xl bg-cream/[0.03] border text-cream placeholder:text-cream/20 text-sm focus:outline-none transition-all ${
+                  phone && !validatePhone(phone) ? "border-red-500/40 focus:border-red-500/60" : "border-cream/[0.08] focus:border-gold/40 focus:bg-cream/[0.05]"
+                }`} />
             </div>
+            {phone && !validatePhone(phone) && <p className="text-red-400/70 text-[10px] mt-1">Format invalide (ex: +243 812 345 678)</p>}
           </div>
 
           <div>
-            <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.password")}</label>
+            <label className="block text-cream/50 text-xs font-medium mb-2 uppercase tracking-wider">{t("auth.password")} *</label>
             <div className="relative">
               <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/20 text-sm" />
-              <input type={showPassword ? "text" : "password"} placeholder={t("auth.pwd.placeholder")} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-cream/[0.03] border border-cream/[0.08] text-cream placeholder:text-cream/20 text-sm focus:outline-none focus:border-gold/40 focus:bg-cream/[0.05] transition-all" />
+              <input type={showPassword ? "text" : "password"} placeholder="Mot de passe securise" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-cream/[0.03] border border-cream/[0.08] text-cream placeholder:text-cream/20 text-sm focus:outline-none focus:border-gold/40 focus:bg-cream/[0.05] transition-all" />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-cream/20 hover:text-cream/50 transition-colors">
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
@@ -142,9 +196,9 @@ export default function Inscription() {
             {password && (
               <div className="mt-3 space-y-1.5">
                 {requirements.map((r) => (
-                  <motion.div key={r.labelKey} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className={`flex items-center gap-2 text-xs transition-colors ${r.test(password) ? "text-emerald-400" : "text-cream/25"}`}>
+                  <motion.div key={r.label} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className={`flex items-center gap-2 text-xs transition-colors ${r.test(password) ? "text-emerald-400" : "text-cream/25"}`}>
                     <FaCheck className="text-[10px]" />
-                    {t(r.labelKey)}
+                    {r.label}
                   </motion.div>
                 ))}
               </div>
@@ -152,12 +206,13 @@ export default function Inscription() {
           </div>
 
           <div className="flex items-start gap-3 pt-1">
-            <input type="checkbox" className="mt-1 accent-gold" />
+            <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} className="mt-1 accent-gold cursor-pointer" />
             <span className="text-cream/30 text-xs leading-relaxed">
-              {t("auth.accept")}{" "}
-              <Link href="/cgv" className="text-gold/60 hover:text-gold transition-colors">{t("auth.terms")}</Link>
-              {" "}{t("auth.and")}{" "}
-              <Link href="/politique-confidentialite" className="text-gold/60 hover:text-gold transition-colors">{t("auth.privacy")}</Link>
+              J'accepte les{" "}
+              <Link href="/cgv" className="text-gold/60 hover:text-gold transition-colors">conditions generales</Link>
+              {" "}et la{" "}
+              <Link href="/politique-confidentialite" className="text-gold/60 hover:text-gold transition-colors">politique de confidentialite</Link>
+              {" "}<span className="text-red-400">*</span>
             </span>
           </div>
 
@@ -170,14 +225,14 @@ export default function Inscription() {
                 <span>{t("auth.register.loading")}</span>
               </div>
             ) : (
-              <>{t("auth.register.btn")} <FaArrowRight className="text-xs group-hover:translate-x-1 transition-transform" /></>
+              <>Creer mon compte <FaArrowRight className="text-xs group-hover:translate-x-1 transition-transform" /></>
             )}
           </button>
         </form>
 
         <p className="mt-6 text-center text-cream/30 text-sm">
-          {t("auth.already")}{" "}
-          <Link href="/connexion" className="text-gold/70 hover:text-gold font-medium transition-colors">{t("auth.login.link")}</Link>
+          Deja un compte ?{" "}
+          <Link href="/connexion" className="text-gold/70 hover:text-gold font-medium transition-colors">Se connecter</Link>
         </p>
       </motion.div>
     </>

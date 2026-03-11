@@ -4,6 +4,7 @@ declare const GoogleStrategy_base: new (...args: [options: import("passport-goog
 };
 export declare class GoogleStrategy extends GoogleStrategy_base {
     constructor();
-    validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any>;
+    authenticate(req: any, options: any): void;
+    validate(req: any, accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any>;
 }
 export {};

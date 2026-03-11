@@ -147,10 +147,17 @@ export class AuthService {
     return "Navigateur";
   }
 
-  async googleLogin(googleUser: { email: string; firstName: string; lastName: string; avatar: string | null }) {
+  async googleLogin(googleUser: { email: string; firstName: string; lastName: string; avatar: string | null }, mode: "login" | "register" = "login") {
     let user = await this.prisma.user.findUnique({ where: { email: googleUser.email } });
 
-    if (!user) {
+    if (mode === "login") {
+      if (!user) {
+        throw new UnauthorizedException("GOOGLE_NO_ACCOUNT");
+      }
+    } else {
+      if (user) {
+        throw new ConflictException("GOOGLE_ACCOUNT_EXISTS");
+      }
       const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 12);
       user = await this.prisma.user.create({
         data: {
@@ -171,7 +178,9 @@ export class AuthService {
         type: "welcome",
         link: "/formations",
       }).catch(() => {});
-    } else if (!user.emailVerified) {
+    }
+
+    if (!user.emailVerified) {
       await this.prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
     }
 

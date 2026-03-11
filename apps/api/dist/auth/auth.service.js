@@ -146,9 +146,17 @@ let AuthService = class AuthService {
             return "Safari (Ordinateur)";
         return "Navigateur";
     }
-    async googleLogin(googleUser) {
+    async googleLogin(googleUser, mode = "login") {
         let user = await this.prisma.user.findUnique({ where: { email: googleUser.email } });
-        if (!user) {
+        if (mode === "login") {
+            if (!user) {
+                throw new common_1.UnauthorizedException("GOOGLE_NO_ACCOUNT");
+            }
+        }
+        else {
+            if (user) {
+                throw new common_1.ConflictException("GOOGLE_ACCOUNT_EXISTS");
+            }
             const passwordHash = await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 12);
             user = await this.prisma.user.create({
                 data: {
@@ -168,7 +176,7 @@ let AuthService = class AuthService {
                 link: "/formations",
             }).catch(() => { });
         }
-        else if (!user.emailVerified) {
+        if (!user.emailVerified) {
             await this.prisma.user.update({ where: { id: user.id }, data: { emailVerified: true } });
         }
         this.notifications.create(user.id, {

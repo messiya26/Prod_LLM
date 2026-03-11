@@ -10,10 +10,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder",
       callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://prod-llm.onrender.com/api/v1/auth/google/callback",
       scope: ["email", "profile"],
+      passReqToCallback: true,
     });
   }
 
+  authenticate(req: any, options: any) {
+    const mode = req.query?.mode || "login";
+    super.authenticate(req, { ...options, state: mode });
+  }
+
   async validate(
+    req: any,
     accessToken: string,
     refreshToken: string,
     profile: any,
@@ -25,7 +32,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
       firstName: name?.givenName || "",
       lastName: name?.familyName || "",
       avatar: photos?.[0]?.value || null,
-      googleAccessToken: accessToken,
     };
     done(null, user);
   }

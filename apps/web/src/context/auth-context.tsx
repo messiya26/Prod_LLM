@@ -9,7 +9,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: "STUDENT" | "ADMIN" | "INSTRUCTOR";
+  role: "STUDENT" | "ADMIN" | "INSTRUCTOR" | "MODERATOR" | "SUPER_ADMIN";
   avatar?: string;
   emailVerified?: boolean;
   phone?: string;
@@ -27,7 +27,8 @@ interface AuthContextType {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (data: { firstName: string; lastName: string; email: string; password: string; phone?: string }) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => void;
+  registerWithGoogle: () => void;
   resendVerification: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   logout: () => void;
@@ -47,6 +48,8 @@ function clearAuthCookies() {
   document.cookie = "ll-user-role=; path=/; max-age=0";
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://prod-llm.onrender.com/api/v1";
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,8 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem("lla_token");
     if (token) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
       api.get<User>("/auth/profile")
         .then((u) => {
           setUser(u);
@@ -68,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           localStorage.removeItem("lla_user");
           clearAuthCookies();
         })
-        .finally(() => { clearTimeout(timeout); setLoading(false); });
+        .finally(() => setLoading(false));
     } else {
       const cached = localStorage.getItem("lla_user");
       if (cached) {
@@ -95,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!data.user.emailVerified) {
         router.push("/verification-requise");
       } else {
-        router.push(data.user.role === "ADMIN" ? "/admin" : "/dashboard");
+        router.push(["ADMIN", "SUPER_ADMIN"].includes(data.user.role) ? "/admin" : "/dashboard");
       }
     } catch (err) {
       const msg = err instanceof ApiError ? err.message : "Erreur de connexion au serveur";
@@ -122,15 +123,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "https://prod-llm.onrender.com/api/v1"}/auth/google`;
-    } catch {
-      setError("Google login non disponible");
-      setLoading(false);
-    }
+  const loginWithGoogle = () => {
+    window.location.href = `${API_BASE}/auth/google?mode=login`;
+  };
+
+  const registerWithGoogle = () => {
+    window.location.href = `${API_BASE}/auth/google?mode=register`;
   };
 
   const resendVerification = async () => {
@@ -145,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshProfile = async () => {
     try {
-      const u = await api.get<User>("/auth/profile");
+      const u = await api.get<User>("/auth/profile", true);
       setUser(u);
       localStorage.setItem("lla_user", JSON.stringify(u));
     } catch {}
@@ -155,6 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("lla_user");
     localStorage.removeItem("lla_token");
     clearAuthCookies();
+    api.invalidate();
     setUser(null);
     setError(null);
     setLoading(false);
@@ -164,7 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const clearError = () => setError(null);
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, register, loginWithGoogle, resendVerification, refreshProfile, logout, clearError }}>
+    <AuthContext.Provider value={{ user, loading, error, login, register, loginWithGoogle, registerWithGoogle, resendVerification, refreshProfile, logout, clearError }}>
       {children}
     </AuthContext.Provider>
   );
