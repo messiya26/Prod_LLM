@@ -9,6 +9,22 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix("api/v1");
 
+  // ===== KILL-SWITCH API =====
+  // Si API_OPEN != "yes", l'API repond 503 sur toutes les routes.
+  if (process.env.API_OPEN !== "yes") {
+    const expressApp = app.getHttpAdapter().getInstance();
+    expressApp.use((_req: any, res: any) => {
+      res.status(503)
+        .set("Retry-After", "86400")
+        .set("Cache-Control", "no-store")
+        .json({ statusCode: 503, message: "Service Unavailable" });
+    });
+    const port = process.env.PORT || 3002;
+    await app.listen(port);
+    console.log(`[API CLOSED] Listening on ${port} — toutes requetes -> 503`);
+    return;
+  }
+
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,

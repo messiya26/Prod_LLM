@@ -22,6 +22,33 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
 
+  // ===== SITE FERME — ACCES BLOQUE =====
+  // Pour reouvrir : definir SITE_OPEN=yes ET fournir le bon SITE_BYPASS_KEY.
+  const SITE_OPEN = process.env.SITE_OPEN === "yes";
+  if (!SITE_OPEN && pathname !== "/maintenance") {
+    const bypassKey = process.env.SITE_BYPASS_KEY || "";
+    const queryKey = request.nextUrl.searchParams.get("k");
+    const cookieKey = request.cookies.get("ll-bypass")?.value;
+
+    if (bypassKey && bypassKey.length >= 16 && (queryKey === bypassKey || cookieKey === bypassKey)) {
+      const res = NextResponse.next();
+      if (queryKey === bypassKey) {
+        res.cookies.set("ll-bypass", bypassKey, { path: "/", maxAge: 60 * 60, httpOnly: true, sameSite: "strict", secure: true });
+      }
+      return res;
+    }
+
+    const url = request.nextUrl.clone();
+    url.pathname = "/maintenance";
+    url.search = "";
+    const res = NextResponse.rewrite(url, { status: 503 });
+    res.headers.set("Retry-After", "86400");
+    res.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+    res.headers.set("Pragma", "no-cache");
+    return res;
+  }
+
   if (getRateLimit(ip)) {
     return new NextResponse("Too Many Requests", { status: 429, headers: { "Retry-After": "60" } });
   }

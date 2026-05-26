@@ -12,3 +12,6 @@ apps/web/dist
 .vercel
 uploads/
 logs/
+
+# Documents prives
+contrats/
